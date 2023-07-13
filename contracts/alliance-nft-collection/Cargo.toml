@@ -1,0 +1,32 @@
+[package]
+name          = "alliance-nft-collection"
+description   = "Example extending CW721 NFT to store metadata on chain"
+authors       = [
+  "Terra Money <engineering@terra.money>",
+]
+version       = "0.1.0"
+edition       = "2018"
+license       = "GPL-3.0-or-later"
+repository    = "https://github.com/terra-money/alliance-nft-collection"
+homepage      = "https://alliance.terra.money/"
+documentation = "https://docs.alliance.terra.money/"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# for more explicit tests, cargo test --features=backtraces
+backtraces = ["cosmwasm-std/backtraces"]
+# use library feature to disable all instantiate/execute/query exports
+library = []
+
+[dependencies]
+cosmwasm-schema         = "1.1.3"
+cosmwasm-std            = "1.1.3"
+cw2                     = "1.0.1"
+cw721                   = "0.17.0"
+schemars                = "0.8.11"
+serde                   = { version = "1.0.152", default-features = false, features = ["derive"] }
+cw721-base              = "0.17.0"
+cw721-metadata-onchain  = "0.15.0"
+thiserror       = "1.0.38"
