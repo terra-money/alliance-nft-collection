@@ -1,4 +1,8 @@
-use alliance_nft_collection::msg::{InstantiateMsg, ExecuteMsg, QueryMsg};
+use alliance_nft_collection::types::{
+    execute::ExecuteMsg, 
+    instantiate::InstantiateMsg, 
+    query::QueryMsg
+};
 use cosmwasm_schema::write_api;
 
 fn main() {

@@ -1,6 +1,7 @@
 use cosmwasm_std::StdError;
+use cw721_base::ContractError as CW721BaseError;
 use thiserror::Error;
-use cw721_metadata_onchain::ContractError as Cw721MetadataContractError;
+
 #[derive(Error, Debug)]
 pub enum ContractError {
     #[error("{0}")]
@@ -10,5 +11,5 @@ pub enum ContractError {
     Unauthorized {},
 
     #[error("{0}")]
-    FromContractError(#[from] Cw721MetadataContractError),
+    FromContractError(#[from] CW721BaseError),
 }

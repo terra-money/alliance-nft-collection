@@ -1,35 +1,37 @@
-use cosmwasm_std::{entry_point, Empty};
+use cosmwasm_std::{entry_point, to_binary};
 use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
 use cw2::set_contract_version;
-use cw721_base::{Extension, Cw721Contract};
-use cw721_metadata_onchain::{Cw721MetadataContract, InstantiateMsg};
 
 use crate::error::ContractError;
-use crate::msg::{QueryAllianceMsg, ExecuteAllianceMsg};
+use crate::types::{
+    AllianceNftCollection,
+    execute::ExecuteMsg,
+    instantiate:: InstantiateMsg,
+    query:: QueryMsg,
+};
+use crate::state::CFG;
 
 // Version info for migration
 const CONTRACT_NAME: &str = "crates.io:alliance-nft-collection";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
-pub type Cw2981Contract<'a> = Cw721Contract<'a, Extension, Empty, ExecuteAllianceMsg, QueryAllianceMsg>;
-pub type ExecuteMsg = cw721_base::ExecuteMsg<Extension, ExecuteAllianceMsg>;
-pub type QueryMsg = cw721_base::QueryMsg<Empty>;
-
-// This makes a conscious choice on the various generics used by the contract
-#[entry_point]
+#[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
-    mut deps: DepsMut,
+    deps: DepsMut,
     env: Env,
     info: MessageInfo,
     msg: InstantiateMsg,
 ) -> Result<Response, ContractError> {
-    let res = Cw721MetadataContract::default().instantiate(deps.branch(), env, info, msg)?;
+    let parent = AllianceNftCollection::default();
+
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;
+
+    let res = parent.instantiate(deps, env, info, msg.into())?;
     Ok(res)
 }
 
-#[entry_point]
+#[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
     deps: DepsMut,
     env: Env,
@@ -37,29 +39,27 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     Ok(match msg {
-        ExecuteMsg::Extension { msg } => {
-            match msg {
-                ExecuteAllianceMsg::AllianceClaimRewards{} => {
-                    Response::default()
-                },
-                ExecuteAllianceMsg::AllianceDelegate(delegations) => {
-                    Response::default()
-                },
-                ExecuteAllianceMsg::AllianceUndelegate(undelegations) => {
-                    Response::default()
-                },
-                ExecuteAllianceMsg::AllianceRedelegate(redelegations) => {
-                    Response::default()
-                },
-            }
-        },
+        ExecuteMsg::AllianceClaimRewards {} => Response::default(),
+        ExecuteMsg::AllianceDelegate(_delegations) => Response::default(),
+        ExecuteMsg::AllianceUndelegate(_undelegations) => Response::default(),
+        ExecuteMsg::AllianceRedelegate(_redelegations) => Response::default(),
+
+        ExecuteMsg::BreakNft(_token_id) => Response::default(),
+        ExecuteMsg::Mint(_mint_msg) => Response::default(),
         _ => {
-            Cw721MetadataContract::default().execute(deps, env, info, msg.into())?
-        },
+            let parent = AllianceNftCollection::default();
+            parent.execute(deps, env, info, msg.into())?
+        }
     })
 }
 
-#[entry_point]
+#[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
-    Cw721MetadataContract::default().query(deps, env, msg)
+    match msg {
+        QueryMsg::Cfg {} => to_binary(&CFG.load(deps.storage)?),
+        _ => {
+            let parent = AllianceNftCollection::default();
+            parent.query(deps, env, msg.into())
+        }
+    }
 }
