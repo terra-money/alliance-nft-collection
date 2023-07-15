@@ -12,4 +12,7 @@ pub enum ContractError {
 
     #[error("{0}")]
     FromContractError(#[from] CW721BaseError),
+
+    #[error("Invalid reply id {0}")]
+    InvalidReplyId(u64),
 }

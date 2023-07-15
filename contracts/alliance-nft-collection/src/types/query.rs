@@ -1,3 +1,4 @@
+use super::Extension;
 use crate::state::Config;
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Empty;
@@ -6,7 +7,6 @@ use cw721::{
     NumTokensResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
 };
 use cw721_base::QueryMsg as CW721QueryMsg;
-use super::Extension;
 
 #[cw_serde]
 #[derive(QueryResponses)]
