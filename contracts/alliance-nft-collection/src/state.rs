@@ -1,6 +1,8 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::Addr;
-use cw_storage_plus::Item;
+use cosmwasm_std::{Addr, DepsMut, Uint128, StdError, Storage};
+use cw_storage_plus::{Item, Map};
+
+use crate::types::errors::ContractError;
 
 #[cw_serde]
 pub struct Trait {
@@ -26,6 +28,26 @@ pub struct Metadata {
 #[cw_serde]
 pub struct Config {
     pub owner: Addr,
+    pub asset_denom: String,
 }
 
-pub const CFG: Item<Config> = Item::new("config");
+pub const CONFIG: Item<Config> = Item::new("cfg");
+
+// Keep track of validators and stake
+pub const VALS: Map<String, Uint128> = Map::new("val");
+
+pub fn upsert_vals(storage: &mut dyn Storage, validator: String, stake: Uint128) -> Result<(), ContractError> {
+    VALS.update(storage, validator, |old| match old {
+        Some(old_stake) => Ok::<Uint128, StdError>(old_stake + stake),
+        None => Ok(stake),
+    })?;
+    Ok(())
+}
+
+// Keep track of in-progress unbondings
+// - max of 7 unbondings at the same time
+pub const UNBONDINGS: Map<String, Uint128> = Map::new("unb");
+
+// Keep track of in-progress redelegations
+// - max of 7 redelegations at the same time
+pub const REDELEGATIONS: Map<String, Uint128> = Map::new("red");

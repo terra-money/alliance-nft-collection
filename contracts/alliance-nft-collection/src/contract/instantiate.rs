@@ -1,4 +1,7 @@
-use crate::types::{errors::ContractError, instantiate::InstantiateMsg, AllianceNftCollection};
+use crate::{
+    state::{Config, CONFIG},
+    types::{errors::ContractError, instantiate::InstantiateMsg, AllianceNftCollection},
+};
 use cosmwasm_std::{
     entry_point, Binary, CosmosMsg, DepsMut, Env, MessageInfo, Reply, Response, StdError, SubMsg,
 };
@@ -30,6 +33,14 @@ pub fn instantiate(
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;
 
+    CONFIG.save(
+        deps.storage,
+        &Config {
+            owner: msg.owner.clone(),
+            asset_denom: format!("factory/{}/{}", env.contract.address, SUBDENOM),
+        },
+    )?;
+
     let create_denom_req: CosmosMsg = CosmosMsg::Stargate {
         type_url: "/cosmwasm.tokenfactory.v1beta1.MsgCreateDenom".to_string(),
         value: Binary::from(
@@ -44,7 +55,10 @@ pub fn instantiate(
     let parent = AllianceNftCollection::default();
     let res = parent.instantiate(deps, env.clone(), info, msg.into())?;
 
-    Ok(res.add_submessage(SubMsg::reply_on_success(create_denom_req, INSTANTIATE_REPLY_ID)))
+    Ok(res.add_submessage(SubMsg::reply_on_success(
+        create_denom_req,
+        INSTANTIATE_REPLY_ID,
+    )))
 }
 
 pub fn reply_on_instantiate(

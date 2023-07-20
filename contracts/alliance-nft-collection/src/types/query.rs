@@ -1,5 +1,5 @@
 use super::Extension;
-use crate::state::Config;
+use crate::state::Config as ConfigRes;
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Empty;
 use cw721::{
@@ -11,8 +11,8 @@ use cw721_base::QueryMsg as CW721QueryMsg;
 #[cw_serde]
 #[derive(QueryResponses)]
 pub enum QueryMsg {
-    #[returns(Config)]
-    Cfg {},
+    #[returns(ConfigRes)]
+    Config {},
 
     /// CW721 Queries
 

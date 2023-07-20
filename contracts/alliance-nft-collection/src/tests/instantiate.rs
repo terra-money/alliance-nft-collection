@@ -2,10 +2,15 @@ use crate::contract::instantiate::{instantiate, CONTRACT_NAME, CONTRACT_VERSION}
 use crate::contract::reply::reply;
 use crate::types::instantiate::InstantiateMsg;
 
-use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info, MockQuerier, MockApi, MockStorage};
-use cosmwasm_std::{Response, Addr, Binary, CosmosMsg, Reply, SubMsg, SubMsgResponse, SubMsgResult, Empty, OwnedDeps, Env, MessageInfo};
+use cosmwasm_std::testing::{
+    mock_dependencies, mock_env, mock_info, MockApi, MockQuerier, MockStorage,
+};
+use cosmwasm_std::{
+    Addr, Binary, CosmosMsg, Empty, Env, MessageInfo, OwnedDeps, Reply, Response, SubMsg,
+    SubMsgResponse, SubMsgResult,
+};
 use cw2::get_contract_version;
-use terra_proto_rs::cosmos::bank::v1beta1::{Metadata, DenomUnit};
+use terra_proto_rs::cosmos::bank::v1beta1::{DenomUnit, Metadata};
 use terra_proto_rs::cosmos::base::v1beta1::Coin;
 use terra_proto_rs::cosmwasm::tokenfactory::v1beta1::{MsgMint, MsgSetDenomMetadata};
 use terra_proto_rs::{
@@ -22,7 +27,7 @@ pub fn intantiate_with_reply() -> (
     OwnedDeps<MockStorage, MockApi, MockQuerier, Empty>,
     Env,
     MessageInfo,
-)  {
+) {
     // GIVEN the initial state of the environment.
     let mut deps = mock_dependencies();
     let env = mock_env();
@@ -33,6 +38,7 @@ pub fn intantiate_with_reply() -> (
         minter: "minter".to_string(),
         name: "Collection Name".to_string(),
         symbol: "CNA".to_string(),
+        owner: Addr::unchecked("owner"),
     };
     let res = instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
 
@@ -72,7 +78,7 @@ pub fn intantiate_with_reply() -> (
             )),
         }),
     };
-    
+
     // WHEN processing the reply.
     let res_reply = reply(deps.as_mut(), env.clone(), reply_msg).unwrap();
 
