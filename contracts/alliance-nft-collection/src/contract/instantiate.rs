@@ -15,8 +15,8 @@ use terra_proto_rs::{
 
 use super::reply::INSTANTIATE_REPLY_ID;
 
-const CONTRACT_NAME: &str = "crates.io:alliance-nft-collection";
-const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const CONTRACT_NAME: &str = "crates.io:alliance-nft-collection";
+pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 const SUBDENOM: &str = "AllianceDAO";
 const TOKENS_SUPPLY: u64 = 1_000_000_000_000;
 
