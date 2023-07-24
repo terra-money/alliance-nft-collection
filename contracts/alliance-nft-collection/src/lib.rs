@@ -1,4 +1,7 @@
+pub mod state;
+
 pub mod contract;
-pub mod tests;
-pub mod msg;
-pub mod error;
+pub mod types;
+
+#[cfg(test)]
+mod tests;

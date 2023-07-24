@@ -1,1 +1,7 @@
 target
+artifacts
+node_modules
+
+.env
+.contract_address.log
+.contract_code_id.log
