@@ -21,9 +21,9 @@ pub struct MintMsg {
 
 #[cw_serde]
 pub enum ExecuteMsg {
-    AllianceDelegate(Box<AllianceDelegateMsg>),
-    AllianceUndelegate(Box<AllianceUndelegateMsg>),
-    AllianceRedelegate(Box<AllianceRedelegateMsg>),
+    AllianceDelegate(AllianceDelegateMsg),
+    AllianceUndelegate(AllianceUndelegateMsg),
+    AllianceRedelegate(AllianceRedelegateMsg),
     AllianceClaimRewards {},
 
     // Claim the accumulated rewards and send them to the owner

@@ -36,10 +36,24 @@ pub const CONFIG: Item<Config> = Item::new("cfg");
 // Keep track of validators and stake
 pub const VALS: Map<String, Uint128> = Map::new("val");
 
-pub fn upsert_vals(storage: &mut dyn Storage, validator: String, stake: Uint128) -> Result<(), ContractError> {
+pub fn upsert_val(storage: &mut dyn Storage, validator: String, stake: Uint128) -> Result<(), ContractError> {
     VALS.update(storage, validator, |old| match old {
         Some(old_stake) => Ok::<Uint128, StdError>(old_stake + stake),
         None => Ok(stake),
+    })?;
+    Ok(())
+}
+
+pub fn reduce_val_stake(storage: &mut dyn Storage, validator: String, stake: Uint128) -> Result<(), ContractError> {
+    VALS.update(storage, validator.clone(), |old| match old {
+        Some(old_stake) => {
+            if old_stake < stake {
+                Err(ContractError::NotEnoughStakeToUndelegate {})
+            } else {
+                Ok(old_stake - stake)
+            }
+        }
+        None => Err(ContractError::ValidatorNotFound(validator.to_string()))
     })?;
     Ok(())
 }
