@@ -71,4 +71,5 @@ pub const TEMP_BALANCE: Item<Uint128> = Item::new("temp_balance");
 // Keep track of rewards claimed for each token_id
 pub const NFT_BALANCE_CLAIMED: Map<String, Uint128> = Map::new("nb");
 pub const REWARD_BALANCE: Item<Uint128> = Item::new("rb");
-pub const ACTIVE_NFTS: Item<u64>= Item::new("an");
+pub const NUM_ACTIVE_NFTS: Item<u64>= Item::new("nan");
+pub const BROKEN_NFTS: Map<String, bool> = Map::new("bn");
