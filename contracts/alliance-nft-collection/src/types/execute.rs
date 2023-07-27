@@ -25,6 +25,7 @@ pub enum ExecuteMsg {
     AllianceUndelegate(AllianceUndelegateMsg),
     AllianceRedelegate(AllianceRedelegateMsg),
     AllianceClaimRewards {},
+    UpdateRewardsCallback {},
 
     // Claim the accumulated rewards and send them to the owner
     // while the NFT is broken it will not accumulate rewards

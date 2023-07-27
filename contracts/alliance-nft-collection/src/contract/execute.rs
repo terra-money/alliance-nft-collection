@@ -1,15 +1,17 @@
-use cosmwasm_std::{entry_point, Addr, Binary, CosmosMsg};
+use cosmwasm_std::{entry_point, Addr, Binary, CosmosMsg, Uint128, SubMsg, WasmMsg, to_binary, Coin as CwCoin, Order};
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response};
 use terra_proto_rs::{
     alliance::alliance::MsgDelegate, cosmos::base::v1beta1::Coin, traits::Message,
 };
-use terra_proto_rs::alliance::alliance::{MsgRedelegate, MsgUndelegate};
+use terra_proto_rs::alliance::alliance::{MsgClaimDelegationRewards, MsgRedelegate, MsgUndelegate};
 
-use crate::state::{upsert_val, CONFIG, VALS, reduce_val_stake};
+use crate::state::{upsert_val, CONFIG, VALS, reduce_val_stake, TEMP_BALANCE, ACTIVE_NFTS, REWARD_BALANCE, NFT_BALANCE_CLAIMED};
 use crate::types::execute::{
     AllianceDelegateMsg, AllianceRedelegateMsg, AllianceUndelegateMsg, MintMsg,
 };
 use crate::types::{errors::ContractError, execute::ExecuteMsg, AllianceNftCollection};
+
+const CLAIM_REWARD_ERROR_REPLY_ID: u64 = 1;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
@@ -23,10 +25,12 @@ pub fn execute(
         ExecuteMsg::AllianceUndelegate(msg) => try_alliance_undelegate(deps, env, info, msg),
         ExecuteMsg::AllianceRedelegate(msg) => try_alliance_redelegate(deps, env, info, msg),
 
-        ExecuteMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(),
+        ExecuteMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(deps, env, info),
+        ExecuteMsg::UpdateRewardsCallback {} => update_reward_callback(deps, env, info),
 
-        ExecuteMsg::BreakNft(token_id) => try_breaknft(token_id),
+        ExecuteMsg::BreakNft(token_id) => try_breaknft(deps, env, info, token_id),
         ExecuteMsg::Mint(mint_msg) => try_mint(mint_msg),
+
         _ => {
             let parent = AllianceNftCollection::default();
             Ok(parent.execute(deps, env, info, msg.into())?)
@@ -34,8 +38,67 @@ pub fn execute(
     }
 }
 
-fn try_alliance_claim_rewards() -> Result<Response, ContractError> {
-    Ok(Response::default())
+fn try_alliance_claim_rewards(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, ContractError> {
+    let cfg = CONFIG.load(deps.storage)?;
+
+    let reward_sent_in_tx: Option<&CwCoin> =
+        info.funds.iter().find(|c| c.denom == "uluna");
+    let sent_balance = if let Some(coin) = reward_sent_in_tx {
+        coin.amount
+    } else {
+        Uint128::zero()
+    };
+    let contract_balance = deps.querier.query_balance( env.contract.address.clone(), "uluna")?.amount;
+
+    TEMP_BALANCE.save(deps.storage, &(contract_balance - sent_balance))?;
+    let validators = VALS.range(deps.storage, None, None, Order::Ascending).map(|v| v.unwrap().0).collect::<Vec<String>>();
+    let sub_msgs: Vec<SubMsg> = validators
+        .iter()
+        .map(|v| {
+            let msg = MsgClaimDelegationRewards {
+                delegator_address: env.contract.address.to_string(),
+                validator_address: v.to_string(),
+                denom: cfg.asset_denom.clone(),
+            };
+            let msg = CosmosMsg::Stargate {
+                type_url: "/alliance.alliance.MsgClaimDelegationRewards".to_string(),
+                value: Binary::from(msg.encode_to_vec()),
+            };
+            // Reply on error here is used to ignore errors from claiming rewards with validators that we did not delegate to
+            SubMsg::reply_on_error(msg, CLAIM_REWARD_ERROR_REPLY_ID)
+        })
+        .collect();
+    let msg = CosmosMsg::Wasm(WasmMsg::Execute {
+        contract_addr: env.contract.address.to_string(),
+        msg: to_binary(&ExecuteMsg::UpdateRewardsCallback {}).unwrap(),
+        funds: vec![],
+    });
+
+    Ok(Response::new()
+        .add_attributes(vec![("action", "update_rewards")])
+        .add_submessages(sub_msgs)
+        .add_message(msg))
+}
+
+fn update_reward_callback(
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+) -> Result<Response, ContractError> {
+    if info.sender != env.contract.address {
+        return Err(ContractError::Unauthorized(info.sender, env.contract.address));
+    }
+    let current_balance = deps.querier.query_balance(env.contract.address, "uluna")?.amount;
+    let previous_balance = TEMP_BALANCE.load(deps.storage)?;
+    let rewards_collected = current_balance - previous_balance;
+    let num_of_active_nfts = ACTIVE_NFTS.load(deps.storage)?;
+    let average_reward = rewards_collected / Uint128::from(num_of_active_nfts);
+    REWARD_BALANCE.update(deps.storage, |balance| -> Result<_, ContractError> {
+        Ok(balance + average_reward)
+    })?;
+
+    TEMP_BALANCE.remove(deps.storage);
+    Ok(Response::new().add_attributes(vec![("action", "update_rewards_callback")]))
 }
 
 fn try_alliance_delegate(
@@ -145,7 +208,19 @@ fn try_alliance_redelegate(
         .add_messages(msgs))
 }
 
-fn try_breaknft(_token_id: String) -> Result<Response, ContractError> {
+fn try_breaknft(deps: DepsMut, _env: Env, _info: MessageInfo, token_id: String) -> Result<Response, ContractError> {
+    // TODO: all the checks required to back NFT
+
+    let rewards_claimed = NFT_BALANCE_CLAIMED.load(deps.storage, token_id.to_string())?;
+    let average_rewards = REWARD_BALANCE.load(deps.storage)?;
+    let rewards_claimable = average_rewards - rewards_claimed;
+
+    NFT_BALANCE_CLAIMED.save(deps.storage, token_id, &average_rewards)?;
+    ACTIVE_NFTS.update(deps.storage, |n| -> Result<_, ContractError> {
+        Ok(n - 1)
+    })?;
+
+    // TODO: break NFT and send rewards to owner
     Ok(Response::default())
 }
 
