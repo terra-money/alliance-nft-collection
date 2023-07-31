@@ -17,7 +17,6 @@ use crate::types::{errors::ContractError, execute::ExecuteMsg, AllianceNftCollec
 
 const CLAIM_REWARD_ERROR_REPLY_ID: u64 = 1;
 const DENOM: &str = "uluna";
-const parent: AllianceNftCollection = AllianceNftCollection::default();
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
@@ -26,6 +25,7 @@ pub fn execute(
     info: MessageInfo,
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
+    let parent: AllianceNftCollection = AllianceNftCollection::default();
     match msg {
         ExecuteMsg::AllianceDelegate(msg) => try_alliance_delegate(deps, env, info, msg),
         ExecuteMsg::AllianceUndelegate(msg) => try_alliance_undelegate(deps, env, info, msg),
@@ -34,8 +34,8 @@ pub fn execute(
         ExecuteMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(deps, env, info),
         ExecuteMsg::UpdateRewardsCallback {} => update_reward_callback(deps, env, info),
 
-        ExecuteMsg::BreakNft(token_id) => try_breaknft(deps, env, info, token_id),
-        ExecuteMsg::Mint(mint_msg) => try_mint(deps, env, info, mint_msg),
+        ExecuteMsg::BreakNft(token_id) => try_breaknft(deps, env, info, parent, token_id),
+        ExecuteMsg::Mint(mint_msg) => try_mint(deps, env, info, parent, mint_msg),
 
         _ => {
             Ok(parent.execute(deps, env, info, msg.into())?)
@@ -213,9 +213,10 @@ fn try_alliance_redelegate(
         .add_messages(msgs))
 }
 
-fn try_breaknft(deps: DepsMut, env: Env, info: MessageInfo, token_id: String) -> Result<Response, ContractError> {
-    let owner = parent.owner_of(deps.as_ref(), env, token_id.clone())?;
-    authorize_execution(Addr::unchecked(owner), info.sender.clone())?;
+fn try_breaknft(deps: DepsMut, env: Env, info: MessageInfo, parent: AllianceNftCollection, token_id: String) -> Result<Response, ContractError> {
+    let owner_res = parent.owner_of(deps.as_ref(), env, token_id.clone(), false)?;
+    let owner = deps.api.addr_validate(&owner_res.owner)?;
+    authorize_execution(owner.clone(), info.sender.clone())?;
 
     let rewards_claimed = NFT_BALANCE_CLAIMED.load(deps.storage, token_id.to_string())?;
     let average_rewards = REWARD_BALANCE.load(deps.storage)?;
@@ -229,12 +230,12 @@ fn try_breaknft(deps: DepsMut, env: Env, info: MessageInfo, token_id: String) ->
 
     let send_msg = CosmosMsg::Bank(BankMsg::Send {
         amount: coins(rewards_claimable.u128(), DENOM),
-        to_address: owner.owner.clone(),
+        to_address: owner.to_string(),
     });
     Ok(Response::default().add_message(send_msg))
 }
 
-fn try_mint(deps: DepsMut, _env: Env, info: MessageInfo, mint_msg: MintMsg) -> Result<Response, ContractError> {
+fn try_mint(deps: DepsMut, _env: Env, info: MessageInfo, parent: AllianceNftCollection, mint_msg: MintMsg) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
     authorize_execution(cfg.owner, info.sender.clone())?;
     NUM_ACTIVE_NFTS.update(deps.storage, |n| -> Result<_, ContractError> {
@@ -242,7 +243,7 @@ fn try_mint(deps: DepsMut, _env: Env, info: MessageInfo, mint_msg: MintMsg) -> R
     })?;
     let reward_balance = REWARD_BALANCE.load(deps.storage)?;
     NFT_BALANCE_CLAIMED.save(deps.storage, mint_msg.token_id.clone(), &reward_balance)?;
-    parent.mint(deps, info, mint_msg.token_id, mint_msg.owner, mint_msg.token_uri, mint_msg.Extension).map_err(ContractError::FromContractError)
+    parent.mint(deps, info, mint_msg.token_id, mint_msg.owner, mint_msg.token_uri, mint_msg.extension).map_err(ContractError::FromContractError)
 }
 
 fn authorize_execution(owner: Addr, sender: Addr) -> Result<Response, ContractError> {
