@@ -1,4 +1,4 @@
-use cosmwasm_std::{StdError, Addr};
+use cosmwasm_std::{Addr, StdError};
 use cw721_base::ContractError as CW721BaseError;
 use thiserror::Error;
 

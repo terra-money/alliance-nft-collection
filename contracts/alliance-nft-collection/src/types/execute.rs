@@ -20,6 +20,7 @@ pub struct MintMsg {
 }
 
 #[cw_serde]
+#[allow(clippy::large_enum_variant)]
 pub enum ExecuteMsg {
     AllianceDelegate(AllianceDelegateMsg),
     AllianceUndelegate(AllianceUndelegateMsg),

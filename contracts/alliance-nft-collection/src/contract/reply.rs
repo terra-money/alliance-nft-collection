@@ -1,7 +1,7 @@
 use cosmwasm_std::{entry_point, DepsMut, Env, Reply, Response};
 
-use crate::types::errors::ContractError;
 use super::instantiate::reply_on_instantiate;
+use crate::types::errors::ContractError;
 
 pub const INSTANTIATE_REPLY_ID: u64 = 1;
 
