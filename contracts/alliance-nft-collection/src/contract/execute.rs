@@ -1,7 +1,4 @@
-use cosmwasm_std::{
-    coins, entry_point, to_binary, Addr, BankMsg, Binary, Coin as CwCoin, CosmosMsg, Order, SubMsg,
-    Uint128, WasmMsg,
-};
+use cosmwasm_std::{coins, entry_point, to_binary, Addr, BankMsg, Binary, Coin as CwCoin, CosmosMsg, Order, SubMsg, Uint128, WasmMsg};
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response};
 use cw721::Cw721Query;
 use terra_proto_rs::alliance::alliance::{MsgClaimDelegationRewards, MsgRedelegate, MsgUndelegate};
@@ -50,6 +47,11 @@ fn try_alliance_claim_rewards(
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
+    let num_of_active = NUM_ACTIVE_NFTS.load(deps.storage)?;
+    if num_of_active == 0 {
+       Err(ContractError::NoActiveNfts {})
+    }
+
 
     let reward_sent_in_tx: Option<&CwCoin> = info.funds.iter().find(|c| c.denom == DENOM);
     let sent_balance = if let Some(coin) = reward_sent_in_tx {
@@ -240,13 +242,19 @@ fn try_breaknft(
     let owner = deps.api.addr_validate(&owner_res.owner)?;
     authorize_execution(owner.clone(), info.sender)?;
 
+    BROKEN_NFTS.update(deps.storage, token_id.clone(), |b| -> Result<_, ContractError> {
+        match b {
+            Some(b) => if b { Err(ContractError::AlreadyBroken {}) } else { Ok(true) },
+            None => Ok(true)
+        }
+    })?;
+
     let rewards_claimed = NFT_BALANCE_CLAIMED.load(deps.storage, token_id.to_string())?;
     let average_rewards = REWARD_BALANCE.load(deps.storage)?;
     let rewards_claimable = average_rewards - rewards_claimed;
 
     NFT_BALANCE_CLAIMED.save(deps.storage, token_id.clone(), &average_rewards)?;
     NUM_ACTIVE_NFTS.update(deps.storage, |n| -> Result<_, ContractError> { Ok(n - 1) })?;
-    BROKEN_NFTS.save(deps.storage, token_id.clone(), &true)?;
     if rewards_claimable.is_zero() {
         Ok(Response::default().add_attributes(vec![
             ("action", "break_nft"),

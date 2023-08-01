@@ -24,4 +24,10 @@ pub enum ContractError {
 
     #[error("Not enough stake to undelegate")]
     NotEnoughStakeToUndelegate {},
+
+    #[error("NFT already broken")]
+    AlreadyBroken {},
+
+    #[error("No active NFTs")]
+    NoActiveNfts {},
 }
