@@ -8,15 +8,15 @@ use super::Extension;
 #[cw_serde]
 pub struct MintMsg {
     /// Unique ID of the NFT
-    token_id: String,
+    pub token_id: String,
     /// The owner of the newly minter NFT
-    owner: String,
+    pub owner: String,
     /// Universal resource identifier for this NFT
     /// Should point to a JSON file that conforms to the ERC721
     /// Metadata JSON Schema
-    token_uri: Option<String>,
+    pub token_uri: Option<String>,
     /// Any custom extension used by this contract
-    extension: Extension,
+    pub extension: Extension,
 }
 
 #[cw_serde]
@@ -32,7 +32,7 @@ pub enum ExecuteMsg {
     BreakNft(String),
 
     /// Mint a new NFT, can only be called by the contract minter
-    Mint(Box<MintMsg>),
+    Mint(MintMsg),
 
     /// CW721 standard message
 
