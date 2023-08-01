@@ -6,9 +6,15 @@ use super::instantiate::intantiate_with_reply;
 fn test_query_info_and_config() {
     let (deps, env, _) = intantiate_with_reply();
 
-    let contract_info_res = query(deps.as_ref(), env.clone(), QueryMsg::ContractInfo { }).unwrap();
-    let contract_conf_res = query(deps.as_ref(), env, QueryMsg::Config { }).unwrap();
+    let contract_info_res = query(deps.as_ref(), env.clone(), QueryMsg::ContractInfo {}).unwrap();
+    let contract_conf_res = query(deps.as_ref(), env, QueryMsg::Config {}).unwrap();
 
-    assert_eq!(contract_info_res, "{\"name\":\"Collection Name\",\"symbol\":\"CNA\"}".as_bytes());
-    assert_eq!(contract_conf_res, "{\"owner\":\"owner\",\"asset_denom\":\"factory/cosmos2contract/AllianceDAO\"}".as_bytes());
+    assert_eq!(
+        contract_info_res,
+        "{\"name\":\"Collection Name\",\"symbol\":\"CNA\"}".as_bytes()
+    );
+    assert_eq!(
+        contract_conf_res,
+        "{\"owner\":\"owner\",\"asset_denom\":\"factory/cosmos2contract/AllianceDAO\"}".as_bytes()
+    );
 }

@@ -1,9 +1,11 @@
+use crate::state::{NUM_ACTIVE_NFTS, REWARD_BALANCE};
 use crate::{
     state::{Config, CONFIG},
     types::{errors::ContractError, instantiate::InstantiateMsg, AllianceNftCollection},
 };
 use cosmwasm_std::{
     entry_point, Binary, CosmosMsg, DepsMut, Env, MessageInfo, Reply, Response, StdError, SubMsg,
+    Uint128,
 };
 use cw2::set_contract_version;
 use cw_utils::parse_instantiate_response_data;
@@ -41,6 +43,9 @@ pub fn instantiate(
         },
     )?;
 
+    REWARD_BALANCE.save(deps.storage, &Uint128::zero())?;
+    NUM_ACTIVE_NFTS.save(deps.storage, &0)?;
+
     let create_denom_req: CosmosMsg = CosmosMsg::Stargate {
         type_url: "/cosmwasm.tokenfactory.v1beta1.MsgCreateDenom".to_string(),
         value: Binary::from(
@@ -53,7 +58,7 @@ pub fn instantiate(
     };
 
     let parent = AllianceNftCollection::default();
-    let res = parent.instantiate(deps, env.clone(), info, msg.into())?;
+    let res = parent.instantiate(deps, env, info, msg.into())?;
 
     Ok(res.add_submessage(SubMsg::reply_on_success(
         create_denom_req,
@@ -95,7 +100,7 @@ pub fn reply_on_instantiate(
                 aliases: vec![],
             }],
             base: denom.to_string(),
-            display: denom.to_string(),
+            display: denom,
             name: "Alliance Token".to_string(),
             symbol: SUBDENOM.to_string(),
             uri: "".to_string(),

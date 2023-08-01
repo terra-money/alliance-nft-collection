@@ -88,7 +88,7 @@ pub fn intantiate_with_reply() -> (
         Response::default()
             .add_submessage(SubMsg::new(CosmosMsg::Stargate {
                 type_url: "/cosmwasm.tokenfactory.v1beta1.MsgSetDenomMetadata".to_string(),
-                value: Binary(MsgSetDenomMetadata {
+                value: Binary::from(MsgSetDenomMetadata {
                     sender: "cosmos2contract".to_string(),
                     metadata: Some(Metadata {
                         description:
@@ -110,7 +110,7 @@ pub fn intantiate_with_reply() -> (
             }))
             .add_submessage(SubMsg::new(CosmosMsg::Stargate {
                 type_url: "/cosmwasm.tokenfactory.v1beta1.MsgMint".to_string(),
-                value: Binary(MsgMint {
+                value: Binary::from(MsgMint {
                     sender: "cosmos2contract".to_string(),
                     amount: Some(Coin {
                         denom: "factory/cosmos2contract/AllianceDAO".to_string(),
@@ -120,5 +120,5 @@ pub fn intantiate_with_reply() -> (
             }))
     );
 
-    return (deps, env.clone(), info.clone());
+    (deps, env, info)
 }
