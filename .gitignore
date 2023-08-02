@@ -1,6 +1,7 @@
 target
 artifacts
 node_modules
+.idea
 
 .env
 .contract_address.log
