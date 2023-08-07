@@ -35,7 +35,7 @@ pub fn execute(
         ExecuteMsg::UpdateRewardsCallback {} => update_reward_callback(deps, env, info),
 
         ExecuteMsg::BreakNft(token_id) => try_breaknft(deps, env, info, parent, token_id),
-        ExecuteMsg::Mint(mint_msg) => try_mint(deps, env, info, parent, mint_msg),
+        ExecuteMsg::Mint(mint_msg) => try_mint(deps, info, parent, mint_msg),
 
         _ => Ok(parent.execute(deps, env, info, msg.into())?),
     }
@@ -49,9 +49,8 @@ fn try_alliance_claim_rewards(
     let cfg = CONFIG.load(deps.storage)?;
     let num_of_active = NUM_ACTIVE_NFTS.load(deps.storage)?;
     if num_of_active == 0 {
-       Err(ContractError::NoActiveNfts {})
+       return Err(ContractError::NoActiveNfts {})
     }
-
 
     let reward_sent_in_tx: Option<&CwCoin> = info.funds.iter().find(|c| c.denom == DENOM);
     let sent_balance = if let Some(coin) = reward_sent_in_tx {
@@ -102,12 +101,8 @@ fn update_reward_callback(
     env: Env,
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
-    if info.sender != env.contract.address {
-        return Err(ContractError::Unauthorized(
-            info.sender,
-            env.contract.address,
-        ));
-    }
+    authorize_execution(env.contract.address.clone(), info.sender)?;
+
     let current_balance = deps
         .querier
         .query_balance(env.contract.address, DENOM)?
@@ -278,7 +273,6 @@ fn try_breaknft(
 
 fn try_mint(
     deps: DepsMut,
-    _env: Env,
     info: MessageInfo,
     parent: AllianceNftCollection,
     mint_msg: MintMsg,

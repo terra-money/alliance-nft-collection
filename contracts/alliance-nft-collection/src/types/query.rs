@@ -14,6 +14,58 @@ pub enum QueryMsg {
     #[returns(ConfigRes)]
     Config {},
 
+    /// With MetaData Extension.
+    /// Returns metadata about one particular token, 
+    /// based on *ERC721 Metadata JSON Schema*
+    /// https://docs.opensea.io/docs/metadata-standards
+    /// 
+    /// {    
+    ///    "name": "AllianceNFT # 1",
+    ///    "token_uri": null,
+    ///    "extension": {
+    ///      "image": "https://ipfs.io/ipfs/{hash}",
+    ///      "description": "Received for participating on Game Of Alliance",
+    ///      "name": "AllianceNFT # 1",
+    ///      "attributes": [{
+    ///              "display_type" : null,
+    ///              "trait_type": "x",
+    ///              "value": "1"
+    ///          },{
+    ///              "display_type" : null,
+    ///              "trait_type": "y",
+    ///              "value": "1"
+    ///          },{
+    ///              "display_type" : null,
+    ///              "trait_type": "width",
+    ///              "value": "120"
+    ///          },{
+    ///              "display_type" : null,
+    ///              "trait_type": "height",
+    ///              "value": "120"
+    ///          },{
+    ///              "display_type" : null,
+    ///              "trait_type": "rarity",
+    ///              "value": 11
+    ///          }],
+    ///      "image_data": null, 
+    ///      "external_url": null,
+    ///      "background_color": null,
+    ///      "animation_url": null,
+    ///      "youtube_url": null
+    ///    }
+    ///  }
+    #[returns(NftInfoResponse<Extension>)]
+    NftInfo { token_id: String },
+
+    /// With MetaData Extension.
+    /// Returns the result of both `NftInfo` and `OwnerOf` as one query as an optimization
+    #[returns(AllNftInfoResponse<Extension>)]
+    AllNftInfo {
+        token_id: String,
+        /// unset or false will filter out expired approvals, you must set to true to see them
+        include_expired: Option<bool>,
+    },
+
     /// CW721 Queries
 
     /// Return the owner of the given token, error if token does not exist
@@ -53,18 +105,6 @@ pub enum QueryMsg {
     /// With MetaData Extension.
     #[returns(ContractInfoResponse)]
     ContractInfo {},
-    /// With MetaData Extension.
-    /// Returns metadata about one particular token, based on *ERC721 Metadata JSON Schema*
-    #[returns(NftInfoResponse<Extension>)]
-    NftInfo { token_id: String },
-    /// With MetaData Extension.
-    /// Returns the result of both `NftInfo` and `OwnerOf` as one query as an optimization
-    #[returns(AllNftInfoResponse<Extension>)]
-    AllNftInfo {
-        token_id: String,
-        /// unset or false will filter out expired approvals, you must set to true to see them
-        include_expired: Option<bool>,
-    },
 
     /// With Enumerable extension.
     /// Returns all tokens owned by the given address, [] if unset.

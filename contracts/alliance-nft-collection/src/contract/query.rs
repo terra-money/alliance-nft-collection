@@ -3,14 +3,14 @@ use cosmwasm_std::{Binary, Deps, Env, StdResult};
 use cw721::{AllNftInfoResponse, Approval, NftInfoResponse, OwnerOfResponse};
 use cw721_base::state::{Approval as BaseApproval, TokenInfo};
 
-use crate::state::{Trait, BROKEN_NFTS, CONFIG, NFT_BALANCE_CLAIMED, REWARD_BALANCE};
+use crate::state::{Trait, BROKEN_NFTS, CONFIG, NFT_BALANCE_CLAIMED, REWARD_BALANCE, Config};
 use crate::types::{query::QueryMsg, AllianceNftCollection, Extension};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     let parent = AllianceNftCollection::default();
     match msg {
-        QueryMsg::Config {} => to_binary(&CONFIG.load(deps.storage)?),
+        QueryMsg::Config {} => to_binary(&query_config(deps)?),
         QueryMsg::NftInfo { token_id } => to_binary(&query_nft_info(deps, parent, token_id)?),
         QueryMsg::AllNftInfo {
             token_id,
@@ -24,6 +24,12 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
         )?),
         _ => parent.query(deps, env, msg.into()),
     }
+}
+
+fn query_config(deps : Deps) -> StdResult<Config>{
+    let res = CONFIG.load(deps.storage)?;
+
+    Ok(res)
 }
 
 fn query_token_info(
