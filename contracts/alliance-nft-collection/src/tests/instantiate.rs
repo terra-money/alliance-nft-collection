@@ -12,9 +12,9 @@ use cosmwasm_std::{
 use cw2::get_contract_version;
 use terra_proto_rs::cosmos::bank::v1beta1::{DenomUnit, Metadata};
 use terra_proto_rs::cosmos::base::v1beta1::Coin;
-use terra_proto_rs::cosmwasm::tokenfactory::v1beta1::{MsgMint, MsgSetDenomMetadata};
+use terra_proto_rs::osmosis::tokenfactory::v1beta1::{MsgMint, MsgSetDenomMetadata};
 use terra_proto_rs::{
-    cosmwasm::tokenfactory::v1beta1::MsgCreateDenom,
+    osmosis::tokenfactory::v1beta1::MsgCreateDenom,
     traits::{Message, MessageExt},
 };
 
@@ -53,7 +53,7 @@ pub fn intantiate_with_reply() -> (
         res.messages[0],
         SubMsg::reply_on_success(
             CosmosMsg::Stargate {
-                type_url: "/cosmwasm.tokenfactory.v1beta1.MsgCreateDenom".to_string(),
+                type_url: "/osmosis.tokenfactory.v1beta1.MsgCreateDenom".to_string(),
                 value: Binary::from(
                     MsgCreateDenom {
                         sender: Addr::unchecked("cosmos2contract").to_string(),
@@ -87,7 +87,7 @@ pub fn intantiate_with_reply() -> (
         res_reply,
         Response::default()
             .add_submessage(SubMsg::new(CosmosMsg::Stargate {
-                type_url: "/cosmwasm.tokenfactory.v1beta1.MsgSetDenomMetadata".to_string(),
+                type_url: "/osmosis.tokenfactory.v1beta1.MsgSetDenomMetadata".to_string(),
                 value: Binary::from(MsgSetDenomMetadata {
                     sender: "cosmos2contract".to_string(),
                     metadata: Some(Metadata {
@@ -109,8 +109,9 @@ pub fn intantiate_with_reply() -> (
                 }.encode_to_vec()),
             }))
             .add_submessage(SubMsg::new(CosmosMsg::Stargate {
-                type_url: "/cosmwasm.tokenfactory.v1beta1.MsgMint".to_string(),
+                type_url: "/osmosis.tokenfactory.v1beta1.MsgMint".to_string(),
                 value: Binary::from(MsgMint {
+                    mint_to_address : "cosmos2contract".to_string(),
                     sender: "cosmos2contract".to_string(),
                     amount: Some(Coin {
                         denom: "factory/cosmos2contract/AllianceDAO".to_string(),

@@ -14,7 +14,7 @@ use terra_proto_rs::{
         bank::v1beta1::{DenomUnit, Metadata},
         base::v1beta1::Coin,
     },
-    cosmwasm::tokenfactory::v1beta1::{MsgCreateDenom, MsgMint, MsgSetDenomMetadata},
+    osmosis::tokenfactory::v1beta1::{MsgCreateDenom, MsgMint, MsgSetDenomMetadata},
     traits::Message,
 };
 
@@ -47,7 +47,7 @@ pub fn instantiate(
     NUM_ACTIVE_NFTS.save(deps.storage, &0)?;
 
     let create_denom_req: CosmosMsg = CosmosMsg::Stargate {
-        type_url: "/cosmwasm.tokenfactory.v1beta1.MsgCreateDenom".to_string(),
+        type_url: "/osmosis.tokenfactory.v1beta1.MsgCreateDenom".to_string(),
         value: Binary::from(
             MsgCreateDenom {
                 sender: env.contract.address.to_string(),
@@ -77,13 +77,14 @@ pub fn reply_on_instantiate(
 
     let mint_req = MsgMint {
         sender: env.contract.address.to_string(),
+        mint_to_address: env.contract.address.to_string(),
         amount: Some(Coin {
             denom: denom.to_string(),
             amount: TOKENS_SUPPLY.to_string(),
         }),
     };
     let mint_sub_msg = CosmosMsg::Stargate {
-        type_url: "/cosmwasm.tokenfactory.v1beta1.MsgMint".to_string(),
+        type_url: "/osmosis.tokenfactory.v1beta1.MsgMint".to_string(),
         value: Binary(mint_req.encode_to_vec()),
     };
 
@@ -109,7 +110,7 @@ pub fn reply_on_instantiate(
     };
 
     let sub_msg_set_metadata = CosmosMsg::Stargate {
-        type_url: "/cosmwasm.tokenfactory.v1beta1.MsgSetDenomMetadata".to_string(),
+        type_url: "/osmosis.tokenfactory.v1beta1.MsgSetDenomMetadata".to_string(),
         value: Binary(set_metadata_req.encode_to_vec()),
     };
 

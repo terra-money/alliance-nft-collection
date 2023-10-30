@@ -277,7 +277,7 @@ fn try_mint(
     parent: AllianceNftCollection,
     mint_msg: MintMsg,
 ) -> Result<Response, ContractError> {
-    // authorization will be checked by the NFT parent contract
+    // authorization is checked in the parent contract
     NUM_ACTIVE_NFTS.update(deps.storage, |n| -> Result<_, ContractError> { Ok(n + 1) })?;
     let reward_balance = REWARD_BALANCE.load(deps.storage)?;
     NFT_BALANCE_CLAIMED.save(deps.storage, mint_msg.token_id.clone(), &reward_balance)?;

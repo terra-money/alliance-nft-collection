@@ -23,7 +23,7 @@ const readUsersData = (): Promise<User[]> => {
     return new Promise((resolve, reject) => {
         const users: User[] = [];
 
-        fs.createReadStream('./scripts/.users.csv')
+        fs.createReadStream('.users.csv')
             .pipe(csvParser())
             .on('data', (data: any) => {
                 const {
@@ -81,7 +81,7 @@ const submitOnChain = async (parsedChunks: User[][]) => {
     const mk = new MnemonicKey({ mnemonic: process.env.MNEMONIC });
     const wallet = lcd.wallet(mk);
     const accAddress = wallet.key.accAddress("terra");
-    const contractAdress = fs.readFileSync('./scripts/.contract_address.log').toString('utf-8');
+    const contractAdress = "terra12frndl0wexrzevkz6gh450xhddxvenhlnt035fankv445jrjdnjszhqhzh";
 
     let chunkIndex = 0;
     for await (const usersChunk of parsedChunks) {
@@ -99,27 +99,23 @@ const submitOnChain = async (parsedChunks: User[][]) => {
                         "extension": {
                             "name": `AllianceNFT DAO Membership #${user.id?.toString()}`,
                             "description": "Received for participating on Game Of Alliance",
-                            "image": "https://ipfs.io/ipfs/{hash}",     // TODO: Add image
+                            "image": "https://ipfs.io/ipfs/{hash}",     // TODO: find in csv
                             "attributes": [{
-                                "display_type": "",
-                                "trait_type": "x",
-                                "value": "1"    // TODO: find coord
-                            }, {
-                                "display_type": "",
-                                "trait_type": "y",
-                                "value": "1"    // TODO: find coord
-                            }, {
-                                "display_type": "",
-                                "trait_type": "width",
-                                "value": "120"  // TODO: get sizes
-                            }, {
-                                "display_type": "",
-                                "trait_type": "height",
-                                "value": "120"  // TODO: get sizes
-                            }, {
-                                "display_type": "",
+                                "display_type" : null,
+                                "trait_type": "planet",
+                                "value": "fire"                         // TODO: find in csv
+                            },{
+                                "display_type" : null,
+                                "trait_type": "inhabitant",
+                                "value": "water"                         // TODO: find in csv
+                            },{
+                                "display_type" : null,
+                                "trait_type": "object",
+                                "value": "sword"                         // TODO: find in csv
+                            },{
+                                "display_type" : null,
                                 "trait_type": "rarity",
-                                "value": ""     // TODO: calculate rarity
+                                "value": 11                              // TODO: find in csv
                             }],
                             "image_data": "",
                             "external_url": "",
@@ -150,7 +146,6 @@ const submitOnChain = async (parsedChunks: User[][]) => {
 const init = async () => {
     const res = await readUsersData();
     const parsedUserDataChunks = filterData(res);
-    console.log(parsedUserDataChunks.length)
     // return
     // await submitOnChain(parsedUserDataChunks);
 }
