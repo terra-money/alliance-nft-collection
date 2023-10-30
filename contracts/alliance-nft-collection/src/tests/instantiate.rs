@@ -1,7 +1,7 @@
 use crate::contract::instantiate::{instantiate, CONTRACT_NAME, CONTRACT_VERSION};
 use crate::contract::reply::reply;
-use crate::types::instantiate::InstantiateMsg;
 
+use alliance_nft_packages::instantiate::InstantiateCollectionMsg;
 use cosmwasm_std::testing::{
     mock_dependencies, mock_env, mock_info, MockApi, MockQuerier, MockStorage,
 };
@@ -34,7 +34,7 @@ pub fn intantiate_with_reply() -> (
     let info = mock_info("creator", &[]);
 
     // WHEN instantiating the contract ...
-    let msg = InstantiateMsg {
+    let msg = InstantiateCollectionMsg {
         minter: "minter".to_string(),
         name: "Collection Name".to_string(),
         symbol: "CNA".to_string(),

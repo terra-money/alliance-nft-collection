@@ -1,7 +1,8 @@
-use crate::state::{NUM_ACTIVE_NFTS, REWARD_BALANCE};
-use crate::{
-    state::{Config, CONFIG},
-    types::{errors::ContractError, instantiate::InstantiateMsg, AllianceNftCollection},
+use alliance_nft_packages::{
+    errors::ContractError,
+    instantiate::InstantiateCollectionMsg,
+    state::Config,
+    AllianceNftCollection,
 };
 use cosmwasm_std::{
     entry_point, Binary, CosmosMsg, DepsMut, Env, MessageInfo, Reply, Response, StdError, SubMsg,
@@ -18,6 +19,8 @@ use terra_proto_rs::{
     traits::Message,
 };
 
+use crate::state::{CONFIG, REWARD_BALANCE, NUM_ACTIVE_NFTS};
+
 use super::reply::INSTANTIATE_REPLY_ID;
 
 pub const CONTRACT_NAME: &str = "crates.io:alliance-nft-collection";
@@ -30,7 +33,7 @@ pub fn instantiate(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
-    msg: InstantiateMsg,
+    msg: InstantiateCollectionMsg,
 ) -> Result<Response, ContractError> {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;

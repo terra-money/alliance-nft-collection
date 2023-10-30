@@ -10,7 +10,7 @@ use cw721_base::QueryMsg as CW721QueryMsg;
 
 #[cw_serde]
 #[derive(QueryResponses)]
-pub enum QueryMsg {
+pub enum QueryCollectionMsg {
     #[returns(ConfigRes)]
     Config {},
 
@@ -132,17 +132,17 @@ pub struct MinterResponse {
     pub minter: String,
 }
 
-impl From<QueryMsg> for CW721QueryMsg<Empty> {
-    fn from(msg: QueryMsg) -> CW721QueryMsg<Empty> {
+impl From<QueryCollectionMsg> for CW721QueryMsg<Empty> {
+    fn from(msg: QueryCollectionMsg) -> CW721QueryMsg<Empty> {
         match msg {
-            QueryMsg::OwnerOf {
+            QueryCollectionMsg::OwnerOf {
                 token_id,
                 include_expired,
             } => CW721QueryMsg::OwnerOf {
                 token_id,
                 include_expired,
             },
-            QueryMsg::Approval {
+            QueryCollectionMsg::Approval {
                 token_id,
                 spender,
                 include_expired,
@@ -151,14 +151,14 @@ impl From<QueryMsg> for CW721QueryMsg<Empty> {
                 spender,
                 include_expired,
             },
-            QueryMsg::Approvals {
+            QueryCollectionMsg::Approvals {
                 token_id,
                 include_expired,
             } => CW721QueryMsg::Approvals {
                 token_id,
                 include_expired,
             },
-            QueryMsg::AllOperators {
+            QueryCollectionMsg::AllOperators {
                 owner,
                 /// unset or false will filter out expired items, you must set to true to see them
                 include_expired,
@@ -170,17 +170,17 @@ impl From<QueryMsg> for CW721QueryMsg<Empty> {
                 start_after,
                 limit,
             },
-            QueryMsg::NumTokens {} => CW721QueryMsg::NumTokens {},
-            QueryMsg::ContractInfo {} => CW721QueryMsg::ContractInfo {},
-            QueryMsg::NftInfo { token_id } => CW721QueryMsg::NftInfo { token_id },
-            QueryMsg::AllNftInfo {
+            QueryCollectionMsg::NumTokens {} => CW721QueryMsg::NumTokens {},
+            QueryCollectionMsg::ContractInfo {} => CW721QueryMsg::ContractInfo {},
+            QueryCollectionMsg::NftInfo { token_id } => CW721QueryMsg::NftInfo { token_id },
+            QueryCollectionMsg::AllNftInfo {
                 token_id,
                 include_expired,
             } => CW721QueryMsg::AllNftInfo {
                 token_id,
                 include_expired,
             },
-            QueryMsg::Tokens {
+            QueryCollectionMsg::Tokens {
                 owner,
                 start_after,
                 limit,
@@ -189,11 +189,17 @@ impl From<QueryMsg> for CW721QueryMsg<Empty> {
                 start_after,
                 limit,
             },
-            QueryMsg::AllTokens { start_after, limit } => {
+            QueryCollectionMsg::AllTokens { start_after, limit } => {
                 CW721QueryMsg::AllTokens { start_after, limit }
             }
-            QueryMsg::Minter {} => CW721QueryMsg::Minter {},
+            QueryCollectionMsg::Minter {} => CW721QueryMsg::Minter {},
             _ => panic!("cannot covert {:?} to CW721QueryMsg", msg),
         }
     }
+}
+
+
+#[cw_serde]
+pub enum QueryMinterMsg {
+    Config {},
 }

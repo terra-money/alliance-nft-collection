@@ -1,7 +1,7 @@
+use alliance_nft_packages::errors::ContractError;
 use cosmwasm_std::{entry_point, DepsMut, Env, Reply, Response};
 
 use super::instantiate::reply_on_instantiate;
-use alliance_nft_packages::errors::ContractError;
 
 pub const INSTANTIATE_REPLY_ID: u64 = 1;
 

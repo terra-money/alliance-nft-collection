@@ -1,11 +1,12 @@
 use crate::contract::execute::execute;
 use crate::contract::instantiate::instantiate;
 use crate::contract::query::query;
-use crate::state::{Trait, TEMP_BALANCE};
-use crate::types::execute::{ExecuteMsg, MintMsg};
-use crate::types::instantiate::InstantiateMsg;
-use crate::types::query::QueryMsg;
-use crate::types::Extension;
+use crate::state::TEMP_BALANCE;
+use alliance_nft_packages::Extension;
+use alliance_nft_packages::execute::{MintMsg, ExecuteCollectionMsg};
+use alliance_nft_packages::instantiate::InstantiateCollectionMsg;
+use alliance_nft_packages::query::QueryCollectionMsg;
+use alliance_nft_packages::state::Trait;
 use cosmwasm_std::testing::{mock_env, mock_info, MOCK_CONTRACT_ADDR};
 use cosmwasm_std::{from_binary, Addr, Deps, DepsMut, Response, Uint128};
 use cw721::NftInfoResponse;
@@ -14,7 +15,7 @@ pub fn setup_contract(deps: DepsMut) -> Response {
     let info = mock_info("admin", &[]);
     let env = mock_env();
 
-    let init_msg = InstantiateMsg {
+    let init_msg = InstantiateCollectionMsg {
         minter: "minter".to_string(),
         name: "Collection Name".to_string(),
         symbol: "CNA".to_string(),
@@ -26,7 +27,7 @@ pub fn setup_contract(deps: DepsMut) -> Response {
 pub fn mint(deps: DepsMut, token_id: &str) -> Response {
     let info = mock_info("minter", &[]);
     let env = mock_env();
-    let msg = ExecuteMsg::Mint(MintMsg {
+    let msg = ExecuteCollectionMsg::Mint(MintMsg {
         owner: "owner".to_string(),
         token_id: token_id.to_string(),
         token_uri: None,
@@ -52,12 +53,12 @@ pub fn mint(deps: DepsMut, token_id: &str) -> Response {
 pub fn break_nft(deps: DepsMut, token_id: &str) -> Response {
     let info = mock_info("owner", &[]);
     let env = mock_env();
-    let msg = ExecuteMsg::BreakNft(token_id.to_string());
+    let msg = ExecuteCollectionMsg::BreakNft(token_id.to_string());
     execute(deps, env, info, msg).unwrap()
 }
 
 pub fn query_nft(deps: Deps, token_id: &str) -> NftInfoResponse<Extension> {
-    let msg = QueryMsg::NftInfo {
+    let msg = QueryCollectionMsg::NftInfo {
         token_id: token_id.to_string(),
     };
     from_binary(&query(deps, mock_env(), msg).unwrap()).unwrap()
@@ -78,6 +79,6 @@ pub fn claim_alliance_emissions(deps: DepsMut, rewards: Uint128) {
 
     let info = mock_info(MOCK_CONTRACT_ADDR, &[]);
     let env = mock_env();
-    let msg = ExecuteMsg::UpdateRewardsCallback {};
+    let msg = ExecuteCollectionMsg::UpdateRewardsCallback {};
     execute(deps, env, info, msg).unwrap();
 }

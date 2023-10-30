@@ -1,11 +1,11 @@
-use crate::state::Trait;
 use crate::tests::helpers::{break_nft, claim_alliance_emissions, mint, query_nft, setup_contract};
-use crate::types::Extension;
+use alliance_nft_packages::Extension;
+use alliance_nft_packages::execute::{ExecuteCollectionMsg, MintMsg};
+use alliance_nft_packages::state::Trait;
 use cosmwasm_std::testing::{mock_dependencies, mock_dependencies_with_balance, mock_env, mock_info};
 use cosmwasm_std::{BankMsg, Coin, CosmosMsg, Response, Uint128};
 use cw721::NftInfoResponse;
 use crate::contract::execute::execute;
-use crate::types::execute::{ExecuteMsg, MintMsg};
 
 #[test]
 fn mint_and_query_nft() {
@@ -67,7 +67,7 @@ fn mint_invalid() {
     mint(deps.as_mut(), "1");
 
     // Mint with the same token id
-    execute(deps.as_mut(), mock_env(), mock_info("minter", &[]), ExecuteMsg::Mint(MintMsg {
+    execute(deps.as_mut(), mock_env(), mock_info("minter", &[]), ExecuteCollectionMsg::Mint(MintMsg {
         owner: "owner".to_string(),
         token_id: "1".to_string(),
         token_uri: None,
@@ -89,7 +89,7 @@ fn mint_invalid() {
     })).unwrap_err();
 
     // Mint with the wrong minter
-    execute(deps.as_mut(), mock_env(), mock_info("wrong_minter", &[]), ExecuteMsg::Mint(MintMsg {
+    execute(deps.as_mut(), mock_env(), mock_info("wrong_minter", &[]), ExecuteCollectionMsg::Mint(MintMsg {
         owner: "owner".to_string(),
         token_id: "2".to_string(),
         token_uri: None,
@@ -337,9 +337,9 @@ fn break_nft_invalid() {
     mint(deps.as_mut(), "1");
 
     // Cannot break as a different owner
-    execute(deps.as_mut(), mock_env(), mock_info("owner2", &[]), ExecuteMsg::BreakNft("1".to_string())).unwrap_err();
+    execute(deps.as_mut(), mock_env(), mock_info("owner2", &[]), ExecuteCollectionMsg::BreakNft("1".to_string())).unwrap_err();
     break_nft(deps.as_mut(), "1");
 
     // Cannot break a broken NFT
-    execute(deps.as_mut(), mock_env(), mock_info("owner", &[]), ExecuteMsg::BreakNft("1".to_string())).unwrap_err();
+    execute(deps.as_mut(), mock_env(), mock_info("owner", &[]), ExecuteCollectionMsg::BreakNft("1".to_string())).unwrap_err();
 }

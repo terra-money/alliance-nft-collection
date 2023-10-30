@@ -1,4 +1,5 @@
-use crate::{contract::query::query, types::query::QueryMsg};
+use alliance_nft_packages::query::QueryCollectionMsg;
+use crate::contract::query::query;
 
 use super::instantiate::intantiate_with_reply;
 
@@ -6,8 +7,8 @@ use super::instantiate::intantiate_with_reply;
 fn test_query_info_and_config() {
     let (deps, env, _) = intantiate_with_reply();
 
-    let contract_info_res = query(deps.as_ref(), env.clone(), QueryMsg::ContractInfo {}).unwrap();
-    let contract_conf_res = query(deps.as_ref(), env, QueryMsg::Config {}).unwrap();
+    let contract_info_res = query(deps.as_ref(), env.clone(), QueryCollectionMsg::ContractInfo {}).unwrap();
+    let contract_conf_res = query(deps.as_ref(), env, QueryCollectionMsg::Config {}).unwrap();
 
     assert_eq!(
         contract_info_res,
