@@ -65,7 +65,7 @@ impl MinterConfig {
 
     // check if the block time is between start and end time
     pub fn is_mint_enabled(&self, time: Timestamp) -> Result<Response, ContractError> {
-        if time >= self.mint_start_time && time < self.mint_end_time {
+        if !(time >= self.mint_start_time && time < self.mint_end_time) {
             return Err(ContractError::MintTimeCompleted(
                 self.mint_start_time,
                 self.mint_end_time,

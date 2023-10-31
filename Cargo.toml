@@ -28,4 +28,4 @@ cw-utils                    = "1.0.1"
 serde                       = { version = "1.0.152", default-features = false, features = ["derive"] }
 thiserror                   = "1.0.50"
 terra-proto-rs              = { version = "4.0.2", default-features = false }
-alliance-nft-packages       = { path = "./packages/alliance-nft-packages" }
+alliance-nft-packages       = { path = "packages/alliance-nft-packages" }

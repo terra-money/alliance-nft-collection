@@ -58,7 +58,6 @@ pub fn instantiate(
 
 pub fn reply_on_instantiate(
     deps: DepsMut,
-    _env: Env,
     reply: Reply,
 ) -> Result<Response, ContractError> {
     let result = reply.result.into_result().map_err(StdError::generic_err)?;

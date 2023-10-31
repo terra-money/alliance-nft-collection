@@ -23,7 +23,7 @@ const init = async () => {
     try {
         let tx = await wallet.createAndSignTx({
             msgs: [msgStoreCode],
-            memo: "Alliance DAO NFT Collection",
+            memo: "Alliance NFT Collection",
             chainID: "pisco-1"
         });
         let result = await lcd.tx.broadcastBlock(tx, "pisco-1");

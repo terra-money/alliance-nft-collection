@@ -6,9 +6,9 @@ use super::instantiate::reply_on_instantiate;
 pub const INSTANTIATE_REPLY_ID: u64 = 1;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn reply(deps: DepsMut, env: Env, reply: Reply) -> Result<Response, ContractError> {
+pub fn reply(deps: DepsMut, _env: Env, reply: Reply) -> Result<Response, ContractError> {
     match reply.id {
-        INSTANTIATE_REPLY_ID => Ok(reply_on_instantiate(deps, env, reply)?),
+        INSTANTIATE_REPLY_ID => Ok(reply_on_instantiate(deps, reply)?),
         _ => Err(ContractError::InvalidReplyId(reply.id)),
     }
 }

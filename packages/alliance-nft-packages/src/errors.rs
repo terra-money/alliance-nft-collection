@@ -31,7 +31,7 @@ pub enum ContractError {
     #[error("No active NFTs")]
     NoActiveNfts {},
 
-    #[error("Mint time must be betweeen {0} and {1}, current time is {2}")]
+    #[error("Mint time must be greater than {0} and lesser than {1}, current time is {2}")]
     MintTimeCompleted(Timestamp, Timestamp, Timestamp),
 
     #[error("NFTs cannot be send to DAO yet, current time is {0} and mint end time is {1}")]

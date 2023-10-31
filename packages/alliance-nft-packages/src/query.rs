@@ -1,5 +1,5 @@
 use super::Extension;
-use crate::state::Config as ConfigRes;
+use crate::state::{Config as ConfigRes, MinterConfig, MinterStats};
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Empty;
 use cw721::{
@@ -7,7 +7,6 @@ use cw721::{
     NumTokensResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
 };
 use cw721_base::QueryMsg as CW721QueryMsg;
-use crate::state::MinterConfig;
 
 #[cw_serde]
 #[derive(QueryResponses)]
@@ -16,10 +15,10 @@ pub enum QueryCollectionMsg {
     Config {},
 
     /// With MetaData Extension.
-    /// Returns metadata about one particular token, 
+    /// Returns metadata about one particular token,
     /// based on *ERC721 Metadata JSON Schema*
     /// https://docs.opensea.io/docs/metadata-standards
-    /// 
+    ///
     /// {    
     ///    "name": "AllianceNFT # 1",
     ///    "token_uri": null,
@@ -48,7 +47,7 @@ pub enum QueryCollectionMsg {
     ///              "trait_type": "rarity",
     ///              "value": 11
     ///          }],
-    ///      "image_data": null, 
+    ///      "image_data": null,
     ///      "external_url": null,
     ///      "background_color": null,
     ///      "animation_url": null,
@@ -199,10 +198,11 @@ impl From<QueryCollectionMsg> for CW721QueryMsg<Empty> {
     }
 }
 
-
 #[cw_serde]
 #[derive(QueryResponses)]
 pub enum QueryMinterMsg {
     #[returns(MinterConfig)]
     Config {},
+    #[returns(MinterStats)]
+    Stats {},
 }

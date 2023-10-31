@@ -38,21 +38,26 @@ fn try_append_nft_metadata(
     let cfg = CONFIG.load(deps.storage)?;
     cfg.is_authorized_execution(info.sender)?;
 
-    let mut available_nfts = 0;
+    let mut new_minted_nfts = 0;
     for (key, value) in metadata {
         if NFT_METADATA.has(deps.storage, key.clone()) {
             return Err(ContractError::AlreadyExists(key));
         }
         NFT_METADATA.save(deps.storage, key, &value)?;
-        available_nfts = available_nfts + 1;
+        new_minted_nfts = new_minted_nfts + 1;
     }
 
     STATS.update(deps.storage, |mut stats| -> Result<_, ContractError> {
-        stats.available_nfts += available_nfts;
+        stats.available_nfts += new_minted_nfts;
         Ok(stats)
     })?;
 
-    Ok(Response::new().add_attribute("method", "try_append_nft_metadata"))
+    Ok(Response::new()
+        .add_attributes([
+            ("method", "try_append_nft_metadata"),
+            ("new_minted_nfts", &new_minted_nfts.to_string())
+        ])
+    )
 }
 
 /// Execution allowed only between start and end time. This method will:
