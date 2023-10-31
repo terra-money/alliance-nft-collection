@@ -1,7 +1,11 @@
+use std::collections::HashMap;
+
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{Binary, Empty, Uint128};
 use cw721_base::ExecuteMsg as CW721ExecuteMsg;
 use cw_utils::Expiration;
+
+use crate::state::MinterExtension;
 
 use super::Extension;
 
@@ -143,5 +147,7 @@ pub struct AllianceRedelegateMsg {
 
 #[cw_serde]
 pub enum ExecuteMinterMsg {
+    AppendNftMetadata(HashMap<String, MinterExtension>),
     Mint {},
+    SendToDao(i16),
 }

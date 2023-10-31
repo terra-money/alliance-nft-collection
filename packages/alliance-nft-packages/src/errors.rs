@@ -1,4 +1,4 @@
-use cosmwasm_std::{Addr, StdError};
+use cosmwasm_std::{Addr, StdError, Timestamp};
 use cw721_base::ContractError as CW721BaseError;
 use thiserror::Error;
 
@@ -7,7 +7,7 @@ pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
 
-    #[error("Unauthorized execution, sender ({0}) is not the contract owner ({1})")]
+    #[error("Unauthorized execution, sender ({0}) is not the expected address ({1})")]
     Unauthorized(Addr, Addr),
 
     #[error("{0}")]
@@ -30,4 +30,16 @@ pub enum ContractError {
 
     #[error("No active NFTs")]
     NoActiveNfts {},
+
+    #[error("Mint time must be betweeen {0} and {1}, current time is {2}")]
+    MintTimeCompleted(Timestamp, Timestamp, Timestamp),
+
+    #[error("NFTs cannot be send to DAO yet, current time is {0} and mint end time is {1}")]
+    CannotSendToDao(Timestamp, Timestamp),
+
+    #[error("Address {0} already exists in minters list")]
+    AlreadyExists(String),
+
+    #[error("No available NFTs to be minted")]
+    NoAvailableNfts {}
 }

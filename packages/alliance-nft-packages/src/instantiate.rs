@@ -1,5 +1,5 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::Addr;
+use cosmwasm_std::{Addr, Timestamp};
 use cw721_base::InstantiateMsg as CW721InstantiateMsg;
 
 #[cw_serde]
@@ -22,5 +22,8 @@ impl From<InstantiateCollectionMsg> for CW721InstantiateMsg {
 
 #[cw_serde]
 pub struct InstantiateMinterMsg {
+    pub dao_address: Addr,
     pub nft_collection_code_id: u64,
+    pub mint_start_time: Timestamp,
+    pub mint_end_time: Timestamp,
 }

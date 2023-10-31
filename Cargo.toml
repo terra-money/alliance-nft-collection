@@ -1,14 +1,14 @@
 [workspace]
 members = [
-    "./alliance-nft-collection",
-    "./alliance-nft-minter",
-    "./packages"
+    "contracts/alliance-nft-collection",
+    "contracts/alliance-nft-minter",
+    "packages/alliance-nft-packages"
 ]
 
 [workspace.package]
 description   = "Alliance NFT Collection dropped to the Game of Alliance players"
 authors       = ["Terra Money <engineering@terra.money>"]
-version       = "0.1.0"
+version       = "1.0.0"
 edition       = "2021"
 license       = "GPL-3.0-or-later"
 repository    = "https://github.com/terra-money/alliance-nft-collection"
@@ -28,4 +28,4 @@ cw-utils                    = "1.0.1"
 serde                       = { version = "1.0.152", default-features = false, features = ["derive"] }
 thiserror                   = "1.0.50"
 terra-proto-rs              = { version = "4.0.2", default-features = false }
-alliance-nft-packages       = { path = "./packages" }
+alliance-nft-packages       = { path = "./packages/alliance-nft-packages" }

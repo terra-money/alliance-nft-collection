@@ -1,14 +1,13 @@
+use super::reply::INSTANTIATE_REPLY_ID;
+use crate::state::{CONFIG, STATS};
 use alliance_nft_packages::{
     errors::ContractError,
-    instantiate::{InstantiateCollectionMsg, InstantiateMinterMsg},
-    state::MinterConfig,
+    instantiate::{InstantiateCollectionMsg, InstantiateMinterMsg}, state::{MinterConfig, MinterStats},
 };
 use cosmwasm_std::{
     entry_point, to_binary, DepsMut, Env, MessageInfo, Reply, Response, StdError, SubMsg, WasmMsg,
 };
 use cw2::set_contract_version;
-use crate::state::CONFIG;
-use super::reply::INSTANTIATE_REPLY_ID;
 
 pub const CONTRACT_NAME: &str = "crates.io:alliance-nft-minter";
 pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -23,6 +22,19 @@ pub fn instantiate(
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;
 
+    STATS.save(deps.storage, &MinterStats::default())?;
+    
+    // Create the default partial config
+    CONFIG.save(deps.storage, 
+        &MinterConfig::new_partial(
+            info.sender.clone(), 
+            msg.dao_address.clone(),
+            msg.mint_start_time, 
+            msg.mint_end_time
+        )
+    )?;
+
+    // instantiate the nft contract
     let instantiate_message = WasmMsg::Instantiate {
         admin: Some(env.contract.address.to_string()),
         code_id: msg.nft_collection_code_id,
@@ -30,16 +42,17 @@ pub fn instantiate(
             name: "AllianceDAO".to_string(),
             symbol: "ALLIANCE".to_string(),
             minter: env.contract.address.to_string(),
-            owner: info.sender.clone(),
+            owner: msg.dao_address, 
         })?,
         funds: vec![],
         label: "Alliance NFT Collection".to_string(),
     };
-
     let sub_msg = SubMsg::reply_on_success(instantiate_message, INSTANTIATE_REPLY_ID);
 
     Ok(Response::new()
         .add_attribute("alliance_nft_minter_owner", info.sender)
+        .add_attribute("mint_start_time", msg.mint_start_time.to_string())
+        .add_attribute("mint_end_time", msg.mint_end_time.to_string())
         .add_submessage(sub_msg))
 }
 
@@ -64,23 +77,11 @@ pub fn reply_on_instantiate(
         .ok_or_else(|| StdError::generic_err("cannot find `_contract_address` attribute"))?
         .value;
 
-    /* Find the alliance_nft_minter_owner from instantiate_contract event*/
-    let minter_addr = &event
-        .attributes
-        .iter()
-        .find(|attr| attr.key == "alliance_nft_minter_owner")
-        .ok_or_else(|| StdError::generic_err("cannot find `alliance_nft_minter_owner` attribute"))?
-        .value;
-    let minter_addr = deps.api.addr_validate(&minter_addr)?;
     let contract_addr = deps.api.addr_validate(&contract_addr)?;
+    CONFIG.update(deps.storage, |mut config| -> Result<_, ContractError> {
+        config.nft_collection_address = contract_addr;
+        Ok(config)
+    })?;
 
-    CONFIG.save(
-        deps.storage,
-        &MinterConfig {
-            owner: minter_addr.clone(),
-            nft_collection_address: contract_addr.clone(),
-        },
-    )?;
-
-    Ok(Response::new())
+    Ok(Response::default())
 }

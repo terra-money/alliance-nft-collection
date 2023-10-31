@@ -7,6 +7,7 @@ use cw721::{
     NumTokensResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
 };
 use cw721_base::QueryMsg as CW721QueryMsg;
+use crate::state::MinterConfig;
 
 #[cw_serde]
 #[derive(QueryResponses)]
@@ -200,6 +201,8 @@ impl From<QueryCollectionMsg> for CW721QueryMsg<Empty> {
 
 
 #[cw_serde]
+#[derive(QueryResponses)]
 pub enum QueryMinterMsg {
+    #[returns(MinterConfig)]
     Config {},
 }
