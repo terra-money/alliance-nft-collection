@@ -260,3 +260,130 @@ fn mint_outside_allowed_time() {
         .unwrap()
     );
 }
+
+
+#[test]
+fn send_to_dao() {
+    // Create the envrionemtn with the contract
+    let (mut deps, mut env, _) = intantiate_with_reply();
+    // add 4 seconds to end time
+    env.block.time = env.block.time.plus_seconds(4);
+
+    // Execute the message
+    let res = append_nft_metadata_execution(
+        deps.as_mut(),
+        "creator", // read this with epic voice
+        "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
+    );
+
+
+    // assert the message response
+    assert_eq!(
+        res.unwrap(),
+        Response::new().add_attributes([
+            ("method", "try_append_nft_metadata"),
+            ("new_minted_nfts", "1")
+        ])
+    );
+
+    // mint an nft
+    let res = execute(
+        deps.as_mut(),
+        env.clone(),
+        mock_info("terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je", &[]),
+        ExecuteMinterMsg::SendToDao(2),
+    );
+
+    // assert message response
+    let mint_msg = WasmMsg::Execute {
+        contract_addr:"nft_collection_address".to_string(),
+        msg: to_binary(&MintMsg {
+            token_id: "1".to_string(),
+            owner: "dao_address".to_string(),
+            extension: Extension {
+                image: Some("image".to_string()),
+                image_data: None,
+                external_url: None,
+                description: None,
+                name: None,
+                attributes: Some(vec![Trait {
+                    display_type: None,
+                    trait_type: "trait_type".to_string(),
+                    value: "value".to_string(),
+                }]),
+                background_color: None,
+                animation_url: None,
+                youtube_url: None,
+            },
+            token_uri: None,
+        }).unwrap(),
+        funds: vec![],
+    };
+    assert_eq!(
+        res.unwrap(),
+        Response::default()
+            .add_attributes([
+                ("method", "try_send_to_dao"),
+                ("nfts_send", "1")]
+            )
+            .add_messages([mint_msg])
+    );
+
+    // query to see if stats match
+    let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
+    assert_eq!(
+        query_res,
+        to_binary(&MinterStats {
+            available_nfts: 0,
+            minted_nfts: 1,
+        })
+        .unwrap()
+    );
+}
+
+#[test]
+fn send_to_dao_before_end_time() {
+    // Create the envrionemtn with the contract
+    let (mut deps, env, _) = intantiate_with_reply();
+
+    // Execute the message
+    let res = append_nft_metadata_execution(
+        deps.as_mut(),
+        "creator", // read this with epic voice
+        "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
+    );
+
+
+    // assert the message response
+    assert_eq!(
+        res.unwrap(),
+        Response::new().add_attributes([
+            ("method", "try_append_nft_metadata"),
+            ("new_minted_nfts", "1")
+        ])
+    );
+
+    // mint an nft
+    let res = execute(
+        deps.as_mut(),
+        env.clone(),
+        mock_info("terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je", &[]),
+        ExecuteMinterMsg::SendToDao(2),
+    );
+    
+    assert_eq!(
+        res.unwrap_err().to_string(),
+        String::from("NFTs cannot be send to DAO yet, current time is 2.000000000 and mint end time is 3.000000000")
+    );
+
+    // query to see if stats match
+    let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
+    assert_eq!(
+        query_res,
+        to_binary(&MinterStats {
+            available_nfts: 1,
+            minted_nfts: 0,
+        })
+        .unwrap()
+    );
+}

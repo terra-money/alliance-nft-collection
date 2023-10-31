@@ -165,5 +165,6 @@ fn try_send_to_dao(
 
     Ok(Response::new()
         .add_attribute("method", "try_send_to_dao")
+        .add_attribute("nfts_send", current_batch_iteration.to_string())
         .add_messages(mint_msgs))
 }
