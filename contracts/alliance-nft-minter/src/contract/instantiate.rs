@@ -19,6 +19,11 @@ pub fn instantiate(
     info: MessageInfo,
     msg: InstantiateMinterMsg,
 ) -> Result<Response, ContractError> {
+
+    if msg.mint_start_time > msg.mint_end_time {
+        return Err(ContractError::InvalidMintTimeRange{});
+    }
+
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;
 

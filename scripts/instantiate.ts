@@ -25,13 +25,13 @@ try {
                 accAddress,
                 Number(nftMinterCodeId),
                 {
-                    dao_address: "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je",
+                    dao_address: "terra10vyurupelsgdhucjqcjukqzmhtek56tuunq985", // random address
                     nft_collection_code_id: Number(nftCollectionCodeId),
-                    mint_start_time: moment.utc().add(2, "hour").unix().toString(),
-                    mint_end_time: moment.utc().add(3, "hour").unix().toString(),
+                    mint_start_time: moment.utc().add(5, "minute").unix().toString() + "000000000",
+                    mint_end_time: moment.utc().add(10, "minute").unix().toString() + "000000000",
                 },
                 Coins.fromString("10000000uluna"),
-                "Alliance NFT Collection Contract",
+                "Alliance NFT Minter",
             );
             const tx = await wallet.createAndSignTx({
                 msgs: [msgInstantiateContract],

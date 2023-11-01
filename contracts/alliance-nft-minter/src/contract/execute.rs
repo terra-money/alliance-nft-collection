@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use alliance_nft_packages::errors::ContractError;
-use alliance_nft_packages::execute::{ExecuteMinterMsg, MintMsg};
+use alliance_nft_packages::execute::{ExecuteMinterMsg, MintMsg, ExecuteCollectionMsg};
 use alliance_nft_packages::state::MinterExtension;
 use cosmwasm_std::{
     entry_point, to_binary, DepsMut, Env, MessageInfo, Order::Ascending, Response, WasmMsg,
@@ -76,12 +76,12 @@ fn try_mint(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
 
     let mint_msg = WasmMsg::Execute {
         contract_addr: cfg.nft_collection_address.to_string(),
-        msg: to_binary(&MintMsg {
+        msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
             token_id: nft_metadata.token_id,
             owner: info.sender.to_string(),
             extension: nft_metadata.extension,
             token_uri: None,
-        })?,
+        }))?,
         funds: vec![],
     };
 
@@ -137,12 +137,12 @@ fn try_send_to_dao(
 
                 let msg = WasmMsg::Execute {
                     contract_addr: cfg.nft_collection_address.to_string(),
-                    msg: to_binary(&MintMsg {
+                    msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
                         token_id: nft_info.1.token_id,
                         owner: cfg.dao_address.to_string(),
                         extension: nft_info.1.extension,
                         token_uri: None,
-                    })
+                    }))
                     .unwrap(),
                     funds: vec![],
                 };

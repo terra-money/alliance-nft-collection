@@ -1,7 +1,7 @@
 use crate::contract::{query::query, execute::execute};
 use crate::tests::helpers::append_nft_metadata_execution;
 use alliance_nft_packages::Extension;
-use alliance_nft_packages::execute::{ExecuteMinterMsg, MintMsg};
+use alliance_nft_packages::execute::{ExecuteMinterMsg, MintMsg, ExecuteCollectionMsg};
 use alliance_nft_packages::query::QueryMinterMsg;
 use alliance_nft_packages::state::{MinterStats, Trait};
 use cosmwasm_std::testing::mock_info;
@@ -149,7 +149,7 @@ fn mint_nft() {
     // assert message response
     let mint_msg = WasmMsg::Execute {
         contract_addr:"nft_collection_address".to_string(),
-        msg: to_binary(&MintMsg {
+        msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
             token_id: "1".to_string(),
             owner: "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
             extension: Extension {
@@ -168,7 +168,7 @@ fn mint_nft() {
                 youtube_url: None,
             },
             token_uri: None,
-        }).unwrap(),
+        })).unwrap(),
         funds: vec![],
     };
     assert_eq!(
@@ -297,7 +297,7 @@ fn send_to_dao() {
     // assert message response
     let mint_msg = WasmMsg::Execute {
         contract_addr:"nft_collection_address".to_string(),
-        msg: to_binary(&MintMsg {
+        msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
             token_id: "1".to_string(),
             owner: "dao_address".to_string(),
             extension: Extension {
@@ -316,7 +316,7 @@ fn send_to_dao() {
                 youtube_url: None,
             },
             token_uri: None,
-        }).unwrap(),
+        })).unwrap(),
         funds: vec![],
     };
     assert_eq!(

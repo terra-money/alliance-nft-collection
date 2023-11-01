@@ -54,3 +54,7 @@ ts-node ./scripts/deploy.ts
 script = """
 ts-node ./scripts/instantiate.ts
 """
+[tasks.mint]
+script = """
+ts-node ./scripts/mint.ts
+"""

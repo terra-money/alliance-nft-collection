@@ -9,21 +9,21 @@ dotenv.config()
 interface User {
     id?: number;
 
-    ip: string;
+    ip?: string;
     terraAddress: string;
-    accumulatedRewards: number;
-    score: number;
-    ordosAddress: string;
-    corrinoAddress: string;
-    atreidesAddress: string;
-    harkonnenAddress: string;
+    accumulatedRewards?: number;
+    score?: number;
+    ordosAddress?: string;
+    corrinoAddress?: string;
+    atreidesAddress?: string;
+    harkonnenAddress?: string;
 }
 
 const readUsersData = (): Promise<User[]> => {
     return new Promise((resolve, reject) => {
         const users: User[] = [];
 
-        fs.createReadStream('.users.csv')
+        fs.createReadStream('./scripts/.users.csv')
             .pipe(csvParser())
             .on('data', (data: any) => {
                 const {
@@ -81,68 +81,79 @@ const submitOnChain = async (users: Array<User>) => {
     const mk = new MnemonicKey({ mnemonic: process.env.MNEMONIC });
     const wallet = lcd.wallet(mk);
     const accAddress = wallet.key.accAddress("terra");
-    const contractAdress = "terra12frndl0wexrzevkz6gh450xhddxvenhlnt035fankv445jrjdnjszhqhzh";
+    const contractAdress = fs.readFileSync('./scripts/.nft_minter_contract_address.log').toString();
 
-    let chunkIndex = 0;
-    for await (const user of users) {
-        let msgs = new Array<MsgExecuteContract>();
-        const msgExecuteContract = new MsgExecuteContract(
-            accAddress,
-            contractAdress,
-            {
-                "mint": {
-                    "token_id": user.id?.toString(),
-                    "owner": user.terraAddress,
-                    "token_uri": "",
-                    "extension": {
-                        "name": `AllianceNFT DAO Membership #${user.id?.toString()}`,
-                        "description": "Received for participating on Game Of Alliance",
-                        "image": "https://ipfs.io/ipfs/{hash}",     // TODO: find in csv
-                        "attributes": [{
-                            "display_type": null,
-                            "trait_type": "planet",
-                            "value": "fire"                         // TODO: find in csv
-                        }, {
-                            "display_type": null,
-                            "trait_type": "inhabitant",
-                            "value": "water"                         // TODO: find in csv
-                        }, {
-                            "display_type": null,
-                            "trait_type": "object",
-                            "value": "sword"                         // TODO: find in csv
-                        }, {
-                            "display_type": null,
-                            "trait_type": "rarity",
-                            "value": 11                              // TODO: find in csv
-                        }],
-                        "image_data": "",
-                        "external_url": "",
-                        "background_color": "",
-                        "animation_url": "",
-                        "youtube_url": "",
-                    }
-                }
+    let msg: any = {};
+    let chunkLength = 500;
+    for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        msg[user.terraAddress] = {
+            "token_id": user.id?.toString(),
+            "extension": {
+                "name": `AllianceNFT DAO Membership #${user.id?.toString()}`,
+                "description": "Received for participating on Game Of Alliance",
+                "image": "https://ipfs.io/ipfs/{hash}",     // TODO: find in csv
+                "attributes": [{
+                    "display_type": "",
+                    "trait_type": "planet",
+                    "value": "fire"                         // TODO: find in csv
+                }, {
+                    "display_type": "",
+                    "trait_type": "inhabitant",
+                    "value": "water"                        // TODO: find in csv
+                }, {
+                    "display_type": "",
+                    "trait_type": "object",
+                    "value": "sword"                        // TODO: find in csv
+                }, {
+                    "display_type": "",
+                    "trait_type": "rarity",
+                    "value": "11"                           // TODO: find in csv
+                }],
+                "image_data": "",
+                "external_url": "",
+                "background_color": "",
+                "animation_url": "",
+                "youtube_url": "",
             }
-        );
+        };
 
-        msgs.push(msgExecuteContract)
+        try {
+            if (i % chunkLength === 0) {
+                const tx = await wallet.createAndSignTx({
+                    msgs: [new MsgExecuteContract(
+                        accAddress,
+                        contractAdress,
+                        {
+                            "append_nft_metadata": msg
+                        }
+                    )],
+                    memo: `Alliance DAO NFT Collection Chunk #${i}`,
+                    chainID: "pisco-1"
+                });
+                let result = await lcd.tx.broadcastSync(tx, "pisco-1");
+                await new Promise(resolve => setTimeout(resolve, 6000));
+                console.log("Transaction executed on chain with hash", result.txhash);
 
-        const tx = await wallet.createAndSignTx({
-            msgs,
-            memo: `Alliance DAO NFT Collection Chunk #${chunkIndex}`,
-            chainID: "pisco-1"
-        })
-            .catch((e) => console.log(e));
-        console.log(chunkIndex)
-        // const result = await lcd.tx.broadcastBlock(tx, "pisco-1");
-        //console.log(`Alliance DAO NFT Collection Chunk #${chunkIndex} submitted on chain txHash ${result.txhash}`);
-        chunkIndex++;
+                msg = {};
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
 }
 
 const init = async () => {
-    const res = await readUsersData();
-    const parsedUserDataChunks = filterData(res);
+    // const res = await readUsersData();
+    // const parsedUserDataChunks = filterData(res);
+    const parsedUserDataChunks = new Array<User>()
+    for (let i = 0; i < 1000; i++) {
+        parsedUserDataChunks.push({
+            id: i,
+            terraAddress: new MnemonicKey().accAddress("terra"),
+        })
+    }
     await submitOnChain(parsedUserDataChunks);
 }
 init();
