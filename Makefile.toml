@@ -42,14 +42,12 @@ docker run --rm -v "$(pwd)":/code \
   ${image}:0.14.0
 """
 
+[tasks.test-cover]
+script = """docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin"""
+
 [tasks.deploy]
 script = """
 ts-node ./scripts/deploy.ts
-"""
-
-[tasks.migrate]
-script = """
-ts-node ./scripts/migrate.ts
 """
 
 [tasks.instantiate]

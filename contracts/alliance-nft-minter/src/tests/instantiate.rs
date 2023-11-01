@@ -90,7 +90,7 @@ pub fn intantiate_with_reply() -> (
     let reply_msg = Reply {
         id: 1,
         result: SubMsgResult::Ok(SubMsgResponse {
-            events: vec![Event::new("instantiate_contract").add_attribute(
+            events: vec![Event::new("instantiate").add_attribute(
                 "_contract_address".to_string(),
                 "nft_collection_address".to_string(),
             )],

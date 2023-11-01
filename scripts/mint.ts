@@ -73,7 +73,7 @@ const filterData = (users: User[]): User[] => {
         .value();
 }
 
-const submitOnChain = async (parsedChunks: User[][]) => {
+const submitOnChain = async (users: Array<User>) => {
     // Create the LCD Client to interact with the blockchain
     const lcd = LCDClient.fromDefaultConfig("testnet");
 
@@ -84,51 +84,48 @@ const submitOnChain = async (parsedChunks: User[][]) => {
     const contractAdress = "terra12frndl0wexrzevkz6gh450xhddxvenhlnt035fankv445jrjdnjszhqhzh";
 
     let chunkIndex = 0;
-    for await (const usersChunk of parsedChunks) {
+    for await (const user of users) {
         let msgs = new Array<MsgExecuteContract>();
-
-        for (const user of usersChunk) {
-            const msgExecuteContract = new MsgExecuteContract(
-                accAddress,
-                contractAdress,
-                {
-                    "mint": {
-                        "token_id": user.id?.toString(),
-                        "owner": user.terraAddress,
-                        "token_uri": "",
-                        "extension": {
-                            "name": `AllianceNFT DAO Membership #${user.id?.toString()}`,
-                            "description": "Received for participating on Game Of Alliance",
-                            "image": "https://ipfs.io/ipfs/{hash}",     // TODO: find in csv
-                            "attributes": [{
-                                "display_type" : null,
-                                "trait_type": "planet",
-                                "value": "fire"                         // TODO: find in csv
-                            },{
-                                "display_type" : null,
-                                "trait_type": "inhabitant",
-                                "value": "water"                         // TODO: find in csv
-                            },{
-                                "display_type" : null,
-                                "trait_type": "object",
-                                "value": "sword"                         // TODO: find in csv
-                            },{
-                                "display_type" : null,
-                                "trait_type": "rarity",
-                                "value": 11                              // TODO: find in csv
-                            }],
-                            "image_data": "",
-                            "external_url": "",
-                            "background_color": "",
-                            "animation_url": "",
-                            "youtube_url": "",
-                        }
+        const msgExecuteContract = new MsgExecuteContract(
+            accAddress,
+            contractAdress,
+            {
+                "mint": {
+                    "token_id": user.id?.toString(),
+                    "owner": user.terraAddress,
+                    "token_uri": "",
+                    "extension": {
+                        "name": `AllianceNFT DAO Membership #${user.id?.toString()}`,
+                        "description": "Received for participating on Game Of Alliance",
+                        "image": "https://ipfs.io/ipfs/{hash}",     // TODO: find in csv
+                        "attributes": [{
+                            "display_type": null,
+                            "trait_type": "planet",
+                            "value": "fire"                         // TODO: find in csv
+                        }, {
+                            "display_type": null,
+                            "trait_type": "inhabitant",
+                            "value": "water"                         // TODO: find in csv
+                        }, {
+                            "display_type": null,
+                            "trait_type": "object",
+                            "value": "sword"                         // TODO: find in csv
+                        }, {
+                            "display_type": null,
+                            "trait_type": "rarity",
+                            "value": 11                              // TODO: find in csv
+                        }],
+                        "image_data": "",
+                        "external_url": "",
+                        "background_color": "",
+                        "animation_url": "",
+                        "youtube_url": "",
                     }
                 }
-            );
+            }
+        );
 
-            msgs.push(msgExecuteContract)
-        }
+        msgs.push(msgExecuteContract)
 
         const tx = await wallet.createAndSignTx({
             msgs,
@@ -146,7 +143,6 @@ const submitOnChain = async (parsedChunks: User[][]) => {
 const init = async () => {
     const res = await readUsersData();
     const parsedUserDataChunks = filterData(res);
-    // return
-    // await submitOnChain(parsedUserDataChunks);
+    await submitOnChain(parsedUserDataChunks);
 }
 init();

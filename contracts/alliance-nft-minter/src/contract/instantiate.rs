@@ -44,7 +44,7 @@ pub fn instantiate(
             minter: env.contract.address.to_string(),
             owner: msg.dao_address, 
         })?,
-        funds: vec![],
+        funds: info.funds,
         label: "Alliance NFT Collection".to_string(),
     };
     let sub_msg = SubMsg::reply_on_success(instantiate_message, INSTANTIATE_REPLY_ID);
@@ -61,14 +61,14 @@ pub fn reply_on_instantiate(
     reply: Reply,
 ) -> Result<Response, ContractError> {
     let result = reply.result.into_result().map_err(StdError::generic_err)?;
-    /* Find the event type instantiate_contract which contains the contract_address*/
+    /* Find the event type instantiate which contains the contract_address*/
     let event = result
         .events
         .iter()
-        .find(|event| event.ty == "instantiate_contract")
-        .ok_or_else(|| StdError::generic_err("cannot find `instantiate_contract` event"))?;
+        .find(|event| event.ty == "instantiate")
+        .ok_or_else(|| StdError::generic_err("cannot find `instantiate` event"))?;
 
-    /* Find the contract_address from instantiate_contract event*/
+    /* Find the contract_address from instantiate event*/
     let contract_addr = &event
         .attributes
         .iter()

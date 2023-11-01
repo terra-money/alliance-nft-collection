@@ -4,6 +4,10 @@ node_modules
 .idea
 
 .env
-.contract_address.log
-.contract_code_id.log
 .users.csv
+
+.nft_collection_code_id.log
+.nft_minter_code_id.log
+
+.nft_collection_contract_address.log
+.nft_minter_contract_address.log

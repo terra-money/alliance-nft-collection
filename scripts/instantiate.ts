@@ -1,57 +1,62 @@
 import * as dotenv from 'dotenv'
-import { MnemonicKey, MsgStoreCode, MsgInstantiateContract, LCDClient, Coins } from '@terra-money/feather.js';
+import { MnemonicKey, MsgInstantiateContract, LCDClient, Coin, Coins } from '@terra-money/feather.js';
 import * as fs from 'fs';
+import moment from "moment";
 
 dotenv.config()
 
-const init = async () => {
-    // Create the LCD Client to interact with the blockchain
-    const lcd = LCDClient.fromDefaultConfig("testnet");
-    
-    // Get all information from the deployer wallet
-    const mk = new MnemonicKey({ mnemonic: process.env.MNEMONIC });
-    const wallet = lcd.wallet(mk);
-    const accAddress = wallet.key.accAddress("terra");
-    console.log(`Instantiation wallet address: ${accAddress}`)
-
-    try {
-        const contractCodeId = fs.readFileSync('./scripts/.contract_code_id.log');
-        const msgInstantiateContract = new MsgInstantiateContract(
-            accAddress,
-            accAddress,
-            Number(contractCodeId),
-            {
-                "name": "AllianceDAO",
-                "symbol": "aDAO",
-                "minter": wallet.key.accAddress("terra"),
-                "owner": wallet.key.accAddress("terra"),
-            },
-            Coins.fromString("10000000uluna"),
-            "Alliance DAO NFT Collection"
-        );
-
-        const tx = await wallet.createAndSignTx({
-            msgs: [msgInstantiateContract],
-            memo: "Create an Alliance NFT Collection Contract",
-            chainID: "pisco-1",
-        });
-        const result = await lcd.tx.broadcastBlock(tx, "pisco-1");
-        const contractAddress = result.logs[0].events[0].attributes[0].value;
-        console.log(`Alliance NFT Collection smart contract instantiated with 
-        - Code ID: ${contractCodeId}
-        - Tx Hash: ${result.txhash}
-        - Contract Address: ${contractAddress}`);
-
-        fs.writeFileSync('./scripts/.contract_address.log', contractAddress);
-    }
-    catch (e) {
-        console.log(e)
-        return;
-    }
-}
-
 try {
-    init();
+    (async () => {
+        // Create the LCD Client to interact with the blockchain
+        const lcd = LCDClient.fromDefaultConfig("testnet");
+
+        // Get all information from the deployer wallet
+        const mk = new MnemonicKey({ mnemonic: process.env.MNEMONIC });
+        const wallet = lcd.wallet(mk);
+        const accAddress = wallet.key.accAddress("terra");
+        console.log(`Instantiation wallet address: ${accAddress}`)
+
+        const nftCollectionCodeId = fs.readFileSync('./scripts/.nft_collection_code_id.log');
+        const nftMinterCodeId = fs.readFileSync('./scripts/.nft_minter_code_id.log');
+
+        try {
+            const msgInstantiateContract = new MsgInstantiateContract(
+                accAddress,
+                accAddress,
+                Number(nftMinterCodeId),
+                {
+                    dao_address: "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je",
+                    nft_collection_code_id: Number(nftCollectionCodeId),
+                    mint_start_time: moment.utc().add(2, "hour").unix().toString(),
+                    mint_end_time: moment.utc().add(3, "hour").unix().toString(),
+                },
+                Coins.fromString("10000000uluna"),
+                "Alliance NFT Collection Contract",
+            );
+            const tx = await wallet.createAndSignTx({
+                msgs: [msgInstantiateContract],
+                chainID: "pisco-1",
+            });
+            const result = await lcd.tx.broadcastSync(tx, "pisco-1");
+
+            await new Promise(resolve => setTimeout(resolve, 12000));
+
+            let txInfo = await lcd.tx.txInfo(result.txhash, "pisco-1") as any;
+            const prevLastEvent = txInfo.logs[0].events.length -1;
+            const nftCollectionAddress = txInfo.logs[0].events[prevLastEvent].attributes[0].value;
+
+            console.log(`Alliance NFT Collection smart contract instantiated with 
+            - Code ID: ${nftCollectionCodeId}
+            - Tx Hash: ${result.txhash}
+            - Contract Address: ${nftCollectionAddress}`);
+
+            fs.writeFileSync('./scripts/.nft_minter_contract_address.log', nftCollectionAddress);
+        }
+        catch (e) {
+            console.log(e)
+            return;
+        }
+    })();
 }
 catch (e) {
     console.log(e)
