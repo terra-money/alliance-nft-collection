@@ -263,7 +263,7 @@ fn mint_outside_allowed_time() {
 
 
 #[test]
-fn send_to_dao() {
+fn send_to_dao_treasury() {
     // Create the envrionemtn with the contract
     let (mut deps, mut env, _) = intantiate_with_reply();
     // add 4 seconds to end time
@@ -299,7 +299,7 @@ fn send_to_dao() {
         contract_addr:"nft_collection_address".to_string(),
         msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
             token_id: "1".to_string(),
-            owner: "dao_address".to_string(),
+            owner: "dao_treasury_address".to_string(),
             extension: Extension {
                 image: Some("image".to_string()),
                 image_data: None,
@@ -323,7 +323,7 @@ fn send_to_dao() {
         res.unwrap(),
         Response::default()
             .add_attributes([
-                ("method", "try_send_to_dao"),
+                ("method", "try_send_to_dao_treasury"),
                 ("nfts_send", "1")]
             )
             .add_messages([mint_msg])

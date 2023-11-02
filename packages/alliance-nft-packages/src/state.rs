@@ -34,6 +34,7 @@ pub struct Config {
 pub struct MinterConfig {
     pub owner: Addr,
     pub dao_address: Addr,
+    pub dao_treasury_address: Addr,
     pub nft_collection_address: Addr,
     pub mint_start_time: Timestamp,
     pub mint_end_time: Timestamp,
@@ -43,6 +44,7 @@ impl MinterConfig {
     pub fn new_partial(
         owner: Addr,
         dao_address: Addr,
+        dao_treasury_address: Addr,
         mint_start_time: Timestamp,
         mint_end_time: Timestamp,
     ) -> MinterConfig {
@@ -51,6 +53,7 @@ impl MinterConfig {
             mint_start_time,
             mint_end_time,
             dao_address,
+            dao_treasury_address,
             nft_collection_address: Addr::unchecked(""),
         }
     }

@@ -21,7 +21,7 @@ pub fn execute(
             try_append_nft_metadata(deps, info, metadata)
         }
         ExecuteMinterMsg::Mint {} => try_mint(deps, env, info),
-        ExecuteMinterMsg::SendToDao(batch) => try_send_to_dao(deps, env, batch),
+        ExecuteMinterMsg::SendToDao(batch) => try_send_to_dao_treasury(deps, env, batch),
     }
 }
 
@@ -102,7 +102,7 @@ fn try_mint(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
 /// - modify the minter stats
 /// - remove the metadata from the storage
 /// - send the mint messages to the NFT collection contract.
-fn try_send_to_dao(
+fn try_send_to_dao_treasury(
     deps: DepsMut,
     env: Env,
     mut batch_length: i16,
@@ -139,7 +139,7 @@ fn try_send_to_dao(
                     contract_addr: cfg.nft_collection_address.to_string(),
                     msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
                         token_id: nft_info.1.token_id,
-                        owner: cfg.dao_address.to_string(),
+                        owner: cfg.dao_treasury_address.to_string(),
                         extension: nft_info.1.extension,
                         token_uri: None,
                     }))
@@ -164,7 +164,7 @@ fn try_send_to_dao(
     }
 
     Ok(Response::new()
-        .add_attribute("method", "try_send_to_dao")
+        .add_attribute("method", "try_send_to_dao_treasury")
         .add_attribute("nfts_send", current_batch_iteration.to_string())
         .add_messages(mint_msgs))
 }

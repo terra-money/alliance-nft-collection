@@ -34,6 +34,7 @@ pub fn instantiate(
         &MinterConfig::new_partial(
             info.sender.clone(), 
             msg.dao_address.clone(),
+            msg.dao_treasury_address.clone(),
             msg.mint_start_time, 
             msg.mint_end_time
         )

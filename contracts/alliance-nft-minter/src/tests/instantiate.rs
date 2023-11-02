@@ -24,12 +24,38 @@ fn test_instantiate() {
         res,
         to_binary(&MinterConfig {
             dao_address: Addr::unchecked("dao_address"),
+            dao_treasury_address: Addr::unchecked("dao_treasury_address"),
             nft_collection_address: Addr::unchecked("nft_collection_address"),
             owner: Addr::unchecked("creator"),
             mint_start_time: Timestamp::from_seconds(1),
             mint_end_time: Timestamp::from_seconds(3),
         })
         .unwrap()
+    );
+}
+
+#[test]
+fn test_instantiate_wrong_time_range() {
+    // GIVEN the initial state of the environment.
+    let mut deps = mock_dependencies();
+    let mut env = mock_env();
+    env.block.time = Timestamp::from_seconds(2);
+    let info = mock_info("creator", &[]);
+
+    // WHEN instantiating the contract ...
+    let msg = InstantiateMinterMsg {
+        dao_address: Addr::unchecked("dao_address"),
+        dao_treasury_address: Addr::unchecked("dao_treasury_address"),
+        nft_collection_code_id: 1,
+        mint_start_time: Timestamp::from_seconds(3),
+        mint_end_time: Timestamp::from_seconds(1),
+    };
+    let res = instantiate(deps.as_mut(), env.clone(), info.clone(), msg);
+
+    // assert the message error
+    assert_eq!(
+        res.unwrap_err().to_string(), 
+        String::from("Invalid mint time range, mint_start_time is greater than mint_end_time")
     );
 }
 
@@ -47,6 +73,7 @@ pub fn intantiate_with_reply() -> (
     // WHEN instantiating the contract ...
     let msg = InstantiateMinterMsg {
         dao_address: Addr::unchecked("dao_address"),
+        dao_treasury_address: Addr::unchecked("dao_treasury_address"),
         nft_collection_code_id: 1,
         mint_start_time: Timestamp::from_seconds(1),
         mint_end_time: Timestamp::from_seconds(3),

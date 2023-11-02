@@ -31,7 +31,7 @@ pub enum ContractError {
     #[error("No active NFTs")]
     NoActiveNfts {},
 
-    #[error("Invalid mint time range")]
+    #[error("Invalid mint time range, mint_start_time is greater than mint_end_time")]
     InvalidMintTimeRange {},
 
     #[error("Mint time must be greater than {0} and lesser than {1}, current time is {2}")]
