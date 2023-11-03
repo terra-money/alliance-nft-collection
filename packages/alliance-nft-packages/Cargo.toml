@@ -1,6 +1,6 @@
 [package]
-name          = "alliance-nft-collection"
-description   = "Alliance NFT Collection dropped to the Game of Alliance players"
+name          = "alliance-nft-packages"
+description   = "Alliance NFT collection and mint types "
 authors       = { workspace = true }
 version       = { workspace = true }
 edition       = { workspace = true }
@@ -10,11 +10,13 @@ homepage      = { workspace = true }
 documentation = { workspace = true }
 
 [lib]
-crate-type    = ["cdylib", "rlib"]
+crate-type = ["cdylib", "rlib"]
 
 [features]
-backtraces    = ["cosmwasm-std/backtraces"]
-library       = []
+# for more explicit tests, cargo test --features=backtraces
+backtraces = ["cosmwasm-std/backtraces"]
+# use library feature to disable all instantiate/execute/query exports
+library = []
 
 [dependencies]
 cosmwasm-std            = { workspace = true }
@@ -28,4 +30,3 @@ cw-utils                = { workspace = true }
 serde                   = { workspace = true }
 thiserror               = { workspace = true }
 terra-proto-rs          = { workspace = true }
-alliance-nft-packages   = { workspace = true }

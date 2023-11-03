@@ -1,6 +1,6 @@
 [package]
-name          = "alliance-nft-collection"
-description   = "Alliance NFT Collection dropped to the Game of Alliance players"
+name          = "alliance-nft-minter"
+description   = "Mint contract for alliance nft"
 authors       = { workspace = true }
 version       = { workspace = true }
 edition       = { workspace = true }

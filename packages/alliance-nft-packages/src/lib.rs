@@ -3,6 +3,7 @@ pub mod execute;
 pub mod instantiate;
 pub mod migrate;
 pub mod query;
+pub mod state;
 
 use crate::state::Metadata;
 use cosmwasm_std::Empty;

@@ -1,0 +1,31 @@
+[workspace]
+members = [
+    "contracts/alliance-nft-collection",
+    "contracts/alliance-nft-minter",
+    "packages/alliance-nft-packages"
+]
+
+[workspace.package]
+description   = "Alliance NFT Collection dropped to the Game of Alliance players"
+authors       = ["Terra Money <engineering@terra.money>"]
+version       = "1.0.0"
+edition       = "2021"
+license       = "GPL-3.0-or-later"
+repository    = "https://github.com/terra-money/alliance-nft-collection"
+homepage      = "https://alliance.terra.money/"
+documentation = "https://docs.alliance.terra.money/"
+rust-version  = "1.73"
+
+[workspace.dependencies]
+cosmwasm-std                = { version = "1.4.1", features = ["stargate"] }
+cosmwasm-schema             = "1.4.1"
+cw2                         = "1.1.0"
+cw721                       = { version = "0.18.0" }
+cw721-base                  = { version = "0.18.0", features = ["library"] }
+schemars                    = "0.8.15"
+cw-storage-plus             = "1.1.0"
+cw-utils                    = "1.0.2"
+serde                       = { version = "1.0.190", default-features = false, features = ["derive"] }
+thiserror                   = "1.0.50"
+terra-proto-rs              = { version = "4.0.2", default-features = false }
+alliance-nft-packages       = { path = "packages/alliance-nft-packages" }

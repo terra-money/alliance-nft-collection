@@ -1,8 +1,9 @@
+use alliance_nft_packages::errors::ContractError;
+use alliance_nft_packages::migrate::MigrateMsg;
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{DepsMut, Env, Response};
 use cw2::{get_contract_version, set_contract_version};
 
-use alliance_nft_packages::{errors::ContractError, migrate::MigrateMsg};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn migrate(deps: DepsMut, _env: Env, msg: MigrateMsg) -> Result<Response, ContractError> {

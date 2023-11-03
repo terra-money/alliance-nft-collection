@@ -1,7 +1,8 @@
-use crate::state::{NUM_ACTIVE_NFTS, REWARD_BALANCE};
-use crate::{
-    state::{Config, CONFIG},
-    types::{errors::ContractError, instantiate::InstantiateMsg, AllianceNftCollection},
+use alliance_nft_packages::{
+    errors::ContractError,
+    instantiate::InstantiateCollectionMsg,
+    state::Config,
+    AllianceNftCollection,
 };
 use cosmwasm_std::{
     entry_point, Binary, CosmosMsg, DepsMut, Env, MessageInfo, Reply, Response, StdError, SubMsg,
@@ -14,9 +15,11 @@ use terra_proto_rs::{
         bank::v1beta1::{DenomUnit, Metadata},
         base::v1beta1::Coin,
     },
-    cosmwasm::tokenfactory::v1beta1::{MsgCreateDenom, MsgMint, MsgSetDenomMetadata},
+    osmosis::tokenfactory::v1beta1::{MsgCreateDenom, MsgMint, MsgSetDenomMetadata},
     traits::Message,
 };
+
+use crate::state::{CONFIG, REWARD_BALANCE, NUM_ACTIVE_NFTS};
 
 use super::reply::INSTANTIATE_REPLY_ID;
 
@@ -30,7 +33,7 @@ pub fn instantiate(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
-    msg: InstantiateMsg,
+    msg: InstantiateCollectionMsg,
 ) -> Result<Response, ContractError> {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;
@@ -47,7 +50,7 @@ pub fn instantiate(
     NUM_ACTIVE_NFTS.save(deps.storage, &0)?;
 
     let create_denom_req: CosmosMsg = CosmosMsg::Stargate {
-        type_url: "/cosmwasm.tokenfactory.v1beta1.MsgCreateDenom".to_string(),
+        type_url: "/osmosis.tokenfactory.v1beta1.MsgCreateDenom".to_string(),
         value: Binary::from(
             MsgCreateDenom {
                 sender: env.contract.address.to_string(),
@@ -77,13 +80,14 @@ pub fn reply_on_instantiate(
 
     let mint_req = MsgMint {
         sender: env.contract.address.to_string(),
+        mint_to_address: env.contract.address.to_string(),
         amount: Some(Coin {
             denom: denom.to_string(),
             amount: TOKENS_SUPPLY.to_string(),
         }),
     };
     let mint_sub_msg = CosmosMsg::Stargate {
-        type_url: "/cosmwasm.tokenfactory.v1beta1.MsgMint".to_string(),
+        type_url: "/osmosis.tokenfactory.v1beta1.MsgMint".to_string(),
         value: Binary(mint_req.encode_to_vec()),
     };
 
@@ -109,7 +113,7 @@ pub fn reply_on_instantiate(
     };
 
     let sub_msg_set_metadata = CosmosMsg::Stargate {
-        type_url: "/cosmwasm.tokenfactory.v1beta1.MsgSetDenomMetadata".to_string(),
+        type_url: "/osmosis.tokenfactory.v1beta1.MsgSetDenomMetadata".to_string(),
         value: Binary(set_metadata_req.encode_to_vec()),
     };
 

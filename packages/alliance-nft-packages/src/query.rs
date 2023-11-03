@@ -1,5 +1,5 @@
 use super::Extension;
-use crate::state::Config as ConfigRes;
+use crate::state::{Config as ConfigRes, MinterConfig, MinterStats};
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Empty;
 use cw721::{
@@ -10,9 +10,61 @@ use cw721_base::QueryMsg as CW721QueryMsg;
 
 #[cw_serde]
 #[derive(QueryResponses)]
-pub enum QueryMsg {
+pub enum QueryCollectionMsg {
     #[returns(ConfigRes)]
     Config {},
+
+    /// With MetaData Extension.
+    /// Returns metadata about one particular token,
+    /// based on *ERC721 Metadata JSON Schema*
+    /// https://docs.opensea.io/docs/metadata-standards
+    ///
+    /// {    
+    ///    "name": "AllianceNFT # 1",
+    ///    "token_uri": null,
+    ///    "extension": {
+    ///      "image": "https://ipfs.io/ipfs/{hash}",
+    ///      "description": "Received for participating on Game Of Alliance",
+    ///      "name": "AllianceNFT # 1",
+    ///      "attributes": [{
+    ///              "display_type" : null,
+    ///              "trait_type": "x",
+    ///              "value": "1"
+    ///          },{
+    ///              "display_type" : null,
+    ///              "trait_type": "y",
+    ///              "value": "1"
+    ///          },{
+    ///              "display_type" : null,
+    ///              "trait_type": "width",
+    ///              "value": "120"
+    ///          },{
+    ///              "display_type" : null,
+    ///              "trait_type": "height",
+    ///              "value": "120"
+    ///          },{
+    ///              "display_type" : null,
+    ///              "trait_type": "rarity",
+    ///              "value": 11
+    ///          }],
+    ///      "image_data": null,
+    ///      "external_url": null,
+    ///      "background_color": null,
+    ///      "animation_url": null,
+    ///      "youtube_url": null
+    ///    }
+    ///  }
+    #[returns(NftInfoResponse<Extension>)]
+    NftInfo { token_id: String },
+
+    /// With MetaData Extension.
+    /// Returns the result of both `NftInfo` and `OwnerOf` as one query as an optimization
+    #[returns(AllNftInfoResponse<Extension>)]
+    AllNftInfo {
+        token_id: String,
+        /// unset or false will filter out expired approvals, you must set to true to see them
+        include_expired: Option<bool>,
+    },
 
     /// CW721 Queries
 
@@ -53,18 +105,6 @@ pub enum QueryMsg {
     /// With MetaData Extension.
     #[returns(ContractInfoResponse)]
     ContractInfo {},
-    /// With MetaData Extension.
-    /// Returns metadata about one particular token, based on *ERC721 Metadata JSON Schema*
-    #[returns(NftInfoResponse<Extension>)]
-    NftInfo { token_id: String },
-    /// With MetaData Extension.
-    /// Returns the result of both `NftInfo` and `OwnerOf` as one query as an optimization
-    #[returns(AllNftInfoResponse<Extension>)]
-    AllNftInfo {
-        token_id: String,
-        /// unset or false will filter out expired approvals, you must set to true to see them
-        include_expired: Option<bool>,
-    },
 
     /// With Enumerable extension.
     /// Returns all tokens owned by the given address, [] if unset.
@@ -92,17 +132,17 @@ pub struct MinterResponse {
     pub minter: String,
 }
 
-impl From<QueryMsg> for CW721QueryMsg<Empty> {
-    fn from(msg: QueryMsg) -> CW721QueryMsg<Empty> {
+impl From<QueryCollectionMsg> for CW721QueryMsg<Empty> {
+    fn from(msg: QueryCollectionMsg) -> CW721QueryMsg<Empty> {
         match msg {
-            QueryMsg::OwnerOf {
+            QueryCollectionMsg::OwnerOf {
                 token_id,
                 include_expired,
             } => CW721QueryMsg::OwnerOf {
                 token_id,
                 include_expired,
             },
-            QueryMsg::Approval {
+            QueryCollectionMsg::Approval {
                 token_id,
                 spender,
                 include_expired,
@@ -111,14 +151,14 @@ impl From<QueryMsg> for CW721QueryMsg<Empty> {
                 spender,
                 include_expired,
             },
-            QueryMsg::Approvals {
+            QueryCollectionMsg::Approvals {
                 token_id,
                 include_expired,
             } => CW721QueryMsg::Approvals {
                 token_id,
                 include_expired,
             },
-            QueryMsg::AllOperators {
+            QueryCollectionMsg::AllOperators {
                 owner,
                 /// unset or false will filter out expired items, you must set to true to see them
                 include_expired,
@@ -130,17 +170,17 @@ impl From<QueryMsg> for CW721QueryMsg<Empty> {
                 start_after,
                 limit,
             },
-            QueryMsg::NumTokens {} => CW721QueryMsg::NumTokens {},
-            QueryMsg::ContractInfo {} => CW721QueryMsg::ContractInfo {},
-            QueryMsg::NftInfo { token_id } => CW721QueryMsg::NftInfo { token_id },
-            QueryMsg::AllNftInfo {
+            QueryCollectionMsg::NumTokens {} => CW721QueryMsg::NumTokens {},
+            QueryCollectionMsg::ContractInfo {} => CW721QueryMsg::ContractInfo {},
+            QueryCollectionMsg::NftInfo { token_id } => CW721QueryMsg::NftInfo { token_id },
+            QueryCollectionMsg::AllNftInfo {
                 token_id,
                 include_expired,
             } => CW721QueryMsg::AllNftInfo {
                 token_id,
                 include_expired,
             },
-            QueryMsg::Tokens {
+            QueryCollectionMsg::Tokens {
                 owner,
                 start_after,
                 limit,
@@ -149,11 +189,20 @@ impl From<QueryMsg> for CW721QueryMsg<Empty> {
                 start_after,
                 limit,
             },
-            QueryMsg::AllTokens { start_after, limit } => {
+            QueryCollectionMsg::AllTokens { start_after, limit } => {
                 CW721QueryMsg::AllTokens { start_after, limit }
             }
-            QueryMsg::Minter {} => CW721QueryMsg::Minter {},
+            QueryCollectionMsg::Minter {} => CW721QueryMsg::Minter {},
             _ => panic!("cannot covert {:?} to CW721QueryMsg", msg),
         }
     }
+}
+
+#[cw_serde]
+#[derive(QueryResponses)]
+pub enum QueryMinterMsg {
+    #[returns(MinterConfig)]
+    Config {},
+    #[returns(MinterStats)]
+    Stats {},
 }

@@ -1,7 +1,11 @@
+use std::collections::HashMap;
+
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{Binary, Empty, Uint128};
 use cw721_base::ExecuteMsg as CW721ExecuteMsg;
 use cw_utils::Expiration;
+
+use crate::state::MinterExtension;
 
 use super::Extension;
 
@@ -21,7 +25,7 @@ pub struct MintMsg {
 
 #[cw_serde]
 #[allow(clippy::large_enum_variant)]
-pub enum ExecuteMsg {
+pub enum ExecuteCollectionMsg {
     AllianceDelegate(AllianceDelegateMsg),
     AllianceUndelegate(AllianceUndelegateMsg),
     AllianceRedelegate(AllianceRedelegateMsg),
@@ -73,17 +77,17 @@ pub enum ExecuteMsg {
     },
 }
 
-impl From<ExecuteMsg> for CW721ExecuteMsg<Extension, Empty> {
-    fn from(msg: ExecuteMsg) -> CW721ExecuteMsg<Extension, Empty> {
+impl From<ExecuteCollectionMsg> for CW721ExecuteMsg<Extension, Empty> {
+    fn from(msg: ExecuteCollectionMsg) -> CW721ExecuteMsg<Extension, Empty> {
         match msg {
-            ExecuteMsg::TransferNft {
+            ExecuteCollectionMsg::TransferNft {
                 recipient,
                 token_id,
             } => CW721ExecuteMsg::TransferNft {
                 recipient,
                 token_id,
             },
-            ExecuteMsg::SendNft {
+            ExecuteCollectionMsg::SendNft {
                 contract,
                 token_id,
                 msg,
@@ -92,7 +96,7 @@ impl From<ExecuteMsg> for CW721ExecuteMsg<Extension, Empty> {
                 token_id,
                 msg,
             },
-            ExecuteMsg::Approve {
+            ExecuteCollectionMsg::Approve {
                 spender,
                 token_id,
                 expires,
@@ -101,13 +105,13 @@ impl From<ExecuteMsg> for CW721ExecuteMsg<Extension, Empty> {
                 token_id,
                 expires,
             },
-            ExecuteMsg::Revoke { spender, token_id } => {
+            ExecuteCollectionMsg::Revoke { spender, token_id } => {
                 CW721ExecuteMsg::Revoke { spender, token_id }
             }
-            ExecuteMsg::ApproveAll { operator, expires } => {
+            ExecuteCollectionMsg::ApproveAll { operator, expires } => {
                 CW721ExecuteMsg::ApproveAll { operator, expires }
             }
-            ExecuteMsg::RevokeAll { operator } => CW721ExecuteMsg::RevokeAll { operator },
+            ExecuteCollectionMsg::RevokeAll { operator } => CW721ExecuteMsg::RevokeAll { operator },
             _ => panic!("cannot covert {:?} to CW721ExecuteMsg", msg),
         }
     }
@@ -139,4 +143,11 @@ pub struct AllianceRedelegation {
 #[cw_serde]
 pub struct AllianceRedelegateMsg {
     pub redelegations: Vec<AllianceRedelegation>,
+}
+
+#[cw_serde]
+pub enum ExecuteMinterMsg {
+    AppendNftMetadata(HashMap<String, MinterExtension>),
+    Mint {},
+    SendToDao(i16),
 }

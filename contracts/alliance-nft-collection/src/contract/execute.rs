@@ -1,4 +1,7 @@
-use cosmwasm_std::{coins, entry_point, to_binary, Addr, BankMsg, Binary, Coin as CwCoin, CosmosMsg, Order, SubMsg, Uint128, WasmMsg};
+use cosmwasm_std::{
+    coins, entry_point, to_binary, Addr, BankMsg, Binary, Coin as CwCoin, CosmosMsg, Order, SubMsg,
+    Uint128, WasmMsg,
+};
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response};
 use cw721::Cw721Query;
 use terra_proto_rs::alliance::alliance::{MsgClaimDelegationRewards, MsgRedelegate, MsgUndelegate};
@@ -10,10 +13,13 @@ use crate::state::{
     reduce_val_stake, upsert_val, BROKEN_NFTS, CONFIG, NFT_BALANCE_CLAIMED, NUM_ACTIVE_NFTS,
     REWARD_BALANCE, TEMP_BALANCE, VALS,
 };
-use crate::types::execute::{
-    AllianceDelegateMsg, AllianceRedelegateMsg, AllianceUndelegateMsg, MintMsg,
+use alliance_nft_packages::{
+    errors::ContractError,
+    execute::{
+        AllianceDelegateMsg, AllianceRedelegateMsg, AllianceUndelegateMsg, ExecuteCollectionMsg, MintMsg,
+    },
+    AllianceNftCollection,
 };
-use crate::types::{errors::ContractError, execute::ExecuteMsg, AllianceNftCollection};
 
 const CLAIM_REWARD_ERROR_REPLY_ID: u64 = 1;
 const DENOM: &str = "uluna";
@@ -23,19 +29,19 @@ pub fn execute(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
-    msg: ExecuteMsg,
+    msg: ExecuteCollectionMsg,
 ) -> Result<Response, ContractError> {
     let parent: AllianceNftCollection = AllianceNftCollection::default();
     match msg {
-        ExecuteMsg::AllianceDelegate(msg) => try_alliance_delegate(deps, env, info, msg),
-        ExecuteMsg::AllianceUndelegate(msg) => try_alliance_undelegate(deps, env, info, msg),
-        ExecuteMsg::AllianceRedelegate(msg) => try_alliance_redelegate(deps, env, info, msg),
+        ExecuteCollectionMsg::AllianceDelegate(msg) => try_alliance_delegate(deps, env, info, msg),
+        ExecuteCollectionMsg::AllianceUndelegate(msg) => try_alliance_undelegate(deps, env, info, msg),
+        ExecuteCollectionMsg::AllianceRedelegate(msg) => try_alliance_redelegate(deps, env, info, msg),
 
-        ExecuteMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(deps, env, info),
-        ExecuteMsg::UpdateRewardsCallback {} => update_reward_callback(deps, env, info),
+        ExecuteCollectionMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(deps, env, info),
+        ExecuteCollectionMsg::UpdateRewardsCallback {} => update_reward_callback(deps, env, info),
 
-        ExecuteMsg::BreakNft(token_id) => try_breaknft(deps, env, info, parent, token_id),
-        ExecuteMsg::Mint(mint_msg) => try_mint(deps, env, info, parent, mint_msg),
+        ExecuteCollectionMsg::BreakNft(token_id) => try_breaknft(deps, env, info, parent, token_id),
+        ExecuteCollectionMsg::Mint(mint_msg) => try_mint(deps, info, parent, mint_msg),
 
         _ => Ok(parent.execute(deps, env, info, msg.into())?),
     }
@@ -49,9 +55,8 @@ fn try_alliance_claim_rewards(
     let cfg = CONFIG.load(deps.storage)?;
     let num_of_active = NUM_ACTIVE_NFTS.load(deps.storage)?;
     if num_of_active == 0 {
-       Err(ContractError::NoActiveNfts {})
+        return Err(ContractError::NoActiveNfts {});
     }
-
 
     let reward_sent_in_tx: Option<&CwCoin> = info.funds.iter().find(|c| c.denom == DENOM);
     let sent_balance = if let Some(coin) = reward_sent_in_tx {
@@ -87,7 +92,7 @@ fn try_alliance_claim_rewards(
         .collect();
     let msg = CosmosMsg::Wasm(WasmMsg::Execute {
         contract_addr: env.contract.address.to_string(),
-        msg: to_binary(&ExecuteMsg::UpdateRewardsCallback {}).unwrap(),
+        msg: to_binary(&ExecuteCollectionMsg::UpdateRewardsCallback {}).unwrap(),
         funds: vec![],
     });
 
@@ -102,12 +107,8 @@ fn update_reward_callback(
     env: Env,
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
-    if info.sender != env.contract.address {
-        return Err(ContractError::Unauthorized(
-            info.sender,
-            env.contract.address,
-        ));
-    }
+    authorize_execution(env.contract.address.clone(), info.sender)?;
+
     let current_balance = deps
         .querier
         .query_balance(env.contract.address, DENOM)?
@@ -242,12 +243,22 @@ fn try_breaknft(
     let owner = deps.api.addr_validate(&owner_res.owner)?;
     authorize_execution(owner.clone(), info.sender)?;
 
-    BROKEN_NFTS.update(deps.storage, token_id.clone(), |b| -> Result<_, ContractError> {
-        match b {
-            Some(b) => if b { Err(ContractError::AlreadyBroken {}) } else { Ok(true) },
-            None => Ok(true)
-        }
-    })?;
+    BROKEN_NFTS.update(
+        deps.storage,
+        token_id.clone(),
+        |b| -> Result<_, ContractError> {
+            match b {
+                Some(b) => {
+                    if b {
+                        Err(ContractError::AlreadyBroken {})
+                    } else {
+                        Ok(true)
+                    }
+                }
+                None => Ok(true),
+            }
+        },
+    )?;
 
     let rewards_claimed = NFT_BALANCE_CLAIMED.load(deps.storage, token_id.to_string())?;
     let average_rewards = REWARD_BALANCE.load(deps.storage)?;
@@ -278,12 +289,11 @@ fn try_breaknft(
 
 fn try_mint(
     deps: DepsMut,
-    _env: Env,
     info: MessageInfo,
     parent: AllianceNftCollection,
     mint_msg: MintMsg,
 ) -> Result<Response, ContractError> {
-    // authorization will be checked by the NFT parent contract
+    // authorization is checked in the parent contract
     NUM_ACTIVE_NFTS.update(deps.storage, |n| -> Result<_, ContractError> { Ok(n + 1) })?;
     let reward_balance = REWARD_BALANCE.load(deps.storage)?;
     NFT_BALANCE_CLAIMED.save(deps.storage, mint_msg.token_id.clone(), &reward_balance)?;

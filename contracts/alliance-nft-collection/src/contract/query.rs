@@ -3,16 +3,18 @@ use cosmwasm_std::{Binary, Deps, Env, StdResult};
 use cw721::{AllNftInfoResponse, Approval, NftInfoResponse, OwnerOfResponse};
 use cw721_base::state::{Approval as BaseApproval, TokenInfo};
 
-use crate::state::{Trait, BROKEN_NFTS, CONFIG, NFT_BALANCE_CLAIMED, REWARD_BALANCE};
-use crate::types::{query::QueryMsg, AllianceNftCollection, Extension};
+use alliance_nft_packages::state::{Trait, Config};
+use alliance_nft_packages::{query::QueryCollectionMsg, AllianceNftCollection, Extension};
+
+use crate::state::{CONFIG, BROKEN_NFTS, REWARD_BALANCE, NFT_BALANCE_CLAIMED};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
+pub fn query(deps: Deps, env: Env, msg: QueryCollectionMsg) -> StdResult<Binary> {
     let parent = AllianceNftCollection::default();
     match msg {
-        QueryMsg::Config {} => to_binary(&CONFIG.load(deps.storage)?),
-        QueryMsg::NftInfo { token_id } => to_binary(&query_nft_info(deps, parent, token_id)?),
-        QueryMsg::AllNftInfo {
+        QueryCollectionMsg::Config {} => to_binary(&query_config(deps)?),
+        QueryCollectionMsg::NftInfo { token_id } => to_binary(&query_nft_info(deps, parent, token_id)?),
+        QueryCollectionMsg::AllNftInfo {
             token_id,
             include_expired,
         } => to_binary(&query_all_nft_info(
@@ -24,6 +26,12 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
         )?),
         _ => parent.query(deps, env, msg.into()),
     }
+}
+
+fn query_config(deps : Deps) -> StdResult<Config>{
+    let res = CONFIG.load(deps.storage)?;
+
+    Ok(res)
 }
 
 fn query_token_info(
