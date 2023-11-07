@@ -2,7 +2,8 @@ use super::reply::INSTANTIATE_REPLY_ID;
 use crate::state::{CONFIG, STATS};
 use alliance_nft_packages::{
     errors::ContractError,
-    instantiate::{InstantiateCollectionMsg, InstantiateMinterMsg}, state::{MinterConfig, MinterStats},
+    instantiate::{InstantiateCollectionMsg, InstantiateMinterMsg},
+    state::{MinterConfig, MinterStats},
 };
 use cosmwasm_std::{
     entry_point, to_binary, DepsMut, Env, MessageInfo, Reply, Response, StdError, SubMsg, WasmMsg,
@@ -19,25 +20,24 @@ pub fn instantiate(
     info: MessageInfo,
     msg: InstantiateMinterMsg,
 ) -> Result<Response, ContractError> {
-
     if msg.mint_start_time > msg.mint_end_time {
-        return Err(ContractError::InvalidMintTimeRange{});
+        return Err(ContractError::InvalidMintTimeRange {});
     }
 
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;
 
     STATS.save(deps.storage, &MinterStats::default())?;
-    
-    // Create the default partial config
-    CONFIG.save(deps.storage, 
-        &MinterConfig::new_partial(
-            info.sender.clone(), 
-            msg.dao_address.clone(),
-            msg.dao_treasury_address.clone(),
-            msg.mint_start_time, 
-            msg.mint_end_time
-        )
+
+    CONFIG.save(
+        deps.storage,
+        &MinterConfig {
+            owner: info.sender.clone(),
+            dao_treasury_address: msg.dao_treasury_address,
+            nft_collection_address: None,
+            mint_start_time: msg.mint_start_time,
+            mint_end_time: msg.mint_end_time,
+        },
     )?;
 
     // instantiate the nft contract
@@ -48,7 +48,7 @@ pub fn instantiate(
             name: "AllianceDAO".to_string(),
             symbol: "ALLIANCE".to_string(),
             minter: env.contract.address.to_string(),
-            owner: msg.dao_address, 
+            owner: info.sender.clone(),
         })?,
         funds: info.funds,
         label: "Alliance NFT Collection".to_string(),
@@ -62,10 +62,7 @@ pub fn instantiate(
         .add_submessage(sub_msg))
 }
 
-pub fn reply_on_instantiate(
-    deps: DepsMut,
-    reply: Reply,
-) -> Result<Response, ContractError> {
+pub fn reply_on_instantiate(deps: DepsMut, reply: Reply) -> Result<Response, ContractError> {
     let result = reply.result.into_result().map_err(StdError::generic_err)?;
     /* Find the event type instantiate which contains the contract_address*/
     let event = result
@@ -84,7 +81,7 @@ pub fn reply_on_instantiate(
 
     let contract_addr = deps.api.addr_validate(&contract_addr)?;
     CONFIG.update(deps.storage, |mut config| -> Result<_, ContractError> {
-        config.nft_collection_address = contract_addr;
+        config.nft_collection_address = Some(contract_addr);
         Ok(config)
     })?;
 

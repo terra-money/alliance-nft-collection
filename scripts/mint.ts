@@ -9,14 +9,15 @@ dotenv.config()
 interface User {
     id?: number;
 
-    ip?: string;
+    ip: string;
     terraAddress: string;
-    accumulatedRewards?: number;
-    score?: number;
-    ordosAddress?: string;
-    corrinoAddress?: string;
-    atreidesAddress?: string;
-    harkonnenAddress?: string;
+    accumulatedRewards: number;
+    multipliedAcculumatedRewards?: number;
+    score: number;
+    ordosAddress: string;
+    corrinoAddress: string;
+    atreidesAddress: string;
+    harkonnenAddress: string;
 }
 
 const readUsersData = (): Promise<User[]> => {
@@ -59,18 +60,46 @@ const readUsersData = (): Promise<User[]> => {
     });
 };
 
-const filterData = (users: User[]): User[] => {
-    return _.chain(users)
-        .sortBy("accumulatedRewards", "score")
-        .reverse()
-        .uniqBy("ip")
-        .uniqBy("terraAddress")
-        .map((user, index) => {
-            user.id = index + 1;
+const objectToCsv = (users: User[]): string => {
+    // Get the headers (keys of the objects)
+    const headers = Object.keys(users[0]);
 
-            return user;
-        })
-        .value();
+    // Convert array of objects to array of arrays
+    const rows = users.map((obj: any) => headers.map((header: any) => obj[header]));
+
+    // Format the CSV
+    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+
+    return csvContent;
+};
+
+const filterData = (users: User[]): any[] => {
+    // 1. Group by ip
+    const groupedByIP = _.groupBy(users, 'ip');
+
+    // 2. Accumulate the score and accumulatedRewards for each group 
+    const accumulatedUsers = _.map(groupedByIP, usersWithSameIP => {
+        // Sort by score and accumulatedRewards in descending order
+        const sortedUsers = _.orderBy(usersWithSameIP, ['accumulatedRewards', 'score'], ['desc', 'desc']);
+        const topUser = _.head(sortedUsers) as User;
+
+        // Accumulate the values for the top user
+        return {
+            ip: topUser.ip,
+            terraAddress: topUser.terraAddress,
+            accumulatedRewards: _.sumBy(sortedUsers, 'accumulatedRewards'),
+            score: _.sumBy(sortedUsers, 'score'),
+        };
+    });
+    let sortedUsers = _.orderBy(accumulatedUsers, ['accumulatedRewards', 'score'], ['desc', 'desc']);
+    // 3. Sort the accumulated users by accumulatedRewards and score in descending order
+    return sortedUsers.map((user, index) => {
+        return {
+            id: index + 1,
+            multipliedAcculumatedRewards: user.accumulatedRewards * user.score,
+            ...user,
+        };
+    });
 }
 
 const submitOnChain = async (users: Array<User>) => {
@@ -145,15 +174,18 @@ const submitOnChain = async (users: Array<User>) => {
 }
 
 const init = async () => {
-    // const res = await readUsersData();
-    // const parsedUserDataChunks = filterData(res);
-    const parsedUserDataChunks = new Array<User>()
-    for (let i = 0; i < 1000; i++) {
-        parsedUserDataChunks.push({
-            id: i,
-            terraAddress: new MnemonicKey().accAddress("terra"),
-        })
-    }
-    await submitOnChain(parsedUserDataChunks);
+    const res = await readUsersData();
+    const parsedUserDataChunks = filterData(res);
+    console.log(JSON.stringify(parsedUserDataChunks))
+    console.log(parsedUserDataChunks.length)
+    fs.writeFileSync('./scripts/.users_parsed.csv', objectToCsv(parsedUserDataChunks));
+    // const parsedUserDataChunks = new Array<User>()
+    // for (let i = 0; i < 1000; i++) {
+    //     parsedUserDataChunks.push({
+    //         id: i,
+    //         terraAddress: new MnemonicKey().accAddress("terra"),
+    //     })
+    // }
+    // await submitOnChain(parsedUserDataChunks);
 }
 init();

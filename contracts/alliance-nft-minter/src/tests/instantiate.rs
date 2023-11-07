@@ -21,16 +21,14 @@ fn test_instantiate() {
     let res = query(deps.as_ref(), env, QueryMinterMsg::Config {}).unwrap();
 
     assert_eq!(
-        res,
+        res.to_string(),
         to_binary(&MinterConfig {
-            dao_address: Addr::unchecked("dao_address"),
-            dao_treasury_address: Addr::unchecked("dao_treasury_address"),
-            nft_collection_address: Addr::unchecked("nft_collection_address"),
+            dao_treasury_address: Some(Addr::unchecked("dao_treasury_address")),
+            nft_collection_address: Some(Addr::unchecked("nft_collection_address")),
             owner: Addr::unchecked("creator"),
             mint_start_time: Timestamp::from_seconds(1),
             mint_end_time: Timestamp::from_seconds(3),
-        })
-        .unwrap()
+        }).unwrap().to_string()
     );
 }
 
@@ -44,8 +42,7 @@ fn test_instantiate_wrong_time_range() {
 
     // WHEN instantiating the contract ...
     let msg = InstantiateMinterMsg {
-        dao_address: Addr::unchecked("dao_address"),
-        dao_treasury_address: Addr::unchecked("dao_treasury_address"),
+        dao_treasury_address: Some(Addr::unchecked("dao_treasury_address")),
         nft_collection_code_id: 1,
         mint_start_time: Timestamp::from_seconds(3),
         mint_end_time: Timestamp::from_seconds(1),
@@ -72,8 +69,7 @@ pub fn intantiate_with_reply() -> (
 
     // WHEN instantiating the contract ...
     let msg = InstantiateMinterMsg {
-        dao_address: Addr::unchecked("dao_address"),
-        dao_treasury_address: Addr::unchecked("dao_treasury_address"),
+        dao_treasury_address: Some(Addr::unchecked("dao_treasury_address")),
         nft_collection_code_id: 1,
         mint_start_time: Timestamp::from_seconds(1),
         mint_end_time: Timestamp::from_seconds(3),
@@ -94,7 +90,7 @@ pub fn intantiate_with_reply() -> (
                 name: "AllianceDAO".to_string(),
                 symbol: "ALLIANCE".to_string(),
                 minter: env.contract.address.to_string(),
-                owner: Addr::unchecked("dao_address"),
+                owner: Addr::unchecked("creator"),
             })
             .unwrap(),
             funds: vec![],
