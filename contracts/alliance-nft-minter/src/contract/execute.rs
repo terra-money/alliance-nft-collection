@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use alliance_nft_packages::errors::ContractError;
-use alliance_nft_packages::execute::{ExecuteMinterMsg, MintMsg, ExecuteCollectionMsg};
+use alliance_nft_packages::execute::{ExecuteCollectionMsg, ExecuteMinterMsg, MintMsg};
 use alliance_nft_packages::state::MinterExtension;
 use cosmwasm_std::{
     entry_point, to_binary, DepsMut, Env, MessageInfo, Order::Ascending, Response, WasmMsg,
@@ -22,6 +22,10 @@ pub fn execute(
         }
         ExecuteMinterMsg::Mint {} => try_mint(deps, env, info),
         ExecuteMinterMsg::SendToDao(batch) => try_send_to_dao_treasury(deps, env, batch),
+        ExecuteMinterMsg::ChangeDaoTreasuryAddress(address) => {
+            try_change_dao_treasury_address(deps, info, address)
+        }
+        ExecuteMinterMsg::ChangeOwner(new_owner) => try_change_owner(deps, info, new_owner),
     }
 }
 
@@ -52,12 +56,10 @@ fn try_append_nft_metadata(
         Ok(stats)
     })?;
 
-    Ok(Response::new()
-        .add_attributes([
-            ("method", "try_append_nft_metadata"),
-            ("new_minted_nfts", &new_minted_nfts.to_string())
-        ])
-    )
+    Ok(Response::new().add_attributes([
+        ("method", "try_append_nft_metadata"),
+        ("new_minted_nfts", &new_minted_nfts.to_string()),
+    ]))
 }
 
 /// Execution allowed only between start and end time. This method will:
@@ -69,13 +71,18 @@ fn try_append_nft_metadata(
 /// - send the mint message to the NFT collection contract
 fn try_mint(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
-    cfg.is_mint_enabled(env.block.time)?;
+    cfg.is_minting_period(env.block.time)?;
+
+    let collection_addr = match cfg.nft_collection_address {
+        Some(addr) => addr,
+        None => return Err(ContractError::NftCollectionAddressNotSet {}),
+    };
 
     let nft_metadata = NFT_METADATA.load(deps.storage, info.sender.to_string())?;
     NFT_METADATA.remove(deps.storage, info.sender.to_string());
 
     let mint_msg = WasmMsg::Execute {
-        contract_addr: cfg.nft_collection_address.to_string(),
+        contract_addr: collection_addr.to_string(),
         msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
             token_id: nft_metadata.token_id,
             owner: info.sender.to_string(),
@@ -108,7 +115,15 @@ fn try_send_to_dao_treasury(
     mut batch_length: i16,
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
-    cfg.is_send_to_dao_enabled(env.block.time)?;
+    cfg.has_minting_period_finish(env.block.time)?;
+    let collection_addr = match cfg.nft_collection_address {
+        Some(addr) => addr,
+        None => return Err(ContractError::NftCollectionAddressNotSet {}),
+    };
+    let owner = match cfg.dao_treasury_address {
+        Some(addr) => addr,
+        None => return Err(ContractError::DaoTreasuryAddressNotSet {}),
+    };
 
     let mut stats = STATS.load(deps.storage)?;
     if stats.available_nfts == 0 {
@@ -136,10 +151,10 @@ fn try_send_to_dao_treasury(
                 let nft_info = item.unwrap();
 
                 let msg = WasmMsg::Execute {
-                    contract_addr: cfg.nft_collection_address.to_string(),
+                    contract_addr: collection_addr.to_string(),
                     msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
                         token_id: nft_info.1.token_id,
-                        owner: cfg.dao_treasury_address.to_string(),
+                        owner: owner.to_string(),
                         extension: nft_info.1.extension,
                         token_uri: None,
                     }))
@@ -167,4 +182,56 @@ fn try_send_to_dao_treasury(
         .add_attribute("method", "try_send_to_dao_treasury")
         .add_attribute("nfts_send", current_batch_iteration.to_string())
         .add_messages(mint_msgs))
+}
+
+// This method will change the dao treasury address
+// Execution only allowed when:
+// - sender is the owner
+// - address is a valid terra address
+fn try_change_dao_treasury_address(
+    deps: DepsMut,
+    info: MessageInfo,
+    address: String,
+) -> Result<Response, ContractError> {
+    let mut cfg = CONFIG.load(deps.storage)?;
+    let addr = deps.api.addr_validate(&address)?;
+
+    cfg.is_authorized_execution(info.sender)?;
+    cfg.dao_treasury_address = Some(addr);
+    CONFIG.save(deps.storage, &cfg)?;
+
+    Ok(Response::new()
+        .add_attribute("method", "try_change_dao_treasury_address")
+        .add_attribute("new_dao_treasury_address", address))
+}
+
+fn try_change_owner(
+    deps: DepsMut,
+    info: MessageInfo,
+    new_owner: String,
+) -> Result<Response, ContractError> {
+    let cfg = CONFIG.load(deps.storage)?;
+    cfg.is_authorized_execution(info.sender)?;
+    let new_owner = deps.api.addr_validate(&new_owner)?;
+    CONFIG.update(deps.storage, |mut config| -> Result<_, ContractError> {
+        config.owner = new_owner.clone();
+        Ok(config)
+    })?;
+    let collection_addr = match cfg.nft_collection_address {
+        Some(addr) => addr,
+        None => return Err(ContractError::NftCollectionAddressNotSet {}),
+    };
+
+    let msg = WasmMsg::Execute {
+        contract_addr: collection_addr.to_string(),
+        msg: to_binary(&ExecuteCollectionMsg::ChangeOwner(new_owner.to_string())).unwrap(),
+        funds: vec![],
+    };
+
+    Ok(Response::default()
+        .add_attributes(vec![
+            ("action", "change_owner"),
+            ("new_owner", new_owner.to_string().as_str()),
+        ])
+        .add_message(msg))
 }

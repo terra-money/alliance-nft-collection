@@ -31,6 +31,7 @@ pub enum ExecuteCollectionMsg {
     AllianceRedelegate(AllianceRedelegateMsg),
     AllianceClaimRewards {},
     UpdateRewardsCallback {},
+    ChangeOwner(String),
 
     // Claim the accumulated rewards and send them to the owner
     // while the NFT is broken it will not accumulate rewards
@@ -150,4 +151,6 @@ pub enum ExecuteMinterMsg {
     AppendNftMetadata(HashMap<String, MinterExtension>),
     Mint {},
     SendToDao(i16),
+    ChangeDaoTreasuryAddress(String),
+    ChangeOwner(String),
 }

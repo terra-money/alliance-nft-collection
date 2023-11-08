@@ -33,9 +33,8 @@ pub struct Config {
 #[cw_serde]
 pub struct MinterConfig {
     pub owner: Addr,
-    pub dao_address: Addr,
-    pub dao_treasury_address: Addr,
-    pub nft_collection_address: Addr,
+    pub dao_treasury_address: Option<Addr>,
+    pub nft_collection_address: Option<Addr>,
     pub mint_start_time: Timestamp,
     pub mint_end_time: Timestamp,
 }
@@ -43,8 +42,6 @@ pub struct MinterConfig {
 impl MinterConfig {
     pub fn new_partial(
         owner: Addr,
-        dao_address: Addr,
-        dao_treasury_address: Addr,
         mint_start_time: Timestamp,
         mint_end_time: Timestamp,
     ) -> MinterConfig {
@@ -52,9 +49,8 @@ impl MinterConfig {
             owner,
             mint_start_time,
             mint_end_time,
-            dao_address,
-            dao_treasury_address,
-            nft_collection_address: Addr::unchecked(""),
+            dao_treasury_address : None,
+            nft_collection_address : None,
         }
     }
 
@@ -67,7 +63,8 @@ impl MinterConfig {
     }
 
     // check if the block time is between start and end time
-    pub fn is_mint_enabled(&self, current_time: Timestamp) -> Result<Response, ContractError> {
+    // and the other params are set correctly
+    pub fn is_minting_period(&self, current_time: Timestamp) -> Result<Response, ContractError> {
         if current_time < self.mint_start_time || current_time > self.mint_end_time {
             return Err(ContractError::MintTimeCompleted(
                 self.mint_start_time,
@@ -80,7 +77,7 @@ impl MinterConfig {
     }
 
     // check if the block time is after end time
-    pub fn is_send_to_dao_enabled(&self, time: Timestamp) -> Result<Response, ContractError> {
+    pub fn has_minting_period_finish(&self, time: Timestamp) -> Result<Response, ContractError> {
         if time < self.mint_end_time {
             return Err(ContractError::CannotSendToDao(time, self.mint_end_time));
         }

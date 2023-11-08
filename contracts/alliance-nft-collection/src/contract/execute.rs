@@ -42,6 +42,7 @@ pub fn execute(
 
         ExecuteCollectionMsg::BreakNft(token_id) => try_breaknft(deps, env, info, parent, token_id),
         ExecuteCollectionMsg::Mint(mint_msg) => try_mint(deps, info, parent, mint_msg),
+        ExecuteCollectionMsg::ChangeOwner(new_owner) => try_change_owner(deps, info, new_owner),
 
         _ => Ok(parent.execute(deps, env, info, msg.into())?),
     }
@@ -307,6 +308,25 @@ fn try_mint(
             mint_msg.extension,
         )
         .map_err(ContractError::FromContractError)
+}
+
+fn try_change_owner(
+    deps: DepsMut,
+    info: MessageInfo,
+    new_owner: String,
+) -> Result<Response, ContractError> {
+    let cfg = CONFIG.load(deps.storage)?;
+    authorize_execution(cfg.owner.clone(), info.sender)?;
+    let new_owner = deps.api.addr_validate(&new_owner)?;
+
+    CONFIG.update(deps.storage, |mut config| -> Result<_, ContractError> {
+        config.owner = new_owner.clone();
+        Ok(config)
+    })?;
+    Ok(Response::default().add_attributes(vec![
+        ("action", "change_owner"),
+        ("new_owner", new_owner.to_string().as_str()),
+    ]))
 }
 
 fn authorize_execution(owner: Addr, sender: Addr) -> Result<Response, ContractError> {

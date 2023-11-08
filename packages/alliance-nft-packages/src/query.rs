@@ -1,5 +1,5 @@
 use super::Extension;
-use crate::state::{Config as ConfigRes, MinterConfig, MinterStats};
+use crate::state::{Config as ConfigRes, MinterConfig, MinterStats, MinterExtension};
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Empty;
 use cw721::{
@@ -205,4 +205,6 @@ pub enum QueryMinterMsg {
     Config {},
     #[returns(MinterStats)]
     Stats {},
+    #[returns(MinterExtension)]
+    NftData(String),
 }

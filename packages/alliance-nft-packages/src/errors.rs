@@ -44,5 +44,15 @@ pub enum ContractError {
     AlreadyExists(String),
 
     #[error("No available NFTs to be minted")]
-    NoAvailableNfts {}
+    NoAvailableNfts {},
+    
+    #[error("DAO Address must be set")]
+    DaoAddressNotSet{},
+
+    #[error("Dao treasury address must be set")]
+    DaoTreasuryAddressNotSet{},
+    
+    #[error("Nft collection address must be set")]
+    NftCollectionAddressNotSet{},
+
 }
