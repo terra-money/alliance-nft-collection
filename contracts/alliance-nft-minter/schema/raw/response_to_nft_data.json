@@ -1,73 +1,20 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "ExecuteMsg",
-  "oneOf": [
-    {
-      "type": "object",
-      "required": [
-        "append_nft_metadata"
-      ],
-      "properties": {
-        "append_nft_metadata": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/MinterExtension"
-          }
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
-        "mint"
-      ],
-      "properties": {
-        "mint": {
-          "type": "object",
-          "additionalProperties": false
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
-        "send_to_dao"
-      ],
-      "properties": {
-        "send_to_dao": {
-          "type": "integer",
-          "format": "int16"
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
-        "change_dao_treasury_address"
-      ],
-      "properties": {
-        "change_dao_treasury_address": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
-        "change_owner"
-      ],
-      "properties": {
-        "change_owner": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false
-    }
+  "title": "MinterExtension",
+  "type": "object",
+  "required": [
+    "extension",
+    "token_id"
   ],
+  "properties": {
+    "extension": {
+      "$ref": "#/definitions/Metadata"
+    },
+    "token_id": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
   "definitions": {
     "Metadata": {
       "type": "object",
@@ -128,22 +75,6 @@
             "string",
             "null"
           ]
-        }
-      },
-      "additionalProperties": false
-    },
-    "MinterExtension": {
-      "type": "object",
-      "required": [
-        "extension",
-        "token_id"
-      ],
-      "properties": {
-        "extension": {
-          "$ref": "#/definitions/Metadata"
-        },
-        "token_id": {
-          "type": "string"
         }
       },
       "additionalProperties": false
