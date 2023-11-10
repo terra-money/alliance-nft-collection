@@ -1,11 +1,11 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "InstantiateMsg",
+  "title": "MinterConfig",
   "type": "object",
   "required": [
     "mint_end_time",
     "mint_start_time",
-    "nft_collection_code_id"
+    "owner"
   ],
   "properties": {
     "dao_treasury_address": {
@@ -24,10 +24,18 @@
     "mint_start_time": {
       "$ref": "#/definitions/Timestamp"
     },
-    "nft_collection_code_id": {
-      "type": "integer",
-      "format": "uint64",
-      "minimum": 0.0
+    "nft_collection_address": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Addr"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "owner": {
+      "$ref": "#/definitions/Addr"
     }
   },
   "additionalProperties": false,

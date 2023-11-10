@@ -54,6 +54,31 @@
     {
       "type": "object",
       "required": [
+        "update_rewards_callback"
+      ],
+      "properties": {
+        "update_rewards_callback": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "change_owner"
+      ],
+      "properties": {
+        "change_owner": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
         "break_nft"
       ],
       "properties": {
