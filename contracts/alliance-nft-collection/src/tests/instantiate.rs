@@ -57,7 +57,7 @@ pub fn intantiate_with_reply() -> (
                 value: Binary::from(
                     MsgCreateDenom {
                         sender: Addr::unchecked("cosmos2contract").to_string(),
-                        subdenom: "AllianceDAO".to_string(),
+                        subdenom: "AllianceNFT".to_string(),
                     }
                     .encode_to_vec(),
                 ),
@@ -72,7 +72,7 @@ pub fn intantiate_with_reply() -> (
         result: SubMsgResult::Ok(SubMsgResponse {
             events: vec![],
             data: Some(Binary::from(
-                String::from("factory/cosmos2contract/AllianceDAO")
+                String::from("factory/cosmos2contract/AllianceNFT")
                     .to_bytes()
                     .unwrap(),
             )),
@@ -92,17 +92,17 @@ pub fn intantiate_with_reply() -> (
                     sender: "cosmos2contract".to_string(),
                     metadata: Some(Metadata {
                         description:
-                            "Staking token for AllianceDAO used by the NFT collection to generate rewards"
+                            "Staking token for AllianceNFT used by the NFT collection to generate rewards"
                                 .to_string(),
                         denom_units: vec![DenomUnit {
-                            denom: "factory/cosmos2contract/AllianceDAO".to_string(),
+                            denom: "factory/cosmos2contract/AllianceNFT".to_string(),
                             exponent: 0,
                             aliases: vec![],
                         }],
-                        base: "factory/cosmos2contract/AllianceDAO".to_string(),
-                        display: "factory/cosmos2contract/AllianceDAO".to_string(),
+                        base: "factory/cosmos2contract/AllianceNFT".to_string(),
+                        display: "factory/cosmos2contract/AllianceNFT".to_string(),
                         name: "Alliance Token".to_string(),
-                        symbol: "AllianceDAO".to_string(),
+                        symbol: "AllianceNFT".to_string(),
                         uri: "".to_string(),
                         uri_hash: "".to_string(),
                     }),
@@ -114,7 +114,7 @@ pub fn intantiate_with_reply() -> (
                     mint_to_address : "cosmos2contract".to_string(),
                     sender: "cosmos2contract".to_string(),
                     amount: Some(Coin {
-                        denom: "factory/cosmos2contract/AllianceDAO".to_string(),
+                        denom: "factory/cosmos2contract/AllianceNFT".to_string(),
                         amount: "1000000000000".to_string(),
                     }),
                 }.encode_to_vec()),

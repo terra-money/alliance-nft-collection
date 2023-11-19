@@ -87,10 +87,10 @@ pub fn intantiate_with_reply() -> (
             admin: Some(env.contract.address.to_string()),
             code_id: 1,
             msg: to_binary(&InstantiateCollectionMsg {
-                name: "AllianceDAO".to_string(),
+                name: "AllianceNFT".to_string(),
                 symbol: "ALLIANCE".to_string(),
                 minter: env.contract.address.to_string(),
-                owner: Addr::unchecked("creator"),
+                owner: Addr::unchecked("cosmos2contract"),
             })
             .unwrap(),
             funds: vec![],

@@ -16,6 +16,6 @@ fn test_query_info_and_config() {
     );
     assert_eq!(
         contract_conf_res,
-        "{\"owner\":\"owner\",\"asset_denom\":\"factory/cosmos2contract/AllianceDAO\"}".as_bytes()
+        "{\"owner\":\"owner\",\"asset_denom\":\"factory/cosmos2contract/AllianceNFT\"}".as_bytes()
     );
 }

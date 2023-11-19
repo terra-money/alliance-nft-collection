@@ -45,10 +45,10 @@ pub fn instantiate(
         admin: Some(env.contract.address.to_string()),
         code_id: msg.nft_collection_code_id,
         msg: to_binary(&InstantiateCollectionMsg {
-            name: "AllianceDAO".to_string(),
+            name: "AllianceNFT".to_string(),
             symbol: "ALLIANCE".to_string(),
             minter: env.contract.address.to_string(),
-            owner: info.sender.clone(),
+            owner: env.contract.address.clone(),
         })?,
         funds: info.funds,
         label: "Alliance NFT Collection".to_string(),
