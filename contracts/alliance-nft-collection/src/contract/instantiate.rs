@@ -25,7 +25,7 @@ use super::reply::INSTANTIATE_REPLY_ID;
 
 pub const CONTRACT_NAME: &str = "crates.io:alliance-nft-collection";
 pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
-const SUBDENOM: &str = "AllianceDAO";
+const SUBDENOM: &str = "AllianceNFT";
 const TOKENS_SUPPLY: u64 = 1_000_000_000_000;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -96,7 +96,7 @@ pub fn reply_on_instantiate(
         sender: env.contract.address.to_string(),
         metadata: Some(Metadata {
             description:
-                "Staking token for AllianceDAO used by the NFT collection to generate rewards"
+                "Staking token for AllianceNFT used by the NFT collection to generate rewards"
                     .to_string(),
             denom_units: vec![DenomUnit {
                 denom: denom.to_string(),

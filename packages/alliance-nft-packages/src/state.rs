@@ -3,6 +3,15 @@ use cosmwasm_std::{Addr, Response, Timestamp};
 
 use crate::{errors::ContractError, Extension};
 
+// The NFT collection may be able to accrual rewards
+// in different tokens if the take rate of an Alliance
+// is positive. But for now, breaking an NFT will allow
+// claiming and accounting rewards only for Luna Tokens.
+//
+// Whatsoever, the DAO will be able to use these other 
+// rewards to do anything they want collectively
+pub const ALLOWED_DENOM: &str = "uluna";
+
 #[cw_serde]
 pub struct Trait {
     pub display_type: Option<String>,
@@ -66,7 +75,7 @@ impl MinterConfig {
     // and the other params are set correctly
     pub fn is_minting_period(&self, current_time: Timestamp) -> Result<Response, ContractError> {
         if current_time < self.mint_start_time || current_time > self.mint_end_time {
-            return Err(ContractError::MintTimeCompleted(
+            return Err(ContractError::OutOfMintingPeriod(
                 self.mint_start_time,
                 self.mint_end_time,
                 current_time,

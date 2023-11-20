@@ -224,7 +224,7 @@ fn mint_inexistent_nft() {
 }
 
 #[test]
-fn mint_outside_allowed_time() {
+fn minting_outside_allowed_period() {
     // Create the env with the contract
     let (mut deps, mut env, _) = intantiate_with_reply();
     // increment the time with 2 secs
@@ -238,7 +238,7 @@ fn mint_outside_allowed_time() {
     );
     assert_eq!(
         res.unwrap_err().to_string(),
-        String::from("Mint time must be greater than 1.000000000 and lesser than 3.000000000, current time is 4.000000000")
+        String::from("Minting period starts at 1.000000000 and ends at 3.000000000. Current time is 4.000000000")
     );
     // decrement the time with 4 secs
     env.block.time = env.block.time.minus_seconds(4);
@@ -251,7 +251,7 @@ fn mint_outside_allowed_time() {
     );
     assert_eq!(
         res.unwrap_err().to_string(),
-        String::from("Mint time must be greater than 1.000000000 and lesser than 3.000000000, current time is 0.000000000")
+        String::from("Minting period starts at 1.000000000 and ends at 3.000000000. Current time is 0.000000000")
     );
 
     // query to see if stats match

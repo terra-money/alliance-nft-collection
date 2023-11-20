@@ -24,16 +24,24 @@ pub fn instantiate(
         return Err(ContractError::InvalidMintTimeRange {});
     }
 
+    let dao_treasury_address = match msg.dao_treasury_address{
+        Some(addr) => {
+            let dao_treasury_addr = deps.api.addr_validate(&addr)?;
+            Some(dao_treasury_addr)
+        },
+        None => None
+    };
+
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;
-
+    
     STATS.save(deps.storage, &MinterStats::default())?;
 
     CONFIG.save(
         deps.storage,
         &MinterConfig {
             owner: info.sender.clone(),
-            dao_treasury_address: msg.dao_treasury_address,
+            dao_treasury_address: dao_treasury_address,
             nft_collection_address: None,
             mint_start_time: msg.mint_start_time,
             mint_end_time: msg.mint_end_time,
@@ -45,10 +53,10 @@ pub fn instantiate(
         admin: Some(env.contract.address.to_string()),
         code_id: msg.nft_collection_code_id,
         msg: to_binary(&InstantiateCollectionMsg {
-            name: "AllianceDAO".to_string(),
+            name: "AllianceNFT".to_string(),
             symbol: "ALLIANCE".to_string(),
             minter: env.contract.address.to_string(),
-            owner: info.sender.clone(),
+            owner: env.contract.address.clone(),
         })?,
         funds: info.funds,
         label: "Alliance NFT Collection".to_string(),

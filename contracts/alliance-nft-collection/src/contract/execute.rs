@@ -1,6 +1,7 @@
+use alliance_nft_packages::state::ALLOWED_DENOM;
 use cosmwasm_std::{
     coins, entry_point, to_binary, Addr, BankMsg, Binary, Coin as CwCoin, CosmosMsg, Order, SubMsg,
-    Uint128, WasmMsg,
+    Uint128, WasmMsg, Storage, QuerierWrapper,
 };
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response};
 use cw721::Cw721Query;
@@ -21,8 +22,9 @@ use alliance_nft_packages::{
     AllianceNftCollection,
 };
 
-const CLAIM_REWARD_ERROR_REPLY_ID: u64 = 1;
-const DENOM: &str = "uluna";
+use super::query::try_query_contract_balance;
+use super::reply::CLAIM_REWARD_ERROR_REPLY_ID;
+
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
@@ -58,19 +60,8 @@ fn try_alliance_claim_rewards(
     if num_of_active == 0 {
         return Err(ContractError::NoActiveNfts {});
     }
+    store_temp_contract_funds(&info.funds, deps.querier, deps.storage, &env.contract.address)?;
 
-    let reward_sent_in_tx: Option<&CwCoin> = info.funds.iter().find(|c| c.denom == DENOM);
-    let sent_balance = if let Some(coin) = reward_sent_in_tx {
-        coin.amount
-    } else {
-        Uint128::zero()
-    };
-    let contract_balance = deps
-        .querier
-        .query_balance(env.contract.address.clone(), DENOM)?
-        .amount;
-
-    TEMP_BALANCE.save(deps.storage, &(contract_balance - sent_balance))?;
     let validators = VALS
         .range(deps.storage, None, None, Order::Ascending)
         .map(|v| v.unwrap().0)
@@ -112,7 +103,7 @@ fn update_reward_callback(
 
     let current_balance = deps
         .querier
-        .query_balance(env.contract.address, DENOM)?
+        .query_balance(env.contract.address, ALLOWED_DENOM)?
         .amount;
     let previous_balance = TEMP_BALANCE.load(deps.storage)?;
     let rewards_collected = current_balance - previous_balance;
@@ -123,7 +114,9 @@ fn update_reward_callback(
     })?;
 
     TEMP_BALANCE.remove(deps.storage);
-    Ok(Response::new().add_attributes(vec![("action", "update_rewards_callback")]))
+    Ok(Response::new()
+        .add_attributes(vec![("action", "update_rewards_callback")]
+    ))
 }
 
 fn try_alliance_delegate(
@@ -134,6 +127,8 @@ fn try_alliance_delegate(
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.as_ref().storage)?;
     authorize_execution(cfg.owner.clone(), info.sender)?;
+    store_temp_contract_funds(&info.funds, deps.querier, deps.storage, &env.contract.address)?;
+    
     let mut cosmos_msg: Vec<CosmosMsg> = Vec::new();
 
     for del in msg.delegations.iter() {
@@ -156,6 +151,13 @@ fn try_alliance_delegate(
         cosmos_msg.push(msg);
     }
 
+    let msg = CosmosMsg::Wasm(WasmMsg::Execute {
+        contract_addr: env.contract.address.to_string(),
+        msg: to_binary(&ExecuteCollectionMsg::UpdateRewardsCallback {}).unwrap(),
+        funds: vec![],
+    });
+    cosmos_msg.push(msg);
+    
     Ok(Response::default()
         .add_attribute("method", "try_alliance_delegate")
         .add_messages(cosmos_msg))
@@ -169,11 +171,12 @@ fn try_alliance_undelegate(
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
     authorize_execution(cfg.owner.clone(), info.sender)?;
+    store_temp_contract_funds(&info.funds, deps.querier, deps.storage, &env.contract.address)?;
 
     if msg.undelegations.is_empty() {
         return Err(ContractError::EmptyDelegation {});
     }
-    let mut msgs = vec![];
+    let mut cosmos_msg = vec![];
     for delegation in msg.undelegations {
         let undelegate_msg = MsgUndelegate {
             amount: Some(Coin {
@@ -187,12 +190,18 @@ fn try_alliance_undelegate(
             type_url: "/alliance.alliance.MsgUndelegate".to_string(),
             value: Binary::from(undelegate_msg.encode_to_vec()),
         };
-        msgs.push(msg);
+        cosmos_msg.push(msg);
         reduce_val_stake(deps.storage, delegation.validator, delegation.amount)?;
     }
+    let msg = CosmosMsg::Wasm(WasmMsg::Execute {
+        contract_addr: env.contract.address.to_string(),
+        msg: to_binary(&ExecuteCollectionMsg::UpdateRewardsCallback {}).unwrap(),
+        funds: vec![],
+    });
+    cosmos_msg.push(msg);
     Ok(Response::new()
         .add_attributes(vec![("action", "try_alliance_undelegate")])
-        .add_messages(msgs))
+        .add_messages(cosmos_msg))
 }
 
 fn try_alliance_redelegate(
@@ -203,11 +212,12 @@ fn try_alliance_redelegate(
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
     authorize_execution(cfg.owner.clone(), info.sender)?;
+    store_temp_contract_funds(&info.funds, deps.querier, deps.storage, &env.contract.address)?;
 
     if msg.redelegations.is_empty() {
         return Err(ContractError::EmptyDelegation {});
     }
-    let mut msgs = vec![];
+    let mut cosmos_msg = vec![];
     for redelegation in msg.redelegations {
         let src_validator = redelegation.src_validator;
         let dst_validator = redelegation.dst_validator;
@@ -224,13 +234,19 @@ fn try_alliance_redelegate(
             type_url: "/alliance.alliance.MsgRedelegate".to_string(),
             value: Binary::from(redelegate_msg.encode_to_vec()),
         };
-        msgs.push(msg);
+        cosmos_msg.push(msg);
         upsert_val(deps.storage, dst_validator, redelegation.amount)?;
         reduce_val_stake(deps.storage, src_validator, redelegation.amount)?;
     }
+    let msg = CosmosMsg::Wasm(WasmMsg::Execute {
+        contract_addr: env.contract.address.to_string(),
+        msg: to_binary(&ExecuteCollectionMsg::UpdateRewardsCallback {}).unwrap(),
+        funds: vec![],
+    });
+    cosmos_msg.push(msg);
     Ok(Response::new()
         .add_attributes(vec![("action", "try_alliance_redelegate")])
-        .add_messages(msgs))
+        .add_messages(cosmos_msg))
 }
 
 fn try_breaknft(
@@ -275,7 +291,7 @@ fn try_breaknft(
         ]))
     } else {
         let send_msg = CosmosMsg::Bank(BankMsg::Send {
-            amount: coins(rewards_claimable.u128(), DENOM),
+            amount: coins(rewards_claimable.u128(), ALLOWED_DENOM),
             to_address: owner.to_string(),
         });
         Ok(Response::default()
@@ -334,4 +350,24 @@ fn authorize_execution(owner: Addr, sender: Addr) -> Result<Response, ContractEr
         return Err(ContractError::Unauthorized(sender, owner));
     }
     Ok(Response::default())
+}
+
+// Given the sent fund and the current contract balance, 
+// store the difference in TEMP_BALANCE so we can keep,
+// track of the rewards collected in the current tx.
+fn store_temp_contract_funds(
+    funds: &Vec<CwCoin>, 
+    querier:QuerierWrapper, 
+    storage: &mut dyn Storage, 
+    contract_addr: &Addr
+) -> Result<(), ContractError> {
+    let reward_sent_in_tx: Option<&CwCoin> = funds.iter().find(|c| c.denom == ALLOWED_DENOM);
+    let sent_balance = if let Some(coin) = reward_sent_in_tx {
+        coin.amount
+    } else {
+        Uint128::zero()
+    };
+    let contract_balance = try_query_contract_balance(querier, contract_addr)?;
+    TEMP_BALANCE.save(storage, &(contract_balance - sent_balance))?;
+    Ok(())
 }

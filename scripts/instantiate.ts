@@ -25,10 +25,9 @@ try {
                 accAddress,
                 Number(nftMinterCodeId),
                 {
-                    dao_address: "terra10vyurupelsgdhucjqcjukqzmhtek56tuunq985", // random address
                     nft_collection_code_id: Number(nftCollectionCodeId),
-                    mint_start_time: moment.utc().add(5, "minute").unix().toString() + "000000000",
-                    mint_end_time: moment.utc().add(10, "minute").unix().toString() + "000000000",
+                    mint_start_time: moment.utc().add(1.5, "day").unix().toString() + "000000000",
+                    mint_end_time: moment.utc().add(8, "day").unix().toString() + "000000000",
                 },
                 Coins.fromString("10000000uluna"),
                 "Alliance NFT Minter",
