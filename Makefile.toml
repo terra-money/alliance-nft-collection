@@ -54,6 +54,12 @@ ts-node ./scripts/deploy.ts
 script = """
 ts-node ./scripts/instantiate.ts
 """
+
+[tasks.change-owners]
+script = """
+ts-node ./scripts/execute-change-owners.ts
+"""
+
 [tasks.mint]
 script = """
 ts-node ./scripts/mint.ts
