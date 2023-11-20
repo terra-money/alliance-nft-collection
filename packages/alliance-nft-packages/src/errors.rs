@@ -34,6 +34,9 @@ pub enum ContractError {
     #[error("Invalid mint time range, mint_start_time is greater than mint_end_time")]
     InvalidMintTimeRange {},
 
+    #[error("Invalid DAO treasury address")]
+    InvalidDaoTreasuryAddress {},
+
     #[error("Minting period starts at {0} and ends at {1}. Current time is {2}")]
     OutOfMintingPeriod(Timestamp, Timestamp, Timestamp),
 

@@ -42,7 +42,7 @@ fn test_instantiate_wrong_time_range() {
 
     // WHEN instantiating the contract ...
     let msg = InstantiateMinterMsg {
-        dao_treasury_address: Some(Addr::unchecked("dao_treasury_address")),
+        dao_treasury_address: Some(String::from("dao_treasury_address")),
         nft_collection_code_id: 1,
         mint_start_time: Timestamp::from_seconds(3),
         mint_end_time: Timestamp::from_seconds(1),
@@ -69,7 +69,7 @@ pub fn intantiate_with_reply() -> (
 
     // WHEN instantiating the contract ...
     let msg = InstantiateMinterMsg {
-        dao_treasury_address: Some(Addr::unchecked("dao_treasury_address")),
+        dao_treasury_address: Some(String::from("dao_treasury_address")),
         nft_collection_code_id: 1,
         mint_start_time: Timestamp::from_seconds(1),
         mint_end_time: Timestamp::from_seconds(3),
