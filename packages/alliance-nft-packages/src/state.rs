@@ -75,7 +75,7 @@ impl MinterConfig {
     // and the other params are set correctly
     pub fn is_minting_period(&self, current_time: Timestamp) -> Result<Response, ContractError> {
         if current_time < self.mint_start_time || current_time > self.mint_end_time {
-            return Err(ContractError::MintTimeCompleted(
+            return Err(ContractError::OutOfMintingPeriod(
                 self.mint_start_time,
                 self.mint_end_time,
                 current_time,

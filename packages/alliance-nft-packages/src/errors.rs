@@ -34,8 +34,8 @@ pub enum ContractError {
     #[error("Invalid mint time range, mint_start_time is greater than mint_end_time")]
     InvalidMintTimeRange {},
 
-    #[error("Mint time must be greater than {0} and lesser than {1}, current time is {2}")]
-    MintTimeCompleted(Timestamp, Timestamp, Timestamp),
+    #[error("Minting period starts at {0} and ends at {1}. Current time is {2}")]
+    OutOfMintingPeriod(Timestamp, Timestamp, Timestamp),
 
     #[error("NFTs cannot be send to DAO yet, current time is {0} and mint end time is {1}")]
     CannotSendToDao(Timestamp, Timestamp),
