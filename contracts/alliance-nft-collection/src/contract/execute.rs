@@ -23,8 +23,8 @@ use alliance_nft_packages::{
 };
 
 use super::query::try_query_contract_balance;
+use super::reply::CLAIM_REWARD_ERROR_REPLY_ID;
 
-const CLAIM_REWARD_ERROR_REPLY_ID: u64 = 1;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
