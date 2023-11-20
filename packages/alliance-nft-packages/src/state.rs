@@ -3,6 +3,15 @@ use cosmwasm_std::{Addr, Response, Timestamp};
 
 use crate::{errors::ContractError, Extension};
 
+// The NFT collection may be able to accrual rewards
+// in different tokens if the take rate of an Alliance
+// is positive. But for now, breaking an NFT will allow
+// claiming and accounting rewards only for Luna Tokens.
+//
+// Whatsoever, the DAO will be able to use these other 
+// rewards to do anything they want collectively
+pub const ALLOWED_DENOM: &str = "uluna";
+
 #[cw_serde]
 pub struct Trait {
     pub display_type: Option<String>,

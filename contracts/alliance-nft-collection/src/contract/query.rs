@@ -1,9 +1,10 @@
-use cosmwasm_std::{entry_point, to_binary, Uint128};
+use alliance_nft_packages::errors::ContractError;
+use cosmwasm_std::{entry_point, to_binary, Uint128, Addr, QuerierWrapper};
 use cosmwasm_std::{Binary, Deps, Env, StdResult};
 use cw721::{AllNftInfoResponse, Approval, NftInfoResponse, OwnerOfResponse};
 use cw721_base::state::{Approval as BaseApproval, TokenInfo};
 
-use alliance_nft_packages::state::{Trait, Config};
+use alliance_nft_packages::state::{Trait, Config, ALLOWED_DENOM};
 use alliance_nft_packages::{query::QueryCollectionMsg, AllianceNftCollection, Extension};
 
 use crate::state::{CONFIG, BROKEN_NFTS, REWARD_BALANCE, NFT_BALANCE_CLAIMED};
@@ -114,4 +115,13 @@ fn humanize_approval(approval: &BaseApproval) -> Approval {
         spender: approval.spender.to_string(),
         expires: approval.expires,
     }
+}
+
+// Given the querier and the contract address
+// return the balance of the contract
+pub fn try_query_contract_balance(querier: QuerierWrapper, contract_addr: &Addr) -> Result<Uint128, ContractError> {
+    let contract_balance = querier
+        .query_balance(contract_addr, ALLOWED_DENOM)?
+        .amount;
+    Ok(contract_balance)
 }
