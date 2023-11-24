@@ -1,21 +1,34 @@
+import { NavLink } from "react-router-dom"
 import { useNav } from "./config/routes"
-import HowItWorks from "./content/HowItWorks.mdx"
+
+function Menu() {
+  const { menu } = useNav()
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      {menu.map(({ path, name, isExternal }) => {
+        if (isExternal) {
+          return (
+            <a href={path} key={path} target="_blank" rel="noopener noreferrer">
+              {name}
+            </a>
+          )
+        }
+        return (
+          <NavLink to={path} key={path}>
+            {name}
+          </NavLink>
+        )
+      })}
+    </div>
+  )
+}
 
 function App() {
   const { element: routes } = useNav()
   return (
     <div>
-      allroutes:{routes}
-      <div
-        style={{
-          margin: "0 auto",
-          width: 800,
-          border: "2px solid grey",
-          padding: 8,
-        }}
-      >
-        <HowItWorks />
-      </div>
+      <Menu />
+      {routes}
     </div>
   )
 }
