@@ -7,36 +7,35 @@ dotenv.config()
 
 try {
     (async () => {
-        // Create the LCD Client to interact with the blockchain
-        const lcd = LCDClient.fromDefaultConfig("testnet");
+        // Configuration for the LCD client
+        const lcdConfig = {
+            'pisco-1': {
+                lcd: 'http://192.168.2.101:1317',
+                chainID: 'pisco-1',
+                gasAdjustment: 1.75,
+                gasPrices: { uluna: 0.015 },
+                prefix: 'terra'
+            }
+        };
+        // Initialize LCD Client
+        const lcd = new LCDClient(lcdConfig);
 
         // Get all information from the deployer wallet
         const mk = new MnemonicKey({ mnemonic: process.env.MNEMONIC });
         const contractAdress = fs.readFileSync('./scripts/.nft_minter_contract_address.log').toString();
         const wallet = lcd.wallet(mk);
         const accAddress = wallet.key.accAddress("terra");
-        console.log(`Instantiation wallet address: ${accAddress}`)
-
+        console.log(`change_dao_treasury_address execution wallet address: ${accAddress}`)
 
         try {
             const msgChangeTreasuryAddress = new MsgExecuteContract(
                 accAddress,
                 contractAdress,
-                {
-                    change_dao_treasury_address: "terra1tvzk05sqpa6ysuq8vw98ajut767nak0wfr7k5hrwqn65eagpcexsvq4spe",
-                },
+                { change_dao_treasury_address: "terra19zwen0kp6r2a72xxsw20kz2ekyfkuv2kvsyhf3crdkq86nrrehfs8hlnh6" },
             );
-            // const msgChangeOwner = new MsgExecuteContract(
-            //     accAddress,
-            //     contractAdress,
-            //     {
-            //         change_owner: "terra1p382kqaxns9aevy8ag4hfz662jk7q6uz4he3ka",
-            //     },
-            // );
             const tx = await wallet.createAndSignTx({
                 msgs: [
                     msgChangeTreasuryAddress,
-                    //msgChangeOwner
                 ],
                 chainID: "pisco-1",
             });
