@@ -1,0 +1,129 @@
+.main__svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes orbitAroundLargeCircle1 {
+  0% {
+    transform: rotate(270deg) translateX(386.487px); /* Radius of the first large circle */
+  }
+  100% {
+    transform: rotate(400deg) translateX(386.487px);
+  }
+}
+.smallCircle1 {
+  animation: orbitAroundLargeCircle1 20s linear infinite;
+  animation-delay: -1s;
+  transform-origin: -66.1984px 1056.8px; /* Adjusted center */
+}
+
+@keyframes orbitAroundLargeCircle2 {
+  0% {
+    transform: rotate(250deg) translateX(481.408px); /* Radius of the first large circle */
+  }
+  100% {
+    transform: rotate(500deg) translateX(481.408px);
+  }
+}
+.smallCircle2 {
+  animation: orbitAroundLargeCircle2 40s linear infinite;
+  transform-origin: -73.4999px 1049.5px; /* Adjusted center */
+}
+
+@keyframes orbitAroundLargeCircle3 {
+  0% {
+    transform: rotate(500deg) translateX(579.25px);
+  }
+  100% {
+    transform: rotate(150deg) translateX(579.25px); /* Radius of the first large circle */
+  }
+}
+.smallCircle3 {
+  animation: orbitAroundLargeCircle3 40s linear infinite;
+  transform-origin: -72.0397px 1050.96px; /* Adjusted center */
+}
+
+@keyframes orbitAroundLargeCircle4 {
+  0% {
+    transform: rotate(150deg) translateX(677.092px);
+  }
+  100% {
+    transform: rotate(500deg) translateX(677.092px); /* Radius of the first large circle */
+  }
+}
+.smallCircle4 {
+  animation: orbitAroundLargeCircle4 40s linear infinite;
+  animation-delay: 4s;
+  transform-origin: -73.4999px 1049.5px; /* Adjusted center */
+}
+
+@keyframes orbitAroundLargeCircle5 {
+  0% {
+    transform: rotate(250deg) translateX(773.474px);
+  }
+  100% {
+    transform: rotate(500deg) translateX(773.474px); /* Radius of the first large circle */
+  }
+}
+.smallCircle5 {
+  animation: orbitAroundLargeCircle5 40s linear infinite;
+  // animation-delay: 4s;
+  transform-origin: -73.5001px 1049.5px; /* Adjusted center */
+}
+
+@keyframes orbitAroundLargeCircle6 {
+  0% {
+    transform: rotate(-90deg) translateX(868.395px);
+  }
+  100% {
+    transform: rotate(300deg) translateX(868.395px); /* Radius of the first large circle */
+  }
+}
+.smallCircle6 {
+  animation: orbitAroundLargeCircle6 100s linear infinite;
+  // animation-delay: 4s;
+  transform-origin: -72.0397px 1050.96px; /* Adjusted center */
+}
+
+@keyframes orbitAroundLargeCircle7 {
+  0% {
+    transform: rotate(-190deg) translateX(966.237px);
+  }
+  100% {
+    transform: rotate(300deg) translateX(966.237px); /* Radius of the first large circle */
+  }
+}
+.smallCircle7 {
+  animation: orbitAroundLargeCircle7 100s linear infinite;
+  // animation-delay: 4s;
+  transform-origin: -73.5px 1049.5px; /* Adjusted center */
+}
+
+@keyframes orbitAroundLargeCircle8 {
+  0% {
+    transform: rotate(45deg) translateX(1062.62px); /* Radius of the first large circle */
+  }
+  100% {
+    transform: rotate(-180deg) translateX(1062.62px);
+  }
+}
+.smallCircle8 {
+  animation: orbitAroundLargeCircle8 40s linear infinite;
+  // animation-delay: 4s;
+  transform-origin: -53.5px 1029.5px; /* Adjusted center */
+}
+
+@keyframes orbitAroundLargeCircle9 {
+  0% {
+    transform: rotate(45deg) translateX(1159px); /* Radius of the first large circle */
+  }
+  100% {
+    transform: rotate(-180deg) translateX(1159px);
+  }
+}
+.smallCircle9 {
+  animation: orbitAroundLargeCircle9 60s linear infinite;
+  // animation-delay: 4s;
+  transform-origin: -23.5px 999.5px; /* Adjusted center */
+}
