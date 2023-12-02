@@ -8,12 +8,17 @@ import {
   PlanetView,
   ConnectModalPage,
   ClaimModalPage,
-  NotEligibleModalPage
+  NotEligibleModalPage,
 } from "../pages"
 
 export const useNav = () => {
   const menu = [
-    { path: "/", element: <NFTsPage />, name: "NFT Gallery", isExternal: false },
+    {
+      path: "/",
+      element: <NFTsPage />,
+      name: "NFT Gallery",
+      isExternal: false,
+    },
     {
       path: "/how-it-works",
       element: <HowItWorks />,
@@ -62,7 +67,8 @@ export const useNav = () => {
       name: "Claim",
       isExternal: false,
       isDynamic: false,
-    },{
+    },
+    {
       path: "/not-eligible",
       element: <NotEligibleModalPage />,
       name: "Not Eligible",
@@ -72,5 +78,6 @@ export const useNav = () => {
     { path: "*", element: <NotFound /> },
   ]
 
+  console.log({ routes })
   return { menu, element: useRoutes(routes) }
 }

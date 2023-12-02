@@ -1,9 +1,13 @@
+html {
+  background: #DCD7CF;
+}
 
 .main__container {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 100vh;
+  padding-bottom: 16px;
 
   background: linear-gradient(180deg, #F1EEE9 0%, #DCD7CF 100%);
 
