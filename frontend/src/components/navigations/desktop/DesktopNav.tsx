@@ -1,19 +1,22 @@
-import classNames from 'classnames/bind';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ReactComponent as Logo } from 'assets/AllianceDAOLogo.svg';
-import { ReactComponent as CheckIcon } from 'assets/check.svg';
-import { useNav } from '../../../config/routes';
-import styles from './DesktopNav.module.scss';
+import classNames from "classnames/bind"
+import { Link, NavLink, useLocation } from "react-router-dom"
+import { useAppContext } from "contexts"
+import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
+import { ReactComponent as CheckIcon } from "assets/check.svg"
+import { useNav } from "../../../config/routes"
+import styles from "./DesktopNav.module.scss"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
 const DesktopNav = () => {
-  const { pathname } = useLocation();
-  const { menu } = useNav();
+  const { walletAddress } = useAppContext()
+  const { pathname } = useLocation()
+  const { menu } = useNav()
 
   return (
     <nav className={styles.navigation}>
-      <a href='/'>
+      {walletAddress}
+      <a href="/">
         <Logo className={styles.logo} />
       </a>
       <ul className={styles.link__container}>
@@ -21,15 +24,18 @@ const DesktopNav = () => {
           if (isExternal) {
             return (
               <li key={path}>
-                <a href={path} target="_blank" rel="noopener noreferrer">{name}</a>
+                <a href={path} target="_blank" rel="noopener noreferrer">
+                  {name}
+                </a>
               </li>
             )
           }
           return (
-            <li key={path} className={cx({ [styles.active]: pathname === path })}>
-              <NavLink to={path}>
-                {name}
-              </NavLink>
+            <li
+              key={path}
+              className={cx({ [styles.active]: pathname === path })}
+            >
+              <NavLink to={path}>{name}</NavLink>
             </li>
           )
         })}
@@ -41,7 +47,7 @@ const DesktopNav = () => {
         </button>
       </Link>
     </nav>
-  );
-};
+  )
+}
 
-export default DesktopNav;
+export default DesktopNav

@@ -2,6 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter } from "react-router-dom"
 import { getInitialConfig, WalletProvider } from "@terra-money/wallet-kit"
+import { AppProvider } from "contexts/index.ts"
 import App from "./App.tsx"
 import "styles/index.scss"
 
@@ -12,7 +13,9 @@ getInitialConfig().then((defaultNetworks) => {
     <React.StrictMode>
       <BrowserRouter>
         <WalletProvider defaultNetworks={defaultNetworks}>
-          <App />
+          <AppProvider>
+            <App />
+          </AppProvider>
         </WalletProvider>
       </BrowserRouter>
     </React.StrictMode>
