@@ -13,7 +13,7 @@ const NFTItem = ({ id, imageUrl, title }: NFTCardProps) => {
       <div className={styles.image__wrapper}>
         <img src={imageUrl} alt={title || `NFT ${id}`} />
       </div>
-      {title && <h3>{title}</h3>}
+      {title && <h3># {title}</h3>}
     </NavLink>
   );
 };

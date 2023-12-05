@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import classNames from 'classnames/bind';
 import NFTItem from 'components/nft/NFTItem';
-import styles from './NFTs.module.scss'
+import styles from './NFTs.module.scss';
 import { mockNFTs, signedInUserData } from 'fakeData/mockNFTs';
 
 const cx = classNames.bind(styles);
@@ -35,7 +35,12 @@ export const NFTsPage = () => {
       ) : (
         <div className={styles.grid}>
           {signedInUserData.nftIDs.map(nft => (
-            <NFTItem key={mockNFTs[nft].id} id={mockNFTs[nft].id} imageUrl={mockNFTs[nft].image} title={mockNFTs[nft].id.toString()} />
+            <NFTItem
+              key={mockNFTs[nft].id}
+              id={mockNFTs[nft].id}
+              imageUrl={mockNFTs[nft].image}
+              title={mockNFTs[nft].id.toString()}
+            />
           ))}
         </div>
       )}
