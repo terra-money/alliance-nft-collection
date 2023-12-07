@@ -13,7 +13,7 @@ const DesktopNav = () => {
 
   return (
     <nav className={styles.navigation}>
-      <a href='/'>
+      <a href='/nft-gallery'>
         <Logo className={styles.logo} />
       </a>
       <ul className={styles.link__container}>
@@ -34,7 +34,7 @@ const DesktopNav = () => {
           )
         })}
       </ul>
-      <Link to="/connect-wallet">
+      <Link to="/">
         <button className={styles.nav__button}>
           <CheckIcon />
           Connect Wallet

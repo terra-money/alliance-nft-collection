@@ -26,7 +26,7 @@ const MobileNav = ({
   return (
     <>
       <nav className={styles.navigation}>
-        <a href='/'>
+        <a href='/nft-gallery'>
           <Logo className={styles.logo} />
         </a>
 
@@ -57,7 +57,7 @@ const MobileNav = ({
             )
           })}
         </ul>
-        <Link to="/connect-wallet">
+        <Link to="/">
           <button className={styles.nav__button}>
             <CheckIcon />
             Connect Wallet

@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { allPlanets, PlanetProps } from 'fakeData/planets';
 import styles from './StarMap.module.scss';
 
-const StarMap = ({ planet }: { planet: string }) => {
+const StarMap = ({ planet, setPlanet }: { planet: string, setPlanet: (planet: PlanetProps) => void }) => {
   const [hoveredPlanet, setHoveredPlanet] = useState<string | null>(null);
 
   const handlePlanetClick = (planetNumber: number) => {
-    window.location.href = `/planet/${planetNumber}`;
+    if (setPlanet) {
+      setPlanet(allPlanets[planetNumber - 1]);
+    } else {
+      window.location.href = `/planet/${planetNumber}`;
+    }
   };
 
   const handleMouseEnter = (planetName: string) => {
