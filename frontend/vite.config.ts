@@ -3,28 +3,32 @@ import mdx from "@mdx-js/rollup"
 import { defineConfig } from "vite"
 import { nodePolyfills } from "vite-plugin-node-polyfills"
 import notifier from "vite-plugin-notifier"
+import svgr from 'vite-plugin-svgr'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  plugins:
-    mode === "development"
-      ? [
-          react(),
-          notifier(),
-          mdx(),
-          nodePolyfills({
-            // Whether to polyfill `node:` protocol imports.
-            protocolImports: true,
-          }),
-        ]
-      : [],
+export default defineConfig({
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    notifier(),
+    mdx(),
+    svgr(),
+    nodePolyfills({
+      // Whether to polyfill `node:` protocol imports.
+      protocolImports: true,
+    }),
+  ],
   server: {
     port: 4000,
   },
   resolve: {
     alias:
       /** browserify for @jbrowse/react-linear-genome-view */
-      { stream: "stream-browserify" },
+      {
+        stream: "stream-browserify",
+        'scss': '/src/styles',
+      },
   },
   optimizeDeps: {
     esbuildOptions: {
@@ -48,4 +52,4 @@ export default defineConfig(({ mode }) => ({
     jsxFragment: "_jsxFragment",
     jsxInject: `import { createElement as _jsx, Fragment as _jsxFragment } from 'react'`,
   },
-}))
+})
