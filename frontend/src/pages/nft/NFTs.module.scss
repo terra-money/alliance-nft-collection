@@ -1,54 +1,60 @@
 .main {
+  display: flex;
+  gap: 24px;
   padding: 24px 80px;
 
-  .buttons {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    margin-bottom: 32px;
+  .main__content {
+    flex: 1 1 0;
 
-    .button {
-      color: #797979;
-      font-size: 18px;
-      font-weight: 600;
-      position: relative;
-      margin-bottom: 10px;
+    .buttons {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 32px;
 
-      .button__count {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 20px;
-        width: 20px;
-        border-radius: 8px;
-        background: #797979;
-        color: var(--token-light-800, #F1EEE9);
-        text-align: center;
-        font-size: 14px;
-        font-weight: 700;
-        margin-left: 11px;
-      }
+      .button {
+        color: #797979;
+        font-size: 18px;
+        font-weight: 600;
+        position: relative;
+        margin-bottom: 10px;
 
-      &::before {
-        position: absolute;
-        content: "";
-        width: 0;
-        height: 2px;
-        background: var(--token-primary-500, #00C2FF);
-        left: 50%;
-        bottom: -10px;
-        transform: translateX(-50%);
-        border-radius: 10px;
-        transition: all .2s ease;
-        opacity: 0;
-      }
-
-      &.button__selected {
-        color: var(--token-dark-500, #2F2E2D);
+        .button__count {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 20px;
+          width: 20px;
+          border-radius: 8px;
+          background: #797979;
+          color: var(--token-light-800, #F1EEE9);
+          text-align: center;
+          font-size: 14px;
+          font-weight: 700;
+          margin-left: 11px;
+        }
 
         &::before {
-          width: 100%;
-          opacity: 1;
+          position: absolute;
+          content: "";
+          width: 0;
+          height: 2px;
+          background: var(--token-primary-500, #00C2FF);
+          left: 50%;
+          bottom: -10px;
+          transform: translateX(-50%);
+          border-radius: 10px;
+          transition: all .2s ease;
+          opacity: 0;
+        }
+
+        &.button__selected {
+          color: var(--token-dark-500, #2F2E2D);
+
+          &::before {
+            width: 100%;
+            opacity: 1;
+          }
         }
       }
     }

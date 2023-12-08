@@ -1,0 +1,40 @@
+.facet {
+  width: 20%;
+  border-right: 1px solid #E5E5E5;
+
+  .facet__header {
+    .facet__title {
+
+    }
+
+    .facet__clear {
+      .clear__button {
+
+      }
+    }
+  }
+
+  .facet__body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .facet__item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+
+      .facet__item__checkbox {
+        input {
+
+        }
+      }
+      .facet__item__name {
+        span {
+
+        }
+      }
+    }
+  }
+}
