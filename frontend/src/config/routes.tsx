@@ -1,21 +1,23 @@
 import { useRoutes } from "react-router-dom"
 import {
-  LandingPage,
-  NftGallery,
-  NftView,
+  NFTsPage,
+  NFTView,
   HowItWorks,
   TheStory,
   NotFound,
+  PlanetView,
+  ConnectModalPage,
+  ClaimModalPage,
+  NotEligibleModalPage
 } from "../pages"
 
 export const useNav = () => {
   const menu = [
-    { path: "/", element: <LandingPage />, name: "Home", isExternal: false },
     {
       path: "/nft-gallery",
-      element: <NftGallery />,
+      element: <NFTsPage />,
       name: "NFT Gallery",
-      isExternal: false,
+      isExternal: false
     },
     {
       path: "/how-it-works",
@@ -31,7 +33,7 @@ export const useNav = () => {
     },
     {
       path: "https://dao.enterprise.money/daos",
-      name: "Alliance DAO",
+      name: "Alliance DAO Staking",
       isExternal: true,
     },
   ]
@@ -40,17 +42,37 @@ export const useNav = () => {
     ...menu,
     {
       path: "/nft/:id",
-      element: <NftView />,
+      element: <NFTView />,
       name: "NFT View",
       isExternal: false,
       isDynamic: true,
     },
     {
-      path: "/planet/:planet_name",
-      element: <NftView />,
+      path: "/planet/:id",
+      element: <PlanetView />,
       name: "Planet View",
       isExternal: false,
       isDynamic: true,
+    },
+    {
+      path: "/connect-wallet",
+      element: <ConnectModalPage />,
+      name: "Connect Wallet",
+      isExternal: false,
+      isDynamic: false,
+    },
+    {
+      path: "/",
+      element: <ClaimModalPage />,
+      name: "Claim",
+      isExternal: false,
+      isDynamic: false,
+    },{
+      path: "/not-eligible",
+      element: <NotEligibleModalPage />,
+      name: "Not Eligible",
+      isExternal: false,
+      isDynamic: false,
     },
     { path: "*", element: <NotFound /> },
   ]

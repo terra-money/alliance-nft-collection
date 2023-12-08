@@ -1,0 +1,113 @@
+.main {
+  padding: 24px 80px;
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 32px;
+
+    .button {
+      color: #797979;
+      font-size: 18px;
+      font-weight: 600;
+      position: relative;
+      margin-bottom: 10px;
+
+      .button__count {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 20px;
+        width: 20px;
+        border-radius: 8px;
+        background: #797979;
+        color: var(--token-light-800, #F1EEE9);
+        text-align: center;
+        font-size: 14px;
+        font-weight: 700;
+        margin-left: 11px;
+      }
+
+      &::before {
+        position: absolute;
+        content: "";
+        width: 0;
+        height: 2px;
+        background: var(--token-primary-500, #00C2FF);
+        left: 50%;
+        bottom: -10px;
+        transform: translateX(-50%);
+        border-radius: 10px;
+        transition: all .2s ease;
+        opacity: 0;
+      }
+
+      &.button__selected {
+        color: var(--token-dark-500, #2F2E2D);
+
+        &::before {
+          width: 100%;
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 1400px) {
+    padding: 24px 62px;
+  }
+
+  @media (max-width: 1200px) {
+    padding: 24px 24px;
+  }
+
+  @media (max-width: 1000px) {
+    min-height: 90px;
+  }
+
+  @media (max-width: 768px) {
+    .buttons {
+      gap: 20px;
+
+      .button {
+        font-size: 16px;
+
+        .button__count {
+          height: 18px;
+          width: 18px;
+          font-size: 11px;
+          border-radius: 6px;
+          margin-left: 8px;
+        }
+
+        &::before {
+          bottom: -6px;
+        }
+      }
+    }
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  row-gap: 32px;
+  column-gap: 40px;
+
+  @media (max-width: 877px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    row-gap: 28px;
+    column-gap: 28px;
+  }
+
+  @media (max-width: 520px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    row-gap: 16px;
+    column-gap: 20px;
+  }
+
+  @media (max-width: 367px) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}

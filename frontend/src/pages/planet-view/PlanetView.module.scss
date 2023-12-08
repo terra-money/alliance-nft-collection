@@ -1,0 +1,50 @@
+.planet__view__container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: 800px;
+  margin: 40px auto 0;
+
+  .title__container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+
+    h1 {
+      color: var(--token-dark-500, #2F2E2D);
+      font-size: 48px;
+      font-weight: 700;
+    }
+
+    h5 {
+      color: var(--token-dark-500, #2F2E2D);
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+
+  .paragraph__section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    h3 {
+      color: var(--token-dark-500, #2F2E2D);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    p {
+      color: var(--token-dark-500, #2F2E2D);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 22px;
+    }
+  }
+
+  @media (max-width: 840px) {
+    padding: 0 28px;
+  }
+}

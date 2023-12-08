@@ -1,36 +1,21 @@
-import { NavLink } from "react-router-dom"
-import { useNav } from "./config/routes"
+import { useState } from 'react';
+import classNames from 'classnames/bind';
+import Navigation from './components/navigations/Navigation';
+import { useNav } from './config/routes';
+import styles from './App.module.scss';
 
-function Menu() {
-  const { menu } = useNav()
-  return (
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      {menu.map(({ path, name, isExternal }) => {
-        if (isExternal) {
-          return (
-            <a href={path} key={path} target="_blank" rel="noopener noreferrer">
-              {name}
-            </a>
-          )
-        }
-        return (
-          <NavLink to={path} key={path}>
-            {name}
-          </NavLink>
-        )
-      })}
-    </div>
-  )
-}
+const cx = classNames.bind(styles);
 
-function App() {
-  const { element: routes } = useNav()
+const App = () => {
+  const { element: routes } = useNav();
+  const [isMobileNavOpen, setMobileNavOpen] = useState(false);
+
   return (
-    <div>
-      <Menu />
+    <div className={cx(styles.main__container, { [styles.mobile__nav__open]: isMobileNavOpen })}>
+      <Navigation isMobileNavOpen={isMobileNavOpen} setMobileNavOpen={setMobileNavOpen} />
       {routes}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

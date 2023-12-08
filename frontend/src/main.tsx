@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client"
 import { BrowserRouter } from "react-router-dom"
 import { getInitialConfig, WalletProvider } from "@terra-money/wallet-kit"
 import App from "./App.tsx"
-import "./index.scss"
+import "styles/index.scss"
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 

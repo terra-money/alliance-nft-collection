@@ -1,0 +1,32 @@
+
+.main__container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100vh;
+
+  background: linear-gradient(180deg, #F1EEE9 0%, #DCD7CF 100%);
+
+  &.mobile__nav__open {
+    overflow: hidden;
+  }
+
+  h1 {
+    color: var(--token-dark-500, #2F2E2D);
+    font-size: 32px;
+    font-weight: 600;
+  }
+
+  h2 {
+    color: var(--token-dark-500, #2F2E2D);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  p {
+    color: var(--token-dark-500, #2F2E2D);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22px; /* 137.5% */
+  }
+}

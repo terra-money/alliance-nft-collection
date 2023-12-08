@@ -9,16 +9,18 @@ html {
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Gotham;
+  background: var(--token-dark-200);
+  color: var(--token-light-white);
+  font-family: var(--token-font-family-default) !important;
   font-feature-settings: "tnum";
-  font-size: var(--font-size);
-  font-weight: var(--normal);
-  line-height: 1.5;
+  font-size: var(--token-font-size-sm);
+  font-weight: var(--token-font-weight-medium);
+  line-height: var(--token-line-height-sm-default);
   margin: 0;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  height: 100vh;
+  overflow-x: hidden;
 }
 
 h1,
@@ -28,7 +30,7 @@ h4,
 h5,
 h6 {
   font-size: inherit;
-  font-weight: var(--bold);
+  font-weight: 600;
   margin: 0;
 }
 
@@ -58,7 +60,7 @@ dl {
 
 dt {
   grid-column-start: 1;
-  font-weight: var(--bold);
+  font-weight: var(--token-font-weight-bold);
 }
 
 dd {
@@ -67,7 +69,7 @@ dd {
 }
 
 strong {
-  font-weight: var(--bold);
+  // font-weight: var(--token-font-weight-bold);
 }
 
 small {
@@ -95,8 +97,8 @@ table {
 }
 
 th {
-  font-size: var(--font-size-small);
-  font-weight: var(--bold);
+  font-size: var(--token-line-height-x-sm-default);
+  font-weight: var(--token-font-weight-bold);
   padding-top: 0;
   text-align: left;
 }
@@ -123,14 +125,14 @@ button {
   align-items: center;
 
   cursor: pointer;
-  font-weight: var(--bold);
+  font-weight: var(--token-font-weight-bold);
 }
 
 input,
 textarea,
 select {
-  background: var(--input-bg);
-  font-weight: var(--normal);
+  background: var(--token-dark-300);
+  font-weight: var(--token-font-weight-medium);
 }
 
 input,
@@ -146,13 +148,8 @@ select {
   cursor: pointer;
 }
 
-:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
 ::placeholder {
-  color: var(--input-border);
+  color: var(--token-dark-700);
 }
 
 ::-webkit-scrollbar {
@@ -160,8 +157,8 @@ select {
 }
 
 code {
-  color: var(--danger);
-  background-color: var(--card-bg-muted);
+  color: var(--token-error-500);
+  background-color: var(--token-dark-500);
   padding: 0.2rem 0.4rem;
   border-radius: 0.2rem;
 }
