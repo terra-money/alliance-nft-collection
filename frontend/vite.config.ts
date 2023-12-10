@@ -7,21 +7,18 @@ import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  plugins:
-    mode === "development"
-      ? [
-          react(),
-          tsconfigPaths(),
-          notifier(),
-          mdx(),
-          svgr(),
-          nodePolyfills({
-            // Whether to polyfill `node:` protocol imports.
-            protocolImports: true,
-          }),
-        ]
-      : [],
+export default defineConfig({
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    notifier(),
+    mdx(),
+    svgr(),
+    nodePolyfills({
+      // Whether to polyfill `node:` protocol imports.
+      protocolImports: true,
+    }),
+  ],
   server: {
     port: 4000,
   },
@@ -55,4 +52,4 @@ export default defineConfig(({ mode }) => ({
     jsxFragment: "_jsxFragment",
     jsxInject: `import { createElement as _jsx, Fragment as _jsxFragment } from 'react'`,
   },
-}))
+})
