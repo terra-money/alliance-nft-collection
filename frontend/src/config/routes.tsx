@@ -78,6 +78,5 @@ export const useNav = () => {
     { path: "*", element: <NotFound /> },
   ]
 
-  console.log({ routes })
   return { menu, element: useRoutes(routes) }
 }

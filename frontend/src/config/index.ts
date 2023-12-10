@@ -1,22 +1,24 @@
 import { AccAddress } from "@terra-money/feather.js"
 
-type AllianceConfig = {
-  contracts: AllianceContractConfig
-}
+export const supportedNetworks = ["phoenix-1", "pisco-1"] as const
+export type SupportedNetwork = (typeof supportedNetworks)[number]
 
-type AllianceContractConfig = {
+export type AllianceContractConfig = {
   minter: AccAddress
   collection: AccAddress
   dao: AccAddress
 }
 
-const testnet: AllianceConfig = {
-  contracts: {
-    minter: "terra1sas7np0ze3cwyd26lhhtp5h88fscv8rldezq74zcec8s7lxar0jq2q4u7d",
+export const contracts: Record<SupportedNetwork, AllianceContractConfig> = {
+  "phoenix-1": {
+    minter: "",
+    collection: "",
+    dao: "",
+  },
+  "pisco-1": {
+    minter: "terra1a78x4w8da7ycdfj3dryrelvwa2p8t7vxk8t0tfvtuduf00aw5y5qnurwru",
     collection:
-      "terra18gv7neq9dmzrwz6jdpnu7rwg0t99h70c4xkrn5m7tqe9e9z4nv2qcrp0u5",
+      "terra1herk30j8sgn3dlth4g0haw6n3j2nwxfn6d4vwucaf48qwzsfe5wqa7h8f4",
     dao: "terra1tay6vaymstcg95z4lwpaxujhzsnqylu39hl3328556y5edzsf8ysuzrtnq",
   },
 }
-
-export default testnet

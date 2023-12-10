@@ -1,5 +1,6 @@
 import classNames from "classnames/bind"
-import { Link, NavLink, useLocation } from "react-router-dom"
+import { NavLink, useLocation } from "react-router-dom"
+import { useWallet } from "@terra-money/wallet-kit"
 import { useAppContext } from "contexts"
 import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
 import { ReactComponent as CheckIcon } from "assets/check.svg"
@@ -10,12 +11,20 @@ const cx = classNames.bind(styles)
 
 const DesktopNav = () => {
   const { walletAddress } = useAppContext()
+  const wallet = useWallet()
   const { pathname } = useLocation()
   const { menu } = useNav()
 
+  const handleConnectClick = () => {
+    if (walletAddress) {
+      wallet.disconnect()
+    } else {
+      wallet.connect()
+    }
+  }
+
   return (
     <nav className={styles.navigation}>
-      {walletAddress}
       <a href="/">
         <Logo className={styles.logo} />
       </a>
@@ -40,12 +49,16 @@ const DesktopNav = () => {
           )
         })}
       </ul>
-      <Link to="/connect-wallet">
-        <button className={styles.nav__button}>
-          <CheckIcon />
-          Connect Wallet
-        </button>
-      </Link>
+      <button className={styles.nav__button} onClick={handleConnectClick}>
+        {walletAddress ? (
+          <>
+            <CheckIcon />
+            Wallet Connected
+          </>
+        ) : (
+          <>Connect Wallet</>
+        )}
+      </button>
     </nav>
   )
 }
