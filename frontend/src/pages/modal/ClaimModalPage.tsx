@@ -24,8 +24,6 @@ export const ClaimModalPage = () => {
   const { mintNFT } = useAllianceContracts(walletAddress)
   const { data: dataForUser } = useNFTFromMinter(walletAddress)
 
-  console.log(dataForUser)
-
   /* Effects */
   useEffect(() => {
     if (dataForUser) {
@@ -48,7 +46,6 @@ export const ClaimModalPage = () => {
     if (walletAddress) {
       mintNFT().then((status) => {
         if (status) {
-          console.log(status)
           queryClient.invalidateQueries({ queryKey: ["unminted_nft"] })
           setClaimStatus("claimed")
         }
