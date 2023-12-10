@@ -5,6 +5,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  height: 100%;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
 }
 
 .modal {
@@ -20,7 +25,17 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  z-index: 999999;
+  z-index: 99;
+  margin-top: -60px;
+
+  @media (max-width: 1000px) {
+    margin-top: -45px;
+  }
+
+  @media (max-width: 375px) {
+    max-width: unset;
+    margin: 0 12px;
+  }
 }
 
 .confetti {
@@ -63,6 +78,12 @@
   a {
     color: var(--token-primary-500, #00AAE0);
     text-decoration: none;
+  }
+
+  @media (max-width: 375px) {
+    min-width: unset;
+    display: flex;
+    flex-wrap: wrap;
   }
 }
 

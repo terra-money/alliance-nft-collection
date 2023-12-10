@@ -3,12 +3,10 @@ import classNames from "classnames/bind"
 import Navigation from "./components/navigations/Navigation"
 import { useNav } from "./config/routes"
 import styles from "./App.module.scss"
-//import { useLocation } from "react-router-dom"
 
 const cx = classNames.bind(styles)
 
-function App() {
-  //const { pathname } = useLocation()
+const App = () => {
   const { element: routes } = useNav()
   const [isMobileNavOpen, setMobileNavOpen] = useState(false)
 

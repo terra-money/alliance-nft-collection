@@ -14,7 +14,7 @@ import {
 export const useNav = () => {
   const menu = [
     {
-      path: "/",
+      path: "/nft-gallery",
       element: <NFTsPage />,
       name: "NFT Gallery",
       isExternal: false,
@@ -62,7 +62,7 @@ export const useNav = () => {
       isDynamic: false,
     },
     {
-      path: "/claim",
+      path: "/",
       element: <ClaimModalPage />,
       name: "Claim",
       isExternal: false,
