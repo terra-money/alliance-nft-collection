@@ -10,14 +10,20 @@ import useAllianceContracts from "hooks/useAllianceContracts"
 import { useAppContext } from "contexts"
 
 export const ClaimModalPage = () => {
+  /* State */
   const [claimStatus, setClaimStatus] = useState<
     "notClaimed" | "claimed" | "error"
   >("notClaimed")
   const [claimAvailable, setClaimAvailable] = useState<boolean>(false)
+  const [allMintedIds, setAllMintedIds] = useState<string[]>([])
 
+  /* Use Hooks */
   const { walletAddress } = useAppContext()
-  const { getNFTDataFromMinter } = useAllianceContracts(walletAddress)
+  const { getNFTDataFromMinter, queryAllNFTIDsFromCollection, mintNFT } =
+    useAllianceContracts(walletAddress)
   const wallet = useWallet()
+
+  console.log({ claimAvailable, allMintedIds })
 
   /**
    * Check if user has claimable NFTs on load
@@ -31,7 +37,41 @@ export const ClaimModalPage = () => {
       }
     }
     getNFTData()
-  }, [getNFTDataFromMinter])
+  }, [])
+
+  /**
+   * Get all minted NFTs from collection
+   * Won't be used on this page, move to gallery page
+   */
+  useEffect(() => {
+    const getAllMintedIds = async () => {
+      const allNFTIds = await queryAllNFTIDsFromCollection()
+      if (allNFTIds !== undefined) {
+        setAllMintedIds(allNFTIds.tokens)
+      }
+    }
+    getAllMintedIds()
+  }, [])
+
+  /* Handlers */
+  const handleConnectClick = () => {
+    if (walletAddress) {
+      wallet.disconnect()
+    } else {
+      wallet.connect()
+    }
+  }
+
+  const handleClaimClick = () => {
+    if (walletAddress) {
+      mintNFT().then((status) => {
+        if (status) {
+          console.log(status)
+          setClaimStatus("claimed")
+        }
+      })
+    }
+  }
 
   if (claimStatus === "claimed") {
     return (
@@ -64,30 +104,18 @@ export const ClaimModalPage = () => {
             />
           </div>
           <div className={styles.text}>
-            <div className={styles.text}>You claimed 2 Alliance DAO NFTs!</div>
+            <div className={styles.text}>
+              You claimed your Alliance DAO NFT!
+            </div>
           </div>
           <div className={styles.button__wrapper}>
-            <Link to="/" style={{ width: "100%" }}>
+            <Link to="/nft-gallery" style={{ width: "100%" }}>
               <button className={styles.primary__button}>Done</button>
             </Link>
           </div>
         </div>
       </div>
     )
-  }
-
-  const handleClaimClicked = () => {
-    setTimeout(() => {
-      setClaimStatus("claimed")
-    }, 1000)
-  }
-
-  const handleConnectClick = () => {
-    if (walletAddress) {
-      wallet.disconnect()
-    } else {
-      wallet.connect()
-    }
   }
 
   return (
@@ -129,12 +157,12 @@ export const ClaimModalPage = () => {
             <div className={styles.button__wrapper}>
               <button
                 className={styles.primary__button}
-                onClick={handleClaimClicked}
+                onClick={handleClaimClick}
               >
                 Claim NFTs
               </button>
 
-              <Link to="/" style={{ width: "100%" }}>
+              <Link to="/nft-gallery" style={{ width: "100%" }}>
                 <button className={styles.secondary__button}>Cancel</button>
               </Link>
             </div>

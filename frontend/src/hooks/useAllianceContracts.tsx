@@ -1,3 +1,4 @@
+import { useCallback } from "react"
 import { PostResponse, useLcdClient, useWallet } from "@terra-money/wallet-kit"
 import { MsgExecuteContract } from "@terra-money/feather.js"
 import { MinterExtension } from "types/AllianceNftMinter"
@@ -40,7 +41,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
    * If user has already minted or doesn't have one, this returns an error.
    * @returns {MinterExtension | undefined}
    */
-  const getNFTDataFromMinter = async (): Promise<
+  const getNFTDataFromMinter = useCallback(async (): Promise<
     MinterExtension | undefined
   > => {
     if (!address) return undefined
@@ -57,7 +58,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
     } catch (error) {
       return undefined
     }
-  }
+  }, [address, chainId, lcd.wasm])
 
   /**
    * query NFT data from collection contract.
@@ -66,32 +67,35 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
    * @param token_id id of token to query
    * @returns NFT Response from collection contract
    */
-  const queryNFTFromCollection = async (
-    token_id: string
-  ): Promise<AllNftInfoResponseForMetadata | undefined> => {
-    try {
-      const result =
-        await lcd.wasm.contractQuery<AllNftInfoResponseForMetadata>(
-          contracts[chainId].collection,
-          {
-            all_nft_info: {
-              token_id: token_id.toString(),
-            },
-          }
-        )
+  const queryNFTFromCollection = useCallback(
+    async (
+      token_id: string
+    ): Promise<AllNftInfoResponseForMetadata | undefined> => {
+      try {
+        const result =
+          await lcd.wasm.contractQuery<AllNftInfoResponseForMetadata>(
+            contracts[chainId].collection,
+            {
+              all_nft_info: {
+                token_id: token_id.toString(),
+              },
+            }
+          )
 
-      return result
-    } catch (error) {
-      return undefined
-    }
-  }
+        return result
+      } catch (error) {
+        return undefined
+      }
+    },
+    [chainId, lcd.wasm]
+  )
 
   /**
    * Query all tokens that have been minted.
    *
    * @returns {TokensResponse | undefined}
    */
-  const queryAllNFTIDsFromCollection = async (): Promise<
+  const queryAllNFTIDsFromCollection = useCallback(async (): Promise<
     TokensResponse | undefined
   > => {
     try {
@@ -106,7 +110,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
     } catch (error) {
       return undefined
     }
-  }
+  }, [chainId, lcd.wasm])
 
   /**
    * Check if NFT is broken
