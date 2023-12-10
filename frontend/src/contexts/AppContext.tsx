@@ -1,51 +1,63 @@
-import { createContext, useState, useEffect, ReactNode } from "react"
+import { createContext, useState, useEffect, ReactNode, useMemo } from "react"
 import { useConnectedWallet } from "@terra-money/wallet-kit"
 import { SupportedNetwork } from "config"
+import { LCDClient } from "@terra-money/feather.js"
 
 interface IAppState {
   walletAddress: string | undefined
   chainId: SupportedNetwork
+  lcd: LCDClient
 }
 
 export const AppContext = createContext<IAppState>({} as IAppState)
 
-/**
- *  Holds overall app state and provides update functions through hooks.
- *  For now transaction, wallet connection, and basic nft info is stored here.
- *  If app grows in complexity, consider splitting into multiple contexts.
- *  Depends on:
- *    - WalletProvider from @terra-money/wallet-kit
- */
-const AppStateProvider = ({ children }: { children: ReactNode }) => {
+const AppStateProvider = ({
+  children,
+  defaultNetwork = "pisco-1",
+}: {
+  children: ReactNode
+  defaultNetwork: SupportedNetwork
+}) => {
   const [walletAddress, setWalletAddress] = useState<string | undefined>()
-  const [chainId, setChainId] = useState<SupportedNetwork>("pisco-1")
+  const [chainId, setChainId] = useState<SupportedNetwork>(defaultNetwork)
+  const [lcd, setLCD] = useState<LCDClient>(
+    LCDClient.fromDefaultConfig(
+      defaultNetwork === "pisco-1" ? "testnet" : "mainnet"
+    )
+  )
 
   const connectedWallet = useConnectedWallet()
 
-  // set wallet address on connection
+  const getChainIdFromNetwork = (network: "mainnet" | "testnet") =>
+    network === "mainnet" ? "phoenix-1" : "pisco-1"
+
   useEffect(() => {
     if (connectedWallet) {
-      setWalletAddress(
-        connectedWallet.addresses[
-          connectedWallet.network === "mainnet" ? "phoenix-1" : "pisco-1"
-        ]
+      const chainIdFromNetwork = getChainIdFromNetwork(
+        connectedWallet.network as "testnet" | "mainnet"
+      )
+
+      setWalletAddress(connectedWallet.addresses?.[chainIdFromNetwork])
+      setChainId(chainIdFromNetwork)
+      setLCD(
+        LCDClient.fromDefaultConfig(
+          connectedWallet.network as "testnet" | "mainnet"
+        )
       )
     }
   }, [connectedWallet])
 
-  // set network on connection
-  useEffect(() => {
-    if (connectedWallet) {
-      setChainId(
-        connectedWallet.network === "mainnet" ? "phoenix-1" : "pisco-1"
-      )
-    }
-  }, [connectedWallet])
+  const contextValue = useMemo(
+    () => ({
+      walletAddress,
+      chainId,
+      lcd,
+    }),
+    [walletAddress, chainId, lcd]
+  )
 
   return (
-    <AppContext.Provider value={{ walletAddress, chainId }}>
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
   )
 }
 

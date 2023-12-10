@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useWallet } from "@terra-money/wallet-kit"
+import { useQueryClient } from "@tanstack/react-query"
 import ConfettiExplosion from "react-confetti-explosion"
 import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
 import { ReactComponent as CheckIcon } from "assets/check.svg"
 import { AnimatedBackground } from "components/background/AnimatedBackground"
 import styles from "./ConnectModalPage.module.scss"
-import useAllianceContracts from "hooks/useAllianceContracts"
+import { useAllianceContracts, useNFTFromMinter } from "hooks/"
 import { useAppContext } from "contexts"
 
 export const ClaimModalPage = () => {
@@ -15,43 +16,24 @@ export const ClaimModalPage = () => {
     "notClaimed" | "claimed" | "error"
   >("notClaimed")
   const [claimAvailable, setClaimAvailable] = useState<boolean>(false)
-  const [allMintedIds, setAllMintedIds] = useState<string[]>([])
 
   /* Use Hooks */
-  const { walletAddress } = useAppContext()
-  const { getNFTDataFromMinter, queryAllNFTIDsFromCollection, mintNFT } =
-    useAllianceContracts(walletAddress)
+  const queryClient = useQueryClient()
+  const { walletAddress, chainId } = useAppContext()
   const wallet = useWallet()
+  const { mintNFT } = useAllianceContracts(walletAddress)
+  const { data: dataForUser } = useNFTFromMinter(walletAddress)
 
-  console.log({ claimAvailable, allMintedIds })
+  console.log(dataForUser)
 
-  /**
-   * Check if user has claimable NFTs on load
-   * If user is not connected or if they already claimed, no claim is available.
-   */
+  /* Effects */
   useEffect(() => {
-    const getNFTData = async () => {
-      const nftData = await getNFTDataFromMinter()
-      if (nftData !== undefined) {
-        setClaimAvailable(true)
-      }
+    if (dataForUser) {
+      setClaimAvailable(true)
+    } else {
+      setClaimAvailable(false)
     }
-    getNFTData()
-  }, [])
-
-  /**
-   * Get all minted NFTs from collection
-   * Won't be used on this page, move to gallery page
-   */
-  useEffect(() => {
-    const getAllMintedIds = async () => {
-      const allNFTIds = await queryAllNFTIDsFromCollection()
-      if (allNFTIds !== undefined) {
-        setAllMintedIds(allNFTIds.tokens)
-      }
-    }
-    getAllMintedIds()
-  }, [])
+  }, [dataForUser, walletAddress, chainId])
 
   /* Handlers */
   const handleConnectClick = () => {
@@ -67,6 +49,7 @@ export const ClaimModalPage = () => {
       mintNFT().then((status) => {
         if (status) {
           console.log(status)
+          queryClient.invalidateQueries({ queryKey: ["unminted_nft"] })
           setClaimStatus("claimed")
         }
       })
