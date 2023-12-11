@@ -1,20 +1,32 @@
 import classNames from "classnames/bind"
-import { Link, NavLink, useLocation } from "react-router-dom"
+import { NavLink, useLocation } from "react-router-dom"
+import { useWallet } from "@terra-money/wallet-kit"
 import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
 import { ReactComponent as ExternalLinkIcon } from "assets/ExternalLink.svg"
 import { ReactComponent as CheckIcon } from "assets/check.svg"
 import { ReactComponent as TwitterIcon } from "assets/socials/Twitter.svg"
 import { ReactComponent as MediumIcon } from "assets/socials/Medium.svg"
 import { ReactComponent as TelegramIcon } from "assets/socials/Telegram.svg"
+import { useAppContext } from "contexts"
 import { useNav } from "../../../config/routes"
 import styles from "./DesktopNav.module.scss"
 
 const cx = classNames.bind(styles)
 
 const DesktopNav = () => {
+  const wallet = useWallet()
+  const { walletAddress } = useAppContext()
   const socialSize = 16
   const { pathname } = useLocation()
   const { menu } = useNav()
+
+  const handleConnectClick = () => {
+    if (walletAddress) {
+      wallet.disconnect()
+    } else {
+      wallet.connect()
+    }
+  }
 
   return (
     <nav className={styles.navigation}>
@@ -79,12 +91,16 @@ const DesktopNav = () => {
             />
           </a>
         </div>
-        <Link to="/">
-          <button className={styles.nav__button}>
-            <CheckIcon />
-            Connect Wallet
-          </button>
-        </Link>
+        <button onClick={handleConnectClick} className={styles.nav__button}>
+          {walletAddress ? (
+            <>
+              <CheckIcon />
+              Connected
+            </>
+          ) : (
+            <>Connect Wallet</>
+          )}
+        </button>
       </div>
     </nav>
   )

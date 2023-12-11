@@ -14,6 +14,13 @@ import {
 export const useNav = () => {
   const menu = [
     {
+      path: "/",
+      element: <ClaimModalPage />,
+      name: "Claim",
+      isExternal: false,
+      isDynamic: false,
+    },
+    {
       path: "/nft-gallery",
       element: <NFTsPage />,
       name: "NFT Gallery",
@@ -58,13 +65,6 @@ export const useNav = () => {
       path: "/connect-wallet",
       element: <ConnectModalPage />,
       name: "Connect Wallet",
-      isExternal: false,
-      isDynamic: false,
-    },
-    {
-      path: "/",
-      element: <ClaimModalPage />,
-      name: "Claim",
       isExternal: false,
       isDynamic: false,
     },

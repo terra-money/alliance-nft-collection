@@ -3,7 +3,7 @@ import { TokensResponse } from "types/AllianceNftCollection"
 import { contracts } from "config"
 import { useAppContext } from "contexts"
 
-const useUserNFTsFromCollection = (userAddress: string) => {
+const useUserNFTsFromCollection = (userAddress: string | undefined) => {
   const { chainId, lcd } = useAppContext()
 
   return useQuery<TokensResponse, Error>({

@@ -3,7 +3,7 @@ import { TokensResponse } from "types/AllianceNftCollection"
 import { contracts } from "config"
 import { useAppContext } from "contexts"
 
-const useAllNFTsFromCollection = () => {
+const useAllMintedNFTsFromCollection = () => {
   const { chainId, lcd } = useAppContext()
 
   return useQuery<TokensResponse, Error>({
@@ -18,4 +18,4 @@ const useAllNFTsFromCollection = () => {
   })
 }
 
-export default useAllNFTsFromCollection
+export default useAllMintedNFTsFromCollection

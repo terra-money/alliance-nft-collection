@@ -3,6 +3,9 @@ import { AccAddress } from "@terra-money/feather.js"
 export const supportedNetworks = ["phoenix-1", "pisco-1"] as const
 export type SupportedNetwork = (typeof supportedNetworks)[number]
 
+export const NFT_PREVIEW_URL =
+  "https://alliancedao.mypinata.cloud/ipfs/bafybeiek4cv2w6ot767nriveyzagejnvzpw3qr2b7iyc6ccddid6jj77za/{id}.png"
+
 export type AllianceContractConfig = {
   minter: AccAddress
   collection: AccAddress
