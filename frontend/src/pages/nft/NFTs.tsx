@@ -2,11 +2,8 @@ import { useState } from "react"
 import classNames from "classnames/bind"
 import NFTItem from "components/nft/NFTItem"
 import { NFT_PREVIEW_URL } from "config"
-import { FilterDropdowns } from "components/filters/dropdowns"
 import { ReactComponent as FilterIcon } from "assets/Filter.svg"
-import { mockNFTs, signedInUserData } from "fakeData/mockNFTs"
 import styles from "./NFTs.module.scss"
-import { SearchByID } from "components/filters/search/SearchByID"
 import {
   useAllMintedNFTsFromCollection,
   useUserNFTsFromCollection,
@@ -33,12 +30,13 @@ export const NFTsPage = () => {
   const { data: userNfts } = useUserNFTsFromCollection(walletAddress)
 
   const [activeTab, setActiveTab] = useState("all")
-  const [galleryFilters, setGalleryFilters] = useState<GalleryFiltersProps>({
-    planetNumber: null,
-    planetNames: [],
-    planetInhabitants: [],
-    nftObjects: [],
-  })
+
+  // const [galleryFilters, setGalleryFilters] = useState<GalleryFiltersProps>({
+  //   planetNumber: null,
+  //   planetNames: [],
+  //   planetInhabitants: [],
+  //   nftObjects: [],
+  // })
 
   // useEffect(() => {
   //   if (
@@ -126,7 +124,7 @@ export const NFTsPage = () => {
           )}
         </div>
 
-        {activeTab === "all" && showFilterRow && (
+        {/* {activeTab === "all" && showFilterRow && (
           <>
             <SearchByID
               setSearchValue={setSearchValue}
@@ -138,7 +136,7 @@ export const NFTsPage = () => {
               setGalleryFilters={setGalleryFilters}
             />
           </>
-        )}
+        )} */}
 
         {activeTab === "all" ? (
           !areNftsLoading &&
