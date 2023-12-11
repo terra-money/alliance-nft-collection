@@ -9,13 +9,19 @@ import { mockNFTs, signedInUserData } from "fakeData/mockNFTs"
 const cx = classNames.bind(styles)
 
 const UserNFTs = ({ walletAddress }: { walletAddress: string }) => {
-  const { data: userNfts } = useUserNFTsFromCollection(walletAddress)
-  console.log(
-    "user nfts",
-    userNfts?.tokens.sort((a, b) => {
-      return parseInt(a) - parseInt(b)
-    })
-  )
+  const {
+    data: userNfts,
+    isLoading,
+    error,
+  } = useUserNFTsFromCollection(walletAddress)
+  if (!isLoading && !error) {
+    console.log(
+      "user nfts",
+      userNfts?.tokens.sort((a, b) => {
+        return parseInt(a) - parseInt(b)
+      })
+    )
+  }
   return <></>
 }
 
