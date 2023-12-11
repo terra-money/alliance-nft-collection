@@ -22,7 +22,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Ozara.jpg",
+    image: "/planets/Ozara.jpg",
     planetDescription: `
       The planet is littered with ruins of a civilization that imploded thousands of years ago. The ruins are half buried and made of stone. Inhabitants of this planet live mainly underground and in the ruins.
       There are several dried seabeds that cover the surface containing miles-long stretches of salt deposits. The salt flats are white and reflect the sun.
@@ -45,7 +45,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Krimsen.jpg",
+    image: "/planets/Krimsen.jpg",
     planetDescription: `
       Dark planet with lots of geological activity. The fumes from volcanoes have nearly blocked out the sun. The sky that can be seen through the plumes of ash is a fierce red-orange during the day, fading to pink at sunset and purple at night.
       Large trees grow there, their barks permanently charred and thin angular branches resemble trees after forest fires. The leaves on these trees have an ash-grey or pale blue underside with orange and gold veins, which almost appear glowing.
@@ -72,7 +72,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Kita.jpg",
+    image: "/planets/Kita.jpg",
     planetDescription: `
       Think Hoth from Star Wars.
       Glaciers make up much of the terrain. Mountains of snow and cliffs of ice cover the planet, along with long, uninterrupted flatlands of snow.
@@ -97,7 +97,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Lusa.jpg",
+    image: "/planets/Lusa.jpg",
     planetDescription: `
       The planet is almost entirely covered in water. Storms often cause large waves. The water is very deep, and many fish and sea plants thrive in the ocean. What little land there is is shallow swampland, never drying out for more than a day. Tall sharp Grasses grow on these marshes.
       The inhabitants live on large floating islands they make by weaving marshland grasses. Many of the structures on these islands are made of mud and grass, formed in organic, domed shapes Think of termite mounds or swallows nests.
@@ -122,7 +122,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Zando.jpg",
+    image: "/planets/Zando.jpg",
     planetDescription: `
       This planet is a lush rainforest. There are very tall trees which make up the canopy of the forest, and vines and large-leafed bushes growing on the surface. A lot of the surface between the plants is dead leaves, and the plants grow with some space around them.
       There are large rivers which cut through the forests, with fast-moving rapids and occasional waterfalls.
@@ -146,7 +146,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Crutha.jpg",
+    image: "/planets/Crutha.jpg",
     planetDescription: `
       The planet is covered in rocky, uneven terrain. Large crevices line the earth punctuated by cliffsides and mountains. Most of the terrain on this world is uneven, rarely being flat for more than a few feet. Mist and fog covers most of the ground, making it difficult for plants and humans to live on the
       The pillars: Most of civilization lives on large, hexagonal pillars of basalt high up.  Mountains can be seen in the distance. Below, there are dark, rocky ravines and canyons. In the distance, mountains can be seen.
@@ -172,7 +172,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Pampas.jpg",
+    image: "/planets/Pampas.jpg",
     planetDescription: `
       The landscape looks like The Shire from LOTR.
       Vast meadows with golden and green grasses fill the large, flat areas between hills.
@@ -200,7 +200,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Minas.jpg",
+    image: "/planets/Minas.jpg",
     planetDescription: `
       The Asteroid surface looks like the surface of the moon. Grey-brown dusty rock with lots of craters.
       There are a few plants around. The plants look like large succulents, and they grow in a few sparse patches.
@@ -225,7 +225,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Gredica.jpg",
+    image: "/planets/Gredica.jpg",
     planetDescription: `
       The planet surface often has a reddish-pink dust that rolls in like fog. It is a very light substance that is always floating and moving in the air.
       Flowers grow on most low-lying surfaces of the planet. They are all part of the same organism, a clonal organism, who is constantly spreading. The flowers can spread very fast, sometimes blooming in minutes. They look like daisies/marigolds/assortments of wildflowers.
@@ -250,7 +250,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Kristall.jpg",
+    image: "/planets/Kristall.jpg",
     planetDescription: `
       The planet has large deposits of quartz-like, clear crystals on its surface. Some crystals are the size of mountains, piercing out through the ground. Some are small and appear like patches of plants. The Crystals scatter a pinkish-purple light when light is shone through them.
       The ground is made up of white-grey gravel rock.
