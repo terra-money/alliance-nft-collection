@@ -1,7 +1,24 @@
 .main {
   display: flex;
-  gap: 24px;
   padding: 24px 80px;
+
+  .facet__space {
+    flex: 0 0 0;
+  }
+
+  &.facet__closed {
+    .facet__space {
+      flex: 0 0 0;
+      transition: flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+
+  &.facet__open {
+    .facet__space {
+      flex: 0 0 20%;
+      transition: flex-basis 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
 
   .main__content {
     flex: 1 1 0;
@@ -11,6 +28,10 @@
       align-items: center;
       gap: 40px;
       margin-bottom: 32px;
+
+      svg {
+        margin-bottom: 8px;
+      }
 
       .button {
         color: #797979;

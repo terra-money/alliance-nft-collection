@@ -1,0 +1,58 @@
+// @import 'scss/font_mixins';
+
+.checkbox {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  gap: 8px;
+  user-select: none;
+
+  &.checked .indicator {
+    opacity: 1;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .text {
+    flex: 1;
+    // @include Small;
+    color: var(--token-dark-500);
+  }
+
+  &.checked {
+    .track {
+      border: solid 1px var(--token-primary-400);
+    }
+
+    .text {
+      color: var(--token-light-white);
+      transition: color 100ms;
+    }
+  }
+}
+
+.track {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: solid 1px var(--token-dark-500);
+  border-radius: 6px;
+  width: 18px;
+  height: 18px;
+}
+
+.indicator {
+  background: var(--token-primary-500);
+  border-radius: 2px;
+  width: 8px;
+  height: 8px;
+
+  opacity: 0;
+  transition: opacity 100ms;
+}

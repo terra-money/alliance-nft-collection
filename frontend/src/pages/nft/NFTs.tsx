@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import NFTItem from 'components/nft/NFTItem';
-import styles from './NFTs.module.scss';
-import { mockNFTs, signedInUserData } from 'fakeData/mockNFTs';
-import { Facet } from 'components/filters/facet';
 import { filterNFTs } from 'components/filters/helpers';
+import { FilterDropdowns } from 'components/filters/dropdowns';
+import { ReactComponent as FilterIcon } from 'assets/Filter.svg';
+import { mockNFTs, signedInUserData } from 'fakeData/mockNFTs';
+import styles from './NFTs.module.scss';
+import { SearchByID } from 'components/filters/search/SearchByID';
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +18,11 @@ export interface GalleryFiltersProps {
 }
 
 export const NFTsPage = () => {
-  const [isMyNFTSelected, setIsMyNFTSelected] = useState(false);
+  const [showFilterRow, setShowFilterRow] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  const [activeTab, setActiveTab] = useState('all');
   const [galleryFilters, setGalleryFilters] = useState<GalleryFiltersProps>({
     planetNumber: null,
     planetNames: [],
@@ -36,26 +42,81 @@ export const NFTsPage = () => {
     setDisplayedNFTs(filtered);
   }, [galleryFilters]);
 
+  useEffect(() => {
+    if (!searchValue) {
+      setSearchLoading(false);
+      setDisplayedNFTs(mockNFTs);
+      return;
+    }
+
+    setSearchLoading(true);
+    setTimeout(() => {
+      const filtered = mockNFTs.filter(nft => nft.id.toString() === searchValue);
+      setDisplayedNFTs(filtered);
+      setSearchLoading(false);
+    }, 1000)
+
+  }, [searchValue]);
+
+  const handleSwitch = (tab: string) => {
+    if (tab === 'all' && activeTab === 'all') {
+      return;
+    } else if (tab === 'my' && activeTab === 'my') {
+      return;
+    }
+
+    if (tab === 'all') {
+      setActiveTab('all');
+      setShowFilterRow(false);
+    } else {
+      setActiveTab('my');
+      setShowFilterRow(false);
+    }
+  }
+
   return (
     <main className={styles.main}>
-      <Facet setGalleryFilters={setGalleryFilters} galleryFilters={galleryFilters} />
       <section className={styles.main__content}>
         <div className={styles.buttons}>
+          {activeTab === 'all' && (
+            <button
+              className={styles.filter__toggle}
+              onClick={() => setShowFilterRow(!showFilterRow)}
+            >
+              <FilterIcon
+                fill={"var(--token-dark-700)"}
+                height={16}
+                width={16}
+              />
+            </button>
+          )}
           <button
-            className={cx(styles.button, { [styles.button__selected]: !isMyNFTSelected })}
-            onClick={() => setIsMyNFTSelected(false)}
+            className={cx(styles.button, { [styles.button__selected]: activeTab === 'all' })}
+            onClick={() => handleSwitch('all')}
           >
             All NFTs
           </button>
           <button
-            className={cx(styles.button, { [styles.button__selected]: isMyNFTSelected })}
-            onClick={() => setIsMyNFTSelected(true)}
+            className={cx(styles.button, { [styles.button__selected]: activeTab === 'my' })}
+            onClick={() => handleSwitch('my')}
           >
             My NFTs
             <span className={styles.button__count}>{signedInUserData.nftIDs.length}</span>
           </button>
         </div>
-        {!isMyNFTSelected ? (
+
+        {activeTab === 'all' && showFilterRow && (
+          <>
+            <SearchByID
+              setSearchValue={setSearchValue}
+              searchValue={searchValue}
+              isLoading={searchLoading}
+            />
+            <FilterDropdowns galleryFilters={galleryFilters} setGalleryFilters={setGalleryFilters} />
+          </>
+        )}
+
+        {activeTab === 'all' ? (
           <div className={styles.grid}>
             {displayedNFTs.map(nft => (
               <NFTItem key={nft.id} id={nft.id} imageUrl={nft.image} title={nft.id.toString()} />

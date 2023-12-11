@@ -8,6 +8,7 @@ import { GalleryFiltersProps } from 'pages/nft/NFTs';
 export const Facet = ({
   galleryFilters,
   setGalleryFilters,
+  displayFacet,
 }: {
   galleryFilters: GalleryFiltersProps
   setGalleryFilters: ({
@@ -15,7 +16,8 @@ export const Facet = ({
     planetNames,
     planetInhabitants,
     nftObjects
-  }: GalleryFiltersProps) => void
+  }: GalleryFiltersProps) => void,
+  displayFacet: boolean,
 }) => {
   const [selectedPlanets, setSelectedPlanets] = useState<string[]>([]);
   const [selectedInhabitants, setSelectedInhabitants] = useState<string[]>([]);
@@ -67,7 +69,7 @@ export const Facet = ({
   }
 
   return (
-    <div className={styles.facet}>
+    <div className={`${styles.facet} ${displayFacet ? styles.open : styles.closed}`}>
       <div className={styles.facet__header}>
         <div className={styles.facet__title}>
           <h3>Gallery Filters</h3>
@@ -84,13 +86,13 @@ export const Facet = ({
           <div className={styles.filter__section__body}>
             {planetOptions.map(planet => (
               <div className={styles.facet__item}>
-                <div className={styles.facet__item__checkbox}>
+                {/* <div className={styles.facet__item__checkbox}> */}
                   <input
                     type="checkbox"
                     onClick={() => handlePlanetClick(planet)}
                     checked={selectedPlanets?.includes(planet)}
                   />
-                </div>
+                {/* </div> */}
                 <div className={styles.facet__item__name}>
                   <span>{planet}</span>
                 </div>
