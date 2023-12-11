@@ -129,7 +129,7 @@ export const allPlanets = [
     coordinates: '5554, 67D98, 5346H',
     circumference: '100,766 AU',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Pampas.jpg",
+    image: "/planets/Pampas.jpg",
     planetDescription: `
     Pampas has a moderate climate characterized by warm days and mild nights. Although ice sheets form on the poles, much of the surface has a uniform temperature due to the planet's nearly perfect tilt in relation to its orbit. During the day, the sun shines on the grasslands, evaporating water into clouds. At night, the light of the planet's four moons shines on the hillsides as the clouds condense and release light rain. There are no discernible seasons on Pampas, and the planet's consistent sunlight and predictable rains make it the perfect place for plants to grow. Rolling green meadows cover much of the planet, punctuated by small mountain ranges. Although there are large forests and vast oceans, most of the planet is grasslands. Large grazing animals thrive on Pampas, roaming the planet from pole to pole.`,
     inhabitantsDescription: `
@@ -162,7 +162,7 @@ export const allPlanets = [
     coordinates: '1998F, 2777D, H778R',
     circumference: '102,099 AU',
     inhabitants: 'The Ozari',
-    image: "/src/assets/planets/Gredica.jpg",
+    image: "/planets/Gredica.jpg",
     planetDescription: `
     Gredica is one of the most peculiar of the 10 planets, and it is characterized by its pink fog and multitude of flowers. Resembling multi-colored daisies, the flowers are part of a single clonal organism that covers most of the low-altitude surface of the planet. The flowers emit spores, creating plumes of pink haze that surround the planet. These spores attach to organic matter, allowing the flowers to spread quickly, decomposing anything in their path in a matter of days. The flowers do not grow in the mountains or any of the planet’s lakes or rivers. There are many deer, small rabbits, and dragon flies on the planet that are immune to the decompositional effects of the spores.`,
     inhabitantsDescription: `
