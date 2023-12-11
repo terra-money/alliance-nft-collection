@@ -1,15 +1,23 @@
+import classNames from 'classnames/bind';
 import { PlanetProps } from 'fakeData/planets';
 import styles from './PlanetDetails.module.scss';
+
+const cx = classNames.bind(styles);
+
+interface PlanetDetailsProps extends PlanetProps {
+  isStoryPage?: boolean;
+}
 
 export const PlanetDetails = ({
   terrain,
   coordinates,
   circumference,
   inhabitants,
-  image
-}: PlanetProps) => {
+  image,
+  isStoryPage
+}: PlanetDetailsProps) => {
   return (
-    <div className={styles.planet__details__container}>
+    <div className={cx(styles.planet__details__container, { [styles.is__story__page]: isStoryPage })}>
       <div className={styles.planet__attributes}>
         <div className={styles.row}>
           <span>Terrain</span>
