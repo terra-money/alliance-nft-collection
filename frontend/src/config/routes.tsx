@@ -1,4 +1,6 @@
 import { useRoutes } from "react-router-dom"
+import { useAppContext } from "contexts"
+import { contracts } from "config"
 import {
   NFTsPage,
   NFTView,
@@ -12,6 +14,7 @@ import {
 } from "../pages"
 
 export const useNav = () => {
+  const { chainId } = useAppContext()
   const menu = [
     {
       path: "/",
@@ -39,7 +42,7 @@ export const useNav = () => {
       isExternal: false,
     },
     {
-      path: "https://dao.enterprise.money/daos",
+      path: `https://dao.enterprise.money/dao/staking?address=${contracts[chainId].dao}`,
       name: "Staking",
       isExternal: true,
     },
