@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ReactComponent as XIcon } from 'assets/X.svg';
 import { AnimatedBackground } from 'components/background/AnimatedBackground';
-import styles from './ConnectModalPage.module.scss';
+import styles from './ModalPage.module.scss';
 
 export const NotEligibleModalPage = () => {
   return (
@@ -17,7 +17,7 @@ export const NotEligibleModalPage = () => {
           </div>
         </div>
         <div className={styles.button__wrapper}>
-          <Link to='/' style={{ width: "100%" }}>
+          <Link to='/nft-gallery' style={{ width: "100%" }}>
             <button className={styles.secondary__button}>
               View Full NFT Gallery
             </button>

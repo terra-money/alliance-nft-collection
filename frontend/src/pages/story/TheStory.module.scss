@@ -1,0 +1,172 @@
+.page__container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+
+  .left__side {
+    flex: 1 1 0;
+    height: calc(100vh - 120px);
+    max-width: 775px;
+
+    .flex__wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      .star__map {
+        flex: 1 1 0;
+        background: var(--token-dark-500, #2F2E2D);
+        padding: 80px;
+        max-width: 832px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 20px;
+
+        svg {
+          width: 100%;
+          height: 90%;
+          margin: 0;
+        }
+
+        @media (max-width: 1000px) {
+          height: calc(100vh - 90px);
+        }
+      }
+
+      .planet__details__container {
+        flex: 2 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        padding: 40px 20px;
+      }
+    }
+  }
+
+  .content__container {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    padding: 0 48px;
+    gap: 32px;
+    height: calc(100vh - 120px);
+    overflow: scroll;
+
+    .planet__content {
+      padding-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      .paragraph__section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        h3 {
+          color: var(--token-dark-500, #2F2E2D);
+          font-size: 18px;
+          font-weight: 600;
+        }
+
+        p {
+          color: var(--token-dark-500, #2F2E2D);
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 22px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 1000px) {
+    .left__side {
+      height: calc(100vh - 90px);
+    }
+    .content__container {
+      height: calc(100vh - 90px);
+    }
+  }
+
+  @media (max-width: 976px) {
+    flex-direction: column;
+
+    .left__side {
+      max-width: unset;
+      flex: 0;
+
+      .flex__wrapper {
+        flex-direction: row;
+        width: 100%;
+
+        .star__map {
+          flex: 1 1 0;
+          height: unset;
+          padding: 20px 20px;
+        }
+
+        .planet__details__container {
+          flex: 1 1 0;
+          padding: 12px 18px;
+          gap: 12px;
+        }
+      }
+    }
+
+    .content__container {
+      overflow: unset;
+      padding-top: 28px;
+      height: 100%;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .left__side {
+      .flex__wrapper {
+        flex-direction: column;
+        width: 100%;
+
+        .star__map {
+          flex: 1 1 0;
+          height: 100%;
+          padding: 20px 20px;
+        }
+
+        .planet__details__container {
+          flex: 1 1 0;
+          padding: 20px 20px;
+          gap: 12px;
+        }
+      }
+    }
+
+    .content__container {
+      padding: 0px 20px;
+    }
+  }
+
+  @media (max-width: 615px) {
+    .left__side {
+      .flex__wrapper {
+        .star__map {
+          svg {
+            height: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-height: 790px) {
+    height: 100%;
+
+    .left__side {
+      height: fit-content;
+    }
+
+    .content__container {
+      height: 100%;
+    }
+  }
+}

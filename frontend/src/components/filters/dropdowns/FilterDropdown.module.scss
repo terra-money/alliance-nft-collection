@@ -1,0 +1,123 @@
+.filter__row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.filter__dropdown__container {
+  max-width: 200px;
+  width: 100%;
+  display: flex;
+  gap: 24px;
+  position: relative;
+
+  .selector__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+
+    .selector {
+      padding: 8px 12px;
+      background: var(--token-light-500);
+      border: 1px solid var(--token-light-800);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      appearance: none;
+      width: 100%;
+
+      .selected__wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      span {
+        display: flex;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--token-dark-500);
+      }
+
+      &.open {
+        background-color: var(--token-light-800);
+        border-color: var(--token-dark-700);
+      }
+
+      &:hover {
+        background-color: var(--token-light-800);
+        border-color: var(--token-dark-700);
+        transition: all .25s;
+      }
+    }
+
+    .clear__wrapper {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .options {
+    padding: 8px 2px 8px 12px;
+    position: absolute;
+    width: 100%;
+    background: var(--token-light-800);
+    border: 1px solid var(--token-dark-700);
+
+    border-radius: 8px;
+    z-index: 10;
+    max-height: 200px;
+    box-shadow: 0px 5px 7px 0px #0000009c;
+    top: 40px;
+    overflow: hidden;
+
+    .options__container {
+      padding-right: 10px;
+      padding-bottom: 8px;
+      overflow: auto;
+      max-height: 190px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      &::-webkit-scrollbar {
+        width: 12px;
+        display: block;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 16px;
+        background-color: hsl(0, 0%, 47%);
+        border: 2px solid var(--token-light-800);
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+@media (max-width: 590px) {
+  .filter__row {
+    // flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .filter__dropdown__container {
+    .selector__wrapper {
+      .selector {
+        span {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}

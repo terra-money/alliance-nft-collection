@@ -1,9 +1,9 @@
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useWallet, useConnectedWallet } from '@terra-money/wallet-kit';
 import { ReactComponent as Logo } from 'assets/AllianceDAOLogo.svg';
 import { AnimatedBackground } from 'components/background/AnimatedBackground';
-import styles from './ConnectModalPage.module.scss';
-import { useEffect, useState } from 'react';
+import styles from './ModalPage.module.scss';
 
 export const ConnectModalPage = () => {
   const navigate = useNavigate();
@@ -35,11 +35,11 @@ export const ConnectModalPage = () => {
       }
 
       if (hasNFTsToClaim(address)) {
-        navigate("/claim");
+        navigate("/");
       } else if (notEligible(address)) {
         navigate("/not-eligible");
       } else {
-        navigate("/");
+        navigate("/nft-gallery");
       }
     }
   }, [connectedWallet, loading, navigate]);
@@ -63,7 +63,11 @@ export const ConnectModalPage = () => {
           >
             Connect with Station
           </button>
-          <button className={styles.secondary__button}>Cancel</button>
+          <Link to="/nft-gallery">
+            <button className={styles.secondary__button}>
+              Cancel
+            </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import ConfettiExplosion from 'react-confetti-explosion';
 import { ReactComponent as Logo } from 'assets/AllianceDAOLogo.svg';
 import { ReactComponent as CheckIcon } from 'assets/check.svg'
 import { AnimatedBackground } from 'components/background/AnimatedBackground';
-import styles from './ConnectModalPage.module.scss';
+import styles from './ModalPage.module.scss';
 
 export const ClaimModalPage = () => {
   const [claimStatus, setClaimStatus] = useState<'notClaimed' | 'claimed' | 'error'>('notClaimed');
@@ -42,7 +42,7 @@ export const ClaimModalPage = () => {
             </div>
           </div>
           <div className={styles.button__wrapper}>
-            <Link to='/' style={{ width: "100%" }}>
+            <Link to='/nft-gallery' style={{ width: "100%" }}>
               <button className={styles.primary__button}>Done</button>
             </Link>
           </div>
@@ -77,7 +77,7 @@ export const ClaimModalPage = () => {
             Claim NFTs
           </button>
 
-          <Link to='/' style={{ width: "100%" }}>
+          <Link to='/nft-gallery' style={{ width: "100%" }}>
             <button
               className={styles.secondary__button}
             >

@@ -4,7 +4,6 @@ import styles from './NFTViewMobile.module.scss';
 interface NFTViewProps {
   nft: {
     id: number;
-    background_color: string;
     image: string;
     biome: string;
     character: string;
@@ -61,7 +60,7 @@ export const NFTViewMobile = ({ nft }: NFTViewProps) => {
           </div>
 
           <div className={styles.star__map}>
-            <StarMap planet={"fire"} />
+            <StarMap planet={nft.biome} />
           </div>
         </div>
 
