@@ -47,8 +47,17 @@ const toMintNftData = (nft: NFT) => {
 
 
 (async () => {
+
     // Create the LCD Client to interact with the blockchain
-    const lcd = LCDClient.fromDefaultConfig("testnet");
+    const lcd = new LCDClient({
+        'pisco-1': {
+            lcd: 'http://192.168.2.101:1317/',
+            chainID: 'pisco-1',
+            gasAdjustment: 1.75,
+            gasPrices: { uluna: 0.015 },
+            prefix: 'terra'
+        }
+    })
 
     // Get all information from the deployer wallet
     const mk = new MnemonicKey({ mnemonic: process.env.MNEMONIC });
@@ -70,7 +79,7 @@ const toMintNftData = (nft: NFT) => {
                 contractAdress,
                 { append_nft_metadata: msgs },
             )],
-            memo: `Alliance DAO NFT Collection Chunk`,
+            memo: `AllianceNFT metadata`,
             chainID: "pisco-1"
         });
         let result = await lcd.tx.broadcastSync(tx, "pisco-1");

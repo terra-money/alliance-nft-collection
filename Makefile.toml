@@ -55,12 +55,28 @@ script = """
 ts-node ./scripts/instantiate.ts
 """
 
-[tasks.change-owners]
+[tasks.change-owner]
 script = """
-ts-node ./scripts/execute-change-owners.ts
+ts-node ./scripts/execute-change-owner.ts
 """
 
-[tasks.mint]
+[tasks.change-treasury-address]
 script = """
-ts-node ./scripts/mint.ts
+ts-node ./scripts/execute-change-treasury-address.ts
+"""
+
+[tasks.mint-nfts]
+script = """
+ts-node ./scripts/execute-mint-nfts.ts
+"""
+
+
+[tasks.append-nft-metadata]
+script = """
+ts-node ./scripts/execute-append-nft-metadata.ts
+"""
+
+[tasks.send-to-dao]
+script = """
+ts-node ./scripts/execute-send-to-dao.ts
 """
