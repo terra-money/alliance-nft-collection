@@ -2,7 +2,13 @@ import { useState } from 'react';
 import { allPlanets, PlanetProps } from 'fakeData/planets';
 import styles from './StarMap.module.scss';
 
-const StarMap = ({ planet, setPlanet }: { planet: string, setPlanet: (planet: PlanetProps) => void }) => {
+const StarMap = ({
+  planet,
+  setPlanet
+}: {
+  planet: string,
+  setPlanet?: (planet: PlanetProps) => void
+}) => {
   const [hoveredPlanet, setHoveredPlanet] = useState<string | null>(null);
 
   const handlePlanetClick = (planetNumber: number) => {
