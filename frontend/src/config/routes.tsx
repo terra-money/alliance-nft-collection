@@ -8,7 +8,7 @@ import {
   PlanetView,
   ConnectModalPage,
   ClaimModalPage,
-  NotEligibleModalPage
+  NotEligibleModalPage,
 } from "../pages"
 
 export const useNav = () => {
@@ -17,7 +17,7 @@ export const useNav = () => {
       path: "/nft-gallery",
       element: <NFTsPage />,
       name: "NFT Gallery",
-      isExternal: false
+      isExternal: false,
     },
     {
       path: "/how-it-works",
@@ -33,7 +33,7 @@ export const useNav = () => {
     },
     {
       path: "https://dao.enterprise.money/daos",
-      name: "Alliance DAO Staking",
+      name: "Staking",
       isExternal: true,
     },
   ]
@@ -67,7 +67,8 @@ export const useNav = () => {
       name: "Claim",
       isExternal: false,
       isDynamic: false,
-    },{
+    },
+    {
       path: "/not-eligible",
       element: <NotEligibleModalPage />,
       name: "Not Eligible",

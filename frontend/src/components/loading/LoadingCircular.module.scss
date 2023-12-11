@@ -1,0 +1,43 @@
+.circular__container {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  display: inline-block;
+  color: var(--token-primary-500, #00C2FF);
+  animation: 1.4s linear 0s infinite normal none running rotate-animation;
+
+  .circle {
+    stroke: currentcolor;
+    stroke-dasharray: 80px, 200px;
+    stroke-dashoffset: 0;
+    animation: 1.4s ease-in-out 0s infinite normal none running spin;
+  }
+}
+
+@keyframes rotate-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+@keyframes spin {
+  0% {
+    stroke-dasharray: 1px, 200px;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -15px;
+  }
+  100% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -125px;
+  }
+}
+
+

@@ -5,6 +5,27 @@
   flex-direction: column;
   gap: 48px;
 
+  &.story {
+
+    max-width: unset;
+    margin: 0 auto;
+    padding-bottom: 24px;
+    overflow: scroll;
+
+    h1 {
+      display: none;
+    }
+
+    @media (max-width: 997px) {
+      overflow: unset;
+    }
+
+    @media (max-width: 700px) {
+      overflow: unset;
+      gap: 24px;
+    }
+  }
+
   h1 {
     text-align: center;
   }

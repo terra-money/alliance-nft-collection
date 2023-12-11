@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@mdx-js/rollup": "^3.0.0",
+    "@tanstack/react-query": "^5.13.4",
+    "@tanstack/react-query-devtools": "^5.13.5",
     "@terra-money/feather.js": "^1.2.1",
     "@terra-money/wallet-kit": "^1.0.15",
     "buffer": "^6.0.3",

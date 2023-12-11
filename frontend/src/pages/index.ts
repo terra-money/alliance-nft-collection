@@ -1,6 +1,6 @@
 export { NFTsPage } from "./nft/NFTs";
 export { HowItWorks } from "./HowItWorks";
-export { TheStory } from "./TheStory";
+export { TheStory } from "./story/TheStory.tsx";
 export { NFTView } from "./nft-view/NFTView";
 export { PlanetView } from "./planet-view/PlanetView";
 export { NotFound } from "./NotFound";
