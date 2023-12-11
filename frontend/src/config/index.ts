@@ -14,9 +14,10 @@ export type AllianceContractConfig = {
 
 export const contracts: Record<SupportedNetwork, AllianceContractConfig> = {
   "phoenix-1": {
-    minter: "",
-    collection: "",
-    dao: "",
+    minter: "terra1m3ye6dl6s25el4xd8adg9lnquz88az9lur2ujztj9pfmzdyfz3xsm699r3",
+    collection:
+      "terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9",
+    dao: "terra1tay6vaymstcg95z4lwpaxujhzsnqylu39hl3328556y5edzsf8ysuzrtnq",
   },
   "pisco-1": {
     minter: "terra1a78x4w8da7ycdfj3dryrelvwa2p8t7vxk8t0tfvtuduf00aw5y5qnurwru",
