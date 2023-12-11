@@ -5,21 +5,61 @@ import styles from './MDX.module.scss';
 
   <div className={styles.section}>
     ## Alliance DAO
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin cursus enim suscipit, semper arcu ut, egestas odio. Quisque elementum sollicitudin sagittis. Phasellus ultrices consequat luctus. Donec condimentum mi orci, sed pharetra risus viverra sit amet. Donec iaculis turpis vitae maximus vehicula. Vestibulum venenatis diam neque, nec facilisis massa pharetra a. Sed ipsum dui, interdum vitae vulputate vel, vulputate ac lacus. Aliquam tortor risus, feugiat nec ipsum a, tristique iaculis nulla. Vivamus rhoncus, metus non gravida ornare, magna orci rutrum eros, ut aliquet turpis enim sed metus. Etiam at faucibus purus, quis faucibus sapien. Vestibulum vestibulum erat ac consequat facilisis. In fringilla, elit sit amet finibus porta, urna lectus lacinia lorem, nec placerat enim nibh vel risus. Proin facilisis aliquam ex, in tincidunt odio varius eget. Aliquam erat volutpat. In hac habitasse platea dictumst. Sed eget nunc odio.
+The AllianceDAO NFT is an NFT project launched by TFL to reward participants of the Game of Alliance (GOA). The GoA was an incentivized testnet designed to battle-test Terra’s Alliance module before its mainnet launch, and it ran from February 9th to March 2nd, 2023. During the game, users could stake on different Alliance chains and move their tokens around to optimize rewards as the parameters of each chain changed. Player’s final scores were calculated based on the total staking rewards they earned plus the points they earned from completing different missions. For more information on the Alliance module and how it works, visit the [Alliance website](https://alliance.terra.money/).  
+
+Anyone who participated in the GoA and staked at least one asset will be eligible to receive an AllianceDAO NFT. To reward participants with higher scores, the NFTs will vary in rarity depending on a user’s GoA score. To determine each participant’s ranking, scores were tallied during the game, and final scores were calculated by multiplying a user’s mission score by the amount of staking rewards claimed. Higher-scoring players will receive an NFT with a corresponding rarity score. Users can stake their NFTs on Enterprise DAO to participate in governance and collectively determine future plans for the AllianceDAO. There will be an open claim period for the NFT where GoA participants can connect an eligible wallet to the claim site and mint their NFT.  
+
+</div>
+
+  <div className={styles.section}>
+    ## How Rewards Work
+
+The same smart contract that mints the AllianceDAO NFTs will also mint an asset called “Ally.” This asset will be solely owned by the contract, and will never be transferred to anyone outside of the contract. To leverage the power of Alliance, the “Ally” token will be whitelisted as an Alliance asset on Terra via a governance proposal, enabling the token to earn a portion of LUNA staking rewards. The proposed Reward Weight for “Ally” will be .003 — or .3% of total LUNA staking rewards — and the Take Rate will be 0. Upon the proposal’s passing, the AllianceDAO contract will stake Ally to start earning LUNA rewards. The delegation of the asset will be controlled by AllianceDAO governance and can be changed at any time. Staking rewards will be collected periodically using Warp Protocol and stored in the AllianceDAO contract.
+
+After the contract collects the staking rewards, each NFT will accrue rewards at an equal rate. At any point, NFT holders can connect their Station wallet to the AllianceDAO NFT website and “break” their NFT to claim their LUNA rewards. Importantly, NFT rewards can only be claimed once per NFT. Once an NFT has been broken, no more Alliance staking rewards will accrue to it. Although broken NFTs no longer accrue Alliance staking rewards, they can still be staked to the DAO on Enterprise to participate in governance.
+
+Each “unbroken” NFT will receive an equal proportion of the ever-growing Alliance reward pool. As users break their NFTs to claim rewards, the amount of outstanding, unbroken NFTs gets smaller, and their share of the reward pool gets larger.
+
+For example, if you own one of 9,000 “unbroken” NFTs, your NFT represents 1/9000 of the pool. If 5,000 people break their NFTs, the number of unbroken NFTs will shrink, and your claim on the pool becomes 1/4000 of the pool. The longer you hold your NFT without breaking it, the greater your reward will be.
+
+AllianceDAO NFTs are transferable, which means that if you send an unbroken NFT to someone, the wallet in possession of the NFT will be the only user that can claim the LUNA rewards.
+
+This will allow you to mint, view, and collect rewards from your NFT. 
+
   </div>
 
   <div className={styles.section}>
-    ## Claiming Your NFT
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin cursus enim suscipit, semper arcu ut, egestas odio. Quisque elementum sollicitudin sagittis. Phasellus ultrices consequat luctus. Donec condimentum mi orci, sed pharetra risus viverra sit amet. Donec iaculis turpis vitae maximus vehicula. Vestibulum venenatis diam neque, nec facilisis massa pharetra a. Sed ipsum dui, interdum vitae vulputate vel, vulputate ac lacus. Aliquam tortor risus, feugiat nec ipsum a, tristique iaculis nulla. Vivamus rhoncus, metus non gravida ornare, magna orci rutrum eros, ut aliquet turpis enim sed metus. Etiam at faucibus purus, quis faucibus sapien.
-  </div>
+  
+    ## NFT Eligibility
 
-  <div className={styles.section}>
-    ## Alliance Rewards
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sit amet massa euismod, mollis mi quis, dapibus metus. Proin placerat pharetra tellus, ac sagittis urna suscipit vel. Phasellus euismod, odio eu euismod bibendum, neque ipsum ultricies lacus, quis semper erat ligula ac enim. Praesent hendrerit lectus nec turpis vehicula, non mollis ex ultrices. Suspendisse tincidunt, ante a malesuada lobortis, turpis ante euismod leo, vitae facilisis tellus lacus a elit. In facilisis metus id libero iaculis, sed venenatis orci dictum. Aliquam eros nunc, imperdiet quis enim at, iaculis tristique orci.
-  </div>
+Any user who created a wallet for the Game of Alliance and had at least one staking transaction while playing will be eligible to claim an AllianceDAO NFT. In order to be Sybil resistant and make the claim process as fair as possible, the claim is limited to 1 NFT per IP address that participated. If you participated with multiple wallets using the same IP address, only the wallet address with the highest GoA score will be eligible for the claim. Final scores for users with multiple wallets were calculated by adding all the points earned by each wallet. NFT rarity will be determined by your final score — higher scores will claim more rare NFTs.
 
-  <div className={styles.section}>
-    ## Claiming rewards
-    Aenean urna lacus, vehicula eu euismod id, posuere vel tortor. Nam mattis tincidunt tincidunt. Nullam consequat iaculis enim, vitae auctor ex maximus at. Nam tempor urna sit amet leo hendrerit consectetur. Donec euismod, est sit amet euismod viverra, leo enim vestibulum urna, in luctus justo sapien at nisi. Morbi faucibus, libero ut consequat commodo, lacus urna viverra mauris, sed tempus tortor diam a ipsum. Sed ut ex enim. Maecenas eleifend ex neque, vel consequat enim porta imperdiet.
+If you created multiple wallets, your NFT will be claimable by the wallet with the highest score. (See the eligibility section above for more details). After connecting your wallet, you’ll be able to see if you have an NFT to claim. If your wallet is eligible, congratulations! You can claim using your Station wallet and receive a newly minted NFT!
+
+After claiming, holders can view their NFTs by connecting their Station wallet to the AllianceDAO website. Users can stake their NFTs to the AllianceDAO in the Enterprise DAO app.
+
+Any NFTs that remain unclaimed after the end of the claim period will be minted and immediately sent to the AllianceDAO treasury. From there, AllianceDAO stakers can decide what to do with them. One idea is to send them to a marketplace to be sold, and the proceeds of the sale would go back to the DAO’s treasury or be distributed amongst AllianceDAO stakers.
+</div>
+    <div className={styles.section}>
+    ## How To Mint your NFT
+
+    This site only supports the STation wallet. Before claiming, make sure you have downloaded the [Station wallet](https://setup-station.terra.money/). 
+
+    1. Connect your Station wallet to this site by clicking the **Connect Wallet** located at the top right of the page.
+    2. The address you connect with must be one that you used to play the GOA. If you used multiple wallets during the GoA, you may have to connect them one at a time to find the wallet the NFT was airdropped to. 
+    3. If you wallet is eligible for an NFT and you have not already claimed it, you will be directed to a page where you can click a button to initiate the mint transaction. 
+    4. After approving the transaction in your Station extension, your NFT will be minted, and you can view it in your gallery in the AllianceDAO site.
+
+
   </div>
+  <div className={styles.section}>
+    ## How To Claim Rewards
+
+NFT rewards can only be claimed once per NFT. Once an NFT has been broken, no more Alliance staking rewards will accrue to it. Although broken NFTs no longer accrue Alliance staking rewards, they can still be staked to the DAO on Enterprise to participate in governance. 
+
+1. To claim your rewards and break your NFT, connect the wallet that contains your NFT and visit the [Gallery](http://dao.alliance.money/nft-gallery) page. 
+2. Click **My NFTs**. 
+3. Once on your NFT page, click the **Claim Rewards** button.
+4. Sign the transaction in your Station extension by inputting your password. The Luna stored in your NFT will be sent to your wallet, and your NFT will be broken. Broken NFTs no longer accure rewards. 
+
 </div>

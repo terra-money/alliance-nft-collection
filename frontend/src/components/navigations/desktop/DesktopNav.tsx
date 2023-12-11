@@ -46,7 +46,7 @@ const DesktopNav = () => {
       <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
         <div className={styles.socials}>
           <a
-            href="https://twitter.com/AllianceDAO"
+            href="https://twitter.com/The_AllianceDAO"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -57,7 +57,7 @@ const DesktopNav = () => {
             />
           </a>
           <a
-            href="https://discord.gg/5QrSjPzY"
+            href="https://medium.com/terra-money/introducing-alliancedao-84ab93501f3c"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -68,7 +68,7 @@ const DesktopNav = () => {
             />
           </a>
           <a
-            href="https://t.me/alliancedao"
+            href="https://t.me/The_AllianceDAO"
             target="_blank"
             rel="noopener noreferrer"
           >
