@@ -1,4 +1,4 @@
-export { default as useAllNftsFromCollection } from "./useAllNFTsFromCollection"
+export { default as useAllMintedNFTsFromCollection } from "./useAllMintedNFTsFromCollection"
 export { default as useNFTFromCollection } from "./useNFTFromCollection"
 export { default as useUserNFTsFromCollection } from "./useUserNFTsFromCollection"
 export { default as useNFTFromMinter } from "./useNFTFromMinter"

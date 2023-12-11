@@ -44,6 +44,17 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
         feeDenoms: ["uluna"],
       })
 
+      //   const instantiateResult = await post(postMessage);
+      // const txHash = instantiateResult?.result.txhash;
+
+      // if (!txHash) {
+      //   throw new Error('No txHash');
+      // }
+
+      // // poll for block result
+      // let txResult: any = await pollForTxInclusion(txHash);
+      // console.log('txResult', txResult);
+
       return postedTx
     } catch (error) {
       console.log("Error minting NFT:")
