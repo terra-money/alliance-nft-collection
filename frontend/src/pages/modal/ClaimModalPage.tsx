@@ -6,7 +6,7 @@ import ConfettiExplosion from "react-confetti-explosion"
 import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
 import { ReactComponent as CheckIcon } from "assets/check.svg"
 import { AnimatedBackground } from "components/background/AnimatedBackground"
-import styles from "./ConnectModalPage.module.scss"
+import styles from "./ModalPage.module.scss"
 import { useAllianceContracts, useNFTFromMinter } from "hooks/"
 import { useAppContext } from "contexts"
 
@@ -105,7 +105,6 @@ export const ClaimModalPage = () => {
         <div className={styles.logo__wrapper}>
           <Logo className={styles.logo} />
         </div>
-        {/** Wallet Not connected? render connect */}
         {!walletAddress ? (
           <div>
             <div className={styles.text}>
@@ -127,7 +126,6 @@ export const ClaimModalPage = () => {
             </div>
           </div>
         ) : claimAvailable ? (
-          /** Wallet Connected - Claim available  */
           <div>
             <div className={styles.text}>
               <div className={styles.text}>
@@ -148,7 +146,6 @@ export const ClaimModalPage = () => {
             </div>
           </div>
         ) : (
-          /** Wallet Connected - No Claim Available */
           <div>
             <div className={styles.text}>
               <div className={styles.text}>
@@ -166,8 +163,6 @@ export const ClaimModalPage = () => {
             </div>
           </div>
         )}
-
-        {/** Wallet Connected - Claim success? Confetti! */}
       </div>
     </div>
   )
