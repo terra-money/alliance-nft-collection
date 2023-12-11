@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
-import classNames from 'classnames/bind';
-import { objectOptions } from '../options';
-import { GalleryFiltersProps } from 'pages/nft/NFTs';
+import { useEffect, useRef, useState } from "react";
+import classNames from "classnames/bind";
+import { objectOptions } from "../options";
+import { GalleryFiltersProps } from "pages/nft/NFTs";
 import { ReactComponent as DropdownArrowIcon } from "assets/DropdownArrow.svg";
 import { ReactComponent as CircleClearIcon } from "assets/CircleClear.svg";
-import Checkbox from 'components/checkbox/checkbox';
-import styles from './FilterDropdown.module.scss';
+import { Checkbox } from "components";
+import styles from "./FilterDropdown.module.scss";
 
 const cx = classNames.bind(styles);
 
@@ -115,5 +115,5 @@ export const ObjectFilter = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};

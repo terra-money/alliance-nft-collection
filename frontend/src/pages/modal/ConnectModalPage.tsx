@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useWallet, useConnectedWallet } from '@terra-money/wallet-kit';
-import { ReactComponent as Logo } from 'assets/AllianceDAOLogo.svg';
-import { AnimatedBackground } from 'components/background/AnimatedBackground';
-import styles from './ModalPage.module.scss';
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useWallet, useConnectedWallet } from "@terra-money/wallet-kit";
+import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg";
+import { AnimatedBackground } from "components/background/AnimatedBackground";
+import styles from "./ModalPage.module.scss";
 
 export const ConnectModalPage = () => {
   const navigate = useNavigate();

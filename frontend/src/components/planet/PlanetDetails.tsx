@@ -1,6 +1,6 @@
-import classNames from 'classnames/bind';
-import { PlanetProps } from 'fakeData/planets';
-import styles from './PlanetDetails.module.scss';
+import classNames from "classnames/bind";
+import { PlanetProps } from "fakeData/planets";
+import styles from "./PlanetDetails.module.scss";
 
 const cx = classNames.bind(styles);
 

@@ -1,30 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { mockNFTs } from 'fakeData/mockNFTs';
-import { useParams } from 'react-router-dom';
-import styles from './NFTView.module.scss';
-import { useMediaQuery } from 'usehooks-ts';
-import { NFTViewMobile } from './NFTViewMobile';
-import StarMap from 'components/starmap';
+import { useParams } from "react-router-dom";
+import { useMediaQuery } from "usehooks-ts";
+import { mockNFTs } from "fakeData/mockNFTs";
+import { NFTViewMobile } from "./NFTViewMobile";
+import { StarMap } from "components";
+import styles from "./NFTView.module.scss";
 
 export const NFTView = () => {
   const { id } = useParams();
   const allNFTs = mockNFTs;
   const nft = allNFTs[Number(id)];
 
-  const isMobile = useMediaQuery('(max-width: 976px)');
+  const isMobile = useMediaQuery("(max-width: 976px)");
 
   if (!id) {
     return (
       <div>
         NFT Not Found
       </div>
-    )
+    );
   }
 
   if (isMobile) {
     return (
       <NFTViewMobile nft={nft} />
-    )
+    );
   }
 
   return (

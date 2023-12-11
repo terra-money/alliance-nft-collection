@@ -1,14 +1,11 @@
-import { useEffect, useState } from "react"
-import classNames from "classnames/bind"
-import NFTItem from "components/nft/NFTItem"
-import { filterNFTs } from "components/filters/helpers"
-import { FilterDropdowns } from "components/filters/dropdowns"
-import { ReactComponent as FilterIcon } from "assets/Filter.svg"
-import { mockNFTs, signedInUserData } from "fakeData/mockNFTs"
-import styles from "./NFTs.module.scss"
-import { SearchByID } from "components/filters/search/SearchByID"
+import { useEffect, useState } from "react";
+import classNames from "classnames/bind";
+import { ReactComponent as FilterIcon } from "assets/Filter.svg";
+import { mockNFTs, signedInUserData } from "fakeData/mockNFTs";
+import { SearchByID, NFTItem, filterNFTs, FilterDropdowns } from "components";
+import styles from "./NFTs.module.scss";
 
-const cx = classNames.bind(styles)
+const cx = classNames.bind(styles);
 
 export interface GalleryFiltersProps {
   planetNumber: number | null
@@ -18,19 +15,19 @@ export interface GalleryFiltersProps {
 }
 
 export const NFTsPage = () => {
-  const [showFilterRow, setShowFilterRow] = useState(false)
-  const [searchValue, setSearchValue] = useState("")
-  const [searchLoading, setSearchLoading] = useState(false)
+  const [showFilterRow, setShowFilterRow] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
 
-  const [activeTab, setActiveTab] = useState("all")
+  const [activeTab, setActiveTab] = useState("all");
   const [galleryFilters, setGalleryFilters] = useState<GalleryFiltersProps>({
     planetNumber: null,
     planetNames: [],
     planetInhabitants: [],
     nftObjects: [],
-  })
+  });
 
-  const [displayedNFTs, setDisplayedNFTs] = useState(mockNFTs)
+  const [displayedNFTs, setDisplayedNFTs] = useState(mockNFTs);
 
   useEffect(() => {
     if (
@@ -38,46 +35,46 @@ export const NFTsPage = () => {
       !galleryFilters.planetInhabitants.length &&
       !galleryFilters.nftObjects.length
     ) {
-      setDisplayedNFTs(mockNFTs)
-      return
+      setDisplayedNFTs(mockNFTs);
+      return;
     }
 
-    const filtered = filterNFTs(mockNFTs, galleryFilters)
-    setDisplayedNFTs(filtered)
-  }, [galleryFilters])
+    const filtered = filterNFTs(mockNFTs, galleryFilters);
+    setDisplayedNFTs(filtered);
+  }, [galleryFilters]);
 
   useEffect(() => {
     if (!searchValue) {
-      setSearchLoading(false)
-      setDisplayedNFTs(mockNFTs)
-      return
+      setSearchLoading(false);
+      setDisplayedNFTs(mockNFTs);
+      return;
     }
 
-    setSearchLoading(true)
+    setSearchLoading(true);
     setTimeout(() => {
       const filtered = mockNFTs.filter(
         (nft) => nft.id.toString() === searchValue
-      )
-      setDisplayedNFTs(filtered)
-      setSearchLoading(false)
-    }, 1000)
-  }, [searchValue])
+      );
+      setDisplayedNFTs(filtered);
+      setSearchLoading(false);
+    }, 1000);
+  }, [searchValue]);
 
   const handleSwitch = (tab: string) => {
     if (tab === "all" && activeTab === "all") {
-      return
+      return;
     } else if (tab === "my" && activeTab === "my") {
-      return
+      return;
     }
 
     if (tab === "all") {
-      setActiveTab("all")
-      setShowFilterRow(false)
+      setActiveTab("all");
+      setShowFilterRow(false);
     } else {
-      setActiveTab("my")
-      setShowFilterRow(false)
+      setActiveTab("my");
+      setShowFilterRow(false);
     }
-  }
+  };
 
   return (
     <main className={styles.main}>
@@ -155,5 +152,5 @@ export const NFTsPage = () => {
         )}
       </section>
     </main>
-  )
-}
+  );
+};

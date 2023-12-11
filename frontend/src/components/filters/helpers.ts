@@ -1,5 +1,5 @@
-import { NFTType } from 'fakeData/mockNFTs';
-import { GalleryFiltersProps } from 'pages/nft/NFTs';
+import { NFTType } from "fakeData/mockNFTs";
+import { GalleryFiltersProps } from "pages/nft/NFTs";
 
 export const filterNFTs = (
   nfts: NFTType[],

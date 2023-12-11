@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import classNames from 'classnames/bind';
-import { ReactComponent as SearchIcon } from 'assets/Search.svg'
-import LoadingCircular from 'components/loading/circular';
-import styles from './SearchByID.module.scss';
+import React, { useState } from "react";
+import classNames from "classnames/bind";
+import { ReactComponent as SearchIcon } from "assets/Search.svg"
+import { LoadingCircular } from "components";
+import styles from "./SearchByID.module.scss";
 
 const cx = classNames.bind(styles);
 
@@ -25,15 +25,15 @@ export const SearchByID = ({
       if (intValue >= 0 && intValue <= 10000) {
         setCurrentSearchValue(inputValue);
       } else {
-        setCurrentSearchValue('');
+        setCurrentSearchValue("");
       }
-    } else if (inputValue === '') {
+    } else if (inputValue === "") {
       setCurrentSearchValue(inputValue);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       setSearchValue(currentSearchValue);
     }

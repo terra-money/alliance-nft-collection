@@ -1,6 +1,6 @@
-import { ForwardedRef, forwardRef, InputHTMLAttributes } from 'react';
-import classNames from 'classnames/bind';
-import styles from './checkbox.module.scss';
+import { ForwardedRef, forwardRef, InputHTMLAttributes } from "react";
+import classNames from "classnames/bind";
+import styles from "./Checkbox.module.scss";
 
 const cx = classNames.bind(styles);
 
@@ -17,7 +17,7 @@ const Checkbox = forwardRef(
     const { disabled } = attrs;
     return (
       <label className={cx(styles.checkbox, { checked, disabled }, className)}>
-        <input {...attrs} type='checkbox' hidden ref={ref} />
+        <input {...attrs} type="checkbox" hidden ref={ref} />
         <span className={styles.track}>
           <span className={styles.indicator} />
         </span>

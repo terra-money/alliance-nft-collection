@@ -1,6 +1,6 @@
-import { useMediaQuery } from 'usehooks-ts';
-import MobileNav from './mobile/MobileNav';
-import DesktopNav from './desktop/DesktopNav';
+import { useMediaQuery } from "usehooks-ts";
+import MobileNav from "./mobile/MobileNav";
+import DesktopNav from "./desktop/DesktopNav";
 
 const Navigation = ({
   isMobileNavOpen,
@@ -9,7 +9,7 @@ const Navigation = ({
   isMobileNavOpen: boolean,
   setMobileNavOpen: (isMobileNavOpen: boolean) => void
 }) => {
-  const isMobile = useMediaQuery('(max-width: 976px)');
+  const isMobile = useMediaQuery("(max-width: 976px)");
 
   if (isMobile) {
     return (

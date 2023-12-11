@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { allPlanets, PlanetProps } from 'fakeData/planets';
-import styles from './StarMap.module.scss';
+import { useState } from "react";
+import { allPlanets, PlanetProps } from "fakeData/planets";
+import styles from "./StarMap.module.scss";
 
 const StarMap = ({
   planet,
@@ -89,19 +89,19 @@ const StarMap = ({
         const isHovered = hoveredPlanet === lowerCaseTerrain;
         let xIndex = cx + r + 8;
         let yIndex = cy + 6;
-        if (lowerCaseTerrain === 'fire') {
+        if (lowerCaseTerrain === "fire") {
           xIndex = cx + r + 4;
           yIndex = cy - 5;
-        } else if (lowerCaseTerrain === 'meadows') {
+        } else if (lowerCaseTerrain === "meadows") {
           xIndex = cx + r - 40;
           yIndex = cy + 35;
-        } else if (lowerCaseTerrain === 'asteroid') {
+        } else if (lowerCaseTerrain === "asteroid") {
           xIndex = cx + r - 30;
           yIndex = cy - 25;
-        } else if (lowerCaseTerrain === 'flowerbeds') {
+        } else if (lowerCaseTerrain === "flowerbeds") {
           xIndex = cx - r - 100;
           yIndex = cy + 25;
-        } else if (lowerCaseTerrain === 'crystal') {
+        } else if (lowerCaseTerrain === "crystal") {
           xIndex = cx - r - 90;
           yIndex = cy + 20;
         }

@@ -1,5 +1,5 @@
-import { NavLink } from 'react-router-dom';
-import styles from './NFTItem.module.scss';
+import { NavLink } from "react-router-dom";
+import styles from "./NFTItem.module.scss";
 
 type NFTCardProps = {
   id: number;

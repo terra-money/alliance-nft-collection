@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
-import { allPlanets } from 'fakeData/planets';
-import { PlanetDetails } from 'components/planet/PlanetDetails';
-import styles from './PlanetView.module.scss';
+import { useParams } from "react-router-dom";
+import { allPlanets } from "fakeData/planets";
+import { PlanetDetails } from "components/planet/PlanetDetails";
+import styles from "./PlanetView.module.scss";
 
 export const PlanetView = () => {
   const { id } = useParams();

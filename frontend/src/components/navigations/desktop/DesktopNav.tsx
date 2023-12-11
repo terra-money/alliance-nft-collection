@@ -1,20 +1,20 @@
-import classNames from "classnames/bind"
-import { Link, NavLink, useLocation } from "react-router-dom"
-import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
-import { ReactComponent as ExternalLinkIcon } from "assets/ExternalLink.svg"
-import { ReactComponent as CheckIcon } from "assets/check.svg"
-import { ReactComponent as TwitterIcon } from "assets/socials/Twitter.svg"
-import { ReactComponent as MediumIcon } from "assets/socials/Medium.svg"
-import { ReactComponent as TelegramIcon } from "assets/socials/Telegram.svg"
-import { useNav } from "../../../config/routes"
-import styles from "./DesktopNav.module.scss"
+import classNames from "classnames/bind";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg";
+import { ReactComponent as ExternalLinkIcon } from "assets/ExternalLink.svg";
+import { ReactComponent as CheckIcon } from "assets/check.svg";
+import { ReactComponent as TwitterIcon } from "assets/socials/Twitter.svg";
+import { ReactComponent as MediumIcon } from "assets/socials/Medium.svg";
+import { ReactComponent as TelegramIcon } from "assets/socials/Telegram.svg";
+import { useNav } from "../../../config/routes";
+import styles from "./DesktopNav.module.scss";
 
-const cx = classNames.bind(styles)
+const cx = classNames.bind(styles);
 
 const DesktopNav = () => {
-  const socialSize = 16
-  const { pathname } = useLocation()
-  const { menu } = useNav()
+  const socialSize = 16;
+  const { pathname } = useLocation();
+  const { menu } = useNav();
 
   return (
     <nav className={styles.navigation}>
@@ -87,7 +87,7 @@ const DesktopNav = () => {
         </Link>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default DesktopNav
+export default DesktopNav;

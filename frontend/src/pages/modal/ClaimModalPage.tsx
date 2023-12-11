@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import { useWallet } from "@terra-money/wallet-kit"
-import { useQueryClient } from "@tanstack/react-query"
-import ConfettiExplosion from "react-confetti-explosion"
-import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
-import { ReactComponent as CheckIcon } from "assets/check.svg"
-import { AnimatedBackground } from "components/background/AnimatedBackground"
-import styles from "./ModalPage.module.scss"
-import { useAllianceContracts, useNFTFromMinter } from "hooks/"
-import { useAppContext } from "contexts"
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useWallet } from "@terra-money/wallet-kit";
+import { useQueryClient } from "@tanstack/react-query";
+import ConfettiExplosion from "react-confetti-explosion";
+import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg";
+import { ReactComponent as CheckIcon } from "assets/check.svg";
+import { AnimatedBackground } from "components";
+import { useAllianceContracts, useNFTFromMinter } from "hooks/";
+import { useAppContext } from "contexts";
+import styles from "./ModalPage.module.scss";
 
 export const ClaimModalPage = () => {
   /* State */
@@ -165,5 +165,5 @@ export const ClaimModalPage = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};

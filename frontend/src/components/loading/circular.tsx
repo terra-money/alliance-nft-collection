@@ -1,4 +1,4 @@
-import styles from  './LoadingCircular.module.scss';
+import styles from  "./LoadingCircular.module.scss";
 
 const LoadingCircular = () => {
   return (

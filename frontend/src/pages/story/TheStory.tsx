@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import classNames from 'classnames/bind';
+import { useState } from "react";
+import classNames from "classnames/bind";
 import { default as Content } from "content/TheStory.mdx";
-import StarMap from 'components/starmap';
-import { PlanetDetails } from 'components/planet/PlanetDetails';
-import { allPlanets } from 'fakeData/planets';
+import { PlanetDetails, StarMap } from "components";
+import { allPlanets } from "fakeData/planets";
 
 import styles from "./TheStory.module.scss";
 import tabStyles from "./Tabs.module.scss";

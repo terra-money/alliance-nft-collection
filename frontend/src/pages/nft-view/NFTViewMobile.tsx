@@ -1,5 +1,5 @@
-import StarMap from 'components/starmap';
-import styles from './NFTViewMobile.module.scss';
+import { StarMap } from "components";
+import styles from "./NFTViewMobile.module.scss";
 
 interface NFTViewProps {
   nft: {
@@ -67,5 +67,5 @@ export const NFTViewMobile = ({ nft }: NFTViewProps) => {
         <button className={styles.button}>Break NFT & Claim Rewards</button>
       </div>
     </div>
-  )
-}
+  );
+};
