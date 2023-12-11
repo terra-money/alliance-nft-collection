@@ -468,3 +468,71 @@ fn test_try_change_owener() {
             })
     );
 }
+
+#[test]
+fn remove_nft_from_mint() {
+    // Create the env with the contract
+    let (mut deps, env, _) = intantiate_with_reply();
+
+    // Execute the message
+    let _ = append_nft_metadata_execution(
+        deps.as_mut(),
+        "creator",
+        "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
+    );
+
+
+    // mint an nft
+    let res = execute(
+        deps.as_mut(),
+        env.clone(),
+        mock_info("creator", &[]),
+        ExecuteMinterMsg::RemoveToken(String::from("terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je")),
+    );
+
+    assert_eq!(
+        res.unwrap(),
+        Response::default()
+            .add_attribute("method", "try_remove_token")
+            .add_attribute("removed_token", "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je")
+    );
+
+    // query to see if stats match
+    let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
+    assert_eq!(
+        query_res,
+        to_binary(&MinterStats {
+            available_nfts: 0,
+            minted_nfts: 0,
+        })
+        .unwrap()
+    );
+}
+
+
+#[test]
+fn remove_nft_from_mint_wrong_sender() {
+    // Create the env with the contract
+    let (mut deps, env, _) = intantiate_with_reply();
+
+    // Execute the message
+    let _ = append_nft_metadata_execution(
+        deps.as_mut(),
+        "creator",
+        "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
+    );
+
+
+    // mint an nft
+    let res = execute(
+        deps.as_mut(),
+        env.clone(),
+        mock_info("creatorw", &[]),
+        ExecuteMinterMsg::RemoveToken(String::from("terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je")),
+    );
+
+    assert_eq!(
+        res.unwrap_err().to_string(),
+        String::from("Unauthorized execution, sender (creatorw) is not the expected address (creator)")
+    );
+}

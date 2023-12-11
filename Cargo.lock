@@ -15,7 +15,7 @@ dependencies = [
 
 [[package]]
 name = "alliance-nft-collection"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "alliance-nft-packages",
  "cosmwasm-schema",
@@ -33,7 +33,7 @@ dependencies = [
 
 [[package]]
 name = "alliance-nft-minter"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "alliance-nft-packages",
  "cosmwasm-schema",
@@ -51,7 +51,7 @@ dependencies = [
 
 [[package]]
 name = "alliance-nft-packages"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",

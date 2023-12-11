@@ -150,6 +150,7 @@ pub struct AllianceRedelegateMsg {
 pub enum ExecuteMinterMsg {
     AppendNftMetadata(HashMap<String, MinterExtension>),
     Mint {},
+    RemoveToken(String),
     SendToDao(i16),
     ChangeDaoTreasuryAddress(String),
     ChangeOwner(String),
