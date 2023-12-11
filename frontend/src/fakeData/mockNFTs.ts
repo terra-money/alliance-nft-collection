@@ -1,87 +1,99 @@
+export interface NFTType {
+  id: number;
+  planet: string;
+  image: string;
+  biome: string;
+  character: string;
+  object: string;
+  rarityScore: number;
+  rewards: number;
+  claimed: string;
+}
+
 export const mockNFTs = [
   {
     id: 0,
-    background_color: "",
+    planet: "Cristall South",
     image: "/src/assets/nfts/MOUNTAINS 2 1.png",
     biome: "water",
-    character: "fire",
-    object: "sword",
+    character: "Kitan F",
+    object: "Quartz Ray Gun",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 1,
-    background_color: "",
+    planet: "Crutha South",
     image: "/src/assets/nfts/MOUNTAINS 2 2.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "fire",
+    character: "Cristallian F",
+    object: "Sword of Zando",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 2,
-    background_color: "",
+    planet: "Kita South",
     image: "/src/assets/nfts/MOUNTAINS 2 3.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "ice",
+    character: "Kitan M",
+    object: "Staff of Zando",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 3,
-    background_color: "",
+    planet: "Kita North",
     image: "/src/assets/nfts/MOUNTAINS 2 4.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "jungle",
+    character: "Kitan F",
+    object: "Kitan Ice Staff",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 4,
-    background_color: "",
+    planet: "Ozara South",
     image: "/src/assets/nfts/MOUNTAINS 2 5.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "mountain",
+    character: "Pampan M",
+    object: "Cristallian Bow",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 5,
-    background_color: "",
+    planet: "Zando North",
     image: "/src/assets/nfts/MOUNTAINS 2 1second.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "meadows",
+    character: "Lusan M",
+    object: "Ice Cleaver",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 6,
-    background_color: "",
+    planet: "Sindari North",
     image: "/src/assets/nfts/MOUNTAINS 2 2second.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "asteroid",
+    character: "Sindarin M",
+    object: "Ice Cleaver",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 7,
-    background_color: "",
+    planet: "Sindari South",
     image: "/src/assets/nfts/MOUNTAINS 2 3second.png",
-    biome: "water",
-    character: "fire",
+    biome: "flowerbeds",
+    character: "Gredican M",
     object: "sword",
     rarityScore: 0.4,
     rewards: 89.49,
@@ -89,82 +101,82 @@ export const mockNFTs = [
   },
   {
     id: 8,
-    background_color: "",
+    planet: "Minas South",
     image: "/src/assets/nfts/MOUNTAINS 2 4second.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "crystal",
+    character: "Kitan F",
+    object: "Pampan Grass Sword",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 9,
-    background_color: "",
+    planet: "Ozara South",
     image: "/src/assets/nfts/MOUNTAINS 2 5second.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "desert",
+    character: "Gredican F",
+    object: "Sindarin Fire Staff",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 10,
-    background_color: "",
+    planet: "Ozara North",
     image: "/src/assets/nfts/MOUNTAINS 2 1third.png",
-    biome: "water",
-    character: "fire",
-    object: "sword",
+    biome: "fire",
+    character: "Gredican F",
+    object: "Phoenix Rising",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 11,
-    background_color: "",
+    planet: "Gredica North",
     image: "/src/assets/nfts/MOUNTAINS 2 2third.png",
     biome: "water",
-    character: "fire",
-    object: "sword",
+    character: "Cruthan F",
+    object: "Lusan Xtreme Soaker",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 12,
-    background_color: "",
+    planet: "Gredica South",
     image: "/src/assets/nfts/MOUNTAINS 2 3third.png",
     biome: "water",
     character: "fire",
-    object: "sword",
+    object: "Golden Hammer",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 13,
-    background_color: "",
+    planet: "Crutha North",
     image: "/src/assets/nfts/MOUNTAINS 2 4third.png",
     biome: "water",
-    character: "fire",
-    object: "sword",
+    character: "Minas M",
+    object: "Sindarin Flame Thrower",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
   {
     id: 14,
-    background_color: "",
+    planet: "Pampas South",
     image: "/src/assets/nfts/MOUNTAINS 2 5third.png",
     biome: "water",
-    character: "fire",
-    object: "sword",
+    character: "Minas M",
+    object: "Cruthan Death Mace",
     rarityScore: 0.4,
     rewards: 89.49,
     claimed: "24 December 2023"
   },
-];
+] as NFTType[];
 
 export const signedInUserData = {
   id: 0,

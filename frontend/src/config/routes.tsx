@@ -33,7 +33,7 @@ export const useNav = () => {
     },
     {
       path: "https://dao.enterprise.money/daos",
-      name: "Alliance DAO Staking",
+      name: "Staking",
       isExternal: true,
     },
   ]
