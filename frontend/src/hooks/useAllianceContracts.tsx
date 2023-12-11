@@ -5,6 +5,7 @@ import { useAppContext } from "contexts"
 
 /**
  * useAllianceContracts Interface
+ * requires: useWallet
  */
 interface IUseContracts {
   mintNFT: () => Promise<PostResponse | undefined>
