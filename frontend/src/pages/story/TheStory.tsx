@@ -37,17 +37,17 @@ export const TheStory = () => {
 
       <div className={styles.content__container}>
         <div className={tabStyles.buttons}>
-        <button
-            className={cx(tabStyles.button, { [tabStyles.button__selected]: !planetInfoView })}
-            onClick={() => setPlanetInfoView(false)}
-          >
-            Full Story
-          </button>
           <button
             className={cx(tabStyles.button, { [tabStyles.button__selected]: planetInfoView })}
             onClick={() => setPlanetInfoView(true)}
           >
             Planet Info
+          </button>
+          <button
+            className={cx(tabStyles.button, { [tabStyles.button__selected]: !planetInfoView })}
+            onClick={() => setPlanetInfoView(false)}
+          >
+            Full Story
           </button>
         </div>
         {planetInfoView ? (
