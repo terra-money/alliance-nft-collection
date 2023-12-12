@@ -81,7 +81,7 @@ export const ClaimModalPage = () => {
         })
         .catch((error: unknown) => {
           setIsPending(false)
-          console.error("error in promise", error)
+          console.error(error)
         })
     }
   }
