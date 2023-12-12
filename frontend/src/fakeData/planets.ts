@@ -53,7 +53,7 @@ export const allPlanets = [
   },
   {
     planetNumber: 3,
-    name: 'Kita',
+    name: 'Kitas',
     terrain: 'Ice',
     coordinates: '9078C, 222C, 8895V',
     circumference: '40,075 km',
@@ -79,7 +79,7 @@ export const allPlanets = [
     planetDescription: `
     Almost entirely covered in a seemingly bottomless ocean, Lusa is inhabited by myriad sea life. What little land is present consists of shallow swampland that never dries out for more than a day. Tall, sharp grasses grow on these marshes. Storms often cause towering waves, and major meteorological events can last for weeks without relenting. In the depths of the ocean, fish, squid, crabs, and sponges can grow hundreds of times the size of their shallow-water relatives.
     Once a year, the planet’s three moons align, reflecting silver light on the surface of the ocean, luring enormous creatures from the deep to shallow waters and onto the marshlands. Plots of seaweed and colonies of marine invertebrates are scattered across the planet’s southern hemisphere, while the Northern hemisphere is mainly open ocean, with few humanoid outposts.
-   `,
+    `,
     inhabitantsDescription: `
     The Lusans have evolved to live semi-aquatic lives. They have delicate dermal tissue which grants them the ability to breathe through their skin, allowing them to dive for extended periods of time. Their long silver hair aids them in hunting underwater, enabling them to sense micro-shifts in the water’s current, and their diet consists entirely of fish and seaweed.
     Many of Lusa’s inhabitants live on the marshlands, fashioning traditional domed homes from mud and grasses. Their society is technologically advanced, though they have not achieved space travel. They create large steel structures that can house thousands, anchored to rocks in the northern sea. They are adept at radio communication, and nearly every Lusan carries a communication device called a “trisstor,” translated loosely as “shell.” They are currently at peace, though in the past they have fought many wars over ocean territory. Their weapon of choice is the trident.
@@ -114,7 +114,7 @@ export const allPlanets = [
     image: "/src/assets/planets/Crutha.jpg",
     planetDescription: `
     Crutha has one of the harshest terrains of the ten planets. Its surface is covered in rocky, uneven terrain. Large crevices crisscross the planet, punctuated by mountains and vertical cliffs. Mist and fog cover most of the ground, making it difficult for plants and humanoids to survive. The sky appears orange due to ever-present clouds in the lower atmosphere.
-    Crutha has higher than average surface gravity due to its large planetary mass. Few plants grow on the surface, but many fungi grow underground and in dark caves. The largest animal on the surface is the long-haired mountain goat, which forages for fungi that grow in the crevices between rocks. The geological composition of the planet is roughly half granite, with the rest made up of granodiorite, basalt, and various other minerals. 
+    Crutha has higher than average surface gravity due to its large planetary mass. Few plants grow on the surface, but many fungi grow underground and in dark caves. The largest animal on the surface is the long-haired mountain goat, which forages for fungi that grow in the crevices between rocks. The geological composition of the planet is roughly half granite, with the rest made up of granodiorite, basalt, and various other minerals.
 `,
     inhabitantsDescription: `
     The Cruthans are very serious people, and they rarely laugh. Their skin is weathered and cracked due to the high altitude of their settlements and the constant exposure to harsh winds. Their blue-gray skin resembles the rocks they live among, and their hair is jet-black and often worn long.  When they are younger, Cruthans are small and thin. During late adulthood, they undergo a biological process that causes their muscles to grow three times as large. This process is known as "The rite of Ku'er," and it occurs in both males and females.
@@ -150,7 +150,7 @@ export const allPlanets = [
     Minas, technically classified as a dwarf planet, is the smallest of the ten planets. It has a cratered surface, resembling a large asteroid. The gravity on Minas is low, and the atmosphere is very thin. There are only a few plants that grow on the planet's surface, and most of them are large, rock-like succulents. The inhabitants of Minas have filled the atmosphere with oxygen, displacing the neon gas that used to surround the planet. The surface of Minas is rich in minerals and various metallic ores. Though small, Minas has several moons which orbit the planet. Minas and its moons were once two larger planets that collided several billion years ago. There is very little water that pools on the planet’s surface, but water and ice are present in the soil of Minas.
     `,
     inhabitantsDescription: `
-    The inhabitants of Minas are a hard-working, technically advanced people. Life on Minas is strenuous and depends on the constant mining and extraction of water, minerals, and chemical compounds necessary for survival. They have achieved space flight, though they don’t travel very far. They possess extensive knowledge of engineering and chemistry, and much of their culture revolves around the maintenance schedules of their mining equipment.  The standard uniform for an inhabitant of Minas is a red mining uniform with a white helmet. 
+    The inhabitants of Minas are a hard-working, technically advanced people. Life on Minas is strenuous and depends on the constant mining and extraction of water, minerals, and chemical compounds necessary for survival. They have achieved space flight, though they don’t travel very far. They possess extensive knowledge of engineering and chemistry, and much of their culture revolves around the maintenance schedules of their mining equipment.  The standard uniform for an inhabitant of Minas is a red mining uniform with a white helmet.
     They live in small habitation units, usually located next to their mines. They can synthesize food, allowing them to supplement the limited supply of edible plants and rodents on the planet. Along with Gredica and Cristall, Minas is a member of the Triad Alliance of Planets, an interplanetary treaty for trade and governance. Before the Warp occurred, the Triad Alliance planets believed themselves to be the only life in the universe. Minas often exports chemical compounds and raw materials to the other members of the Triad Alliance in exchange for goods and technology.
     `,
     cx: 291, cy: 112, r: 20.5, innerR: 13

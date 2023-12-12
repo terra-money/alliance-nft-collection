@@ -6,6 +6,11 @@ export type SupportedNetwork = (typeof supportedNetworks)[number]
 export const NFT_PREVIEW_URL =
   "https://alliancedao.mypinata.cloud/ipfs/bafybeiek4cv2w6ot767nriveyzagejnvzpw3qr2b7iyc6ccddid6jj77za/{id}.png"
 
+export const IPFS_NFT_URL =
+  "https://ipfs.io/ipfs/bafybeibgkqe2bag7s2qiz5nydxdh6z2b5tkjsag7fkefckbmfrkuqkdep4/{id}.png"
+
+// https://ipfs.io/ipfs/bafybeibgkqe2bag7s2qiz5nydxdh6z2b5tkjsag7fkefckbmfrkuqkdep4/20.png
+
 export type AllianceContractConfig = {
   minter: AccAddress
   collection: AccAddress

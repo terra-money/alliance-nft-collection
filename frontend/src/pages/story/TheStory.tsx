@@ -21,7 +21,7 @@ export const TheStory = () => {
       <div className={styles.left__side}>
         <div className={styles.flex__wrapper}>
           <div className={styles.star__map}>
-            <StarMap planet={planet.terrain.toLowerCase()} setPlanet={setPlanet} />
+            <StarMap planet={planet.name.toLowerCase()} setPlanet={setPlanet} />
           </div>
 
           <div className={styles.planet__details__container}>

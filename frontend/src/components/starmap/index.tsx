@@ -6,7 +6,7 @@ const StarMap = ({
   planet,
   setPlanet
 }: {
-  planet: string,
+  planet?: string,
   setPlanet?: (planet: PlanetProps) => void
 }) => {
   const [hoveredPlanet, setHoveredPlanet] = useState<string | null>(null);
@@ -48,11 +48,11 @@ const StarMap = ({
   );
 
   const renderPlanet = ({
-    planetNumber, terrain, cx, cy, r, innerR
+    planetNumber, name, cx, cy, r, innerR
   }: PlanetProps) => {
-    const lowerCaseTerrain = terrain.toLowerCase();
+    const lowerCaseName = name.toLowerCase();
 
-    const isActive = planet === lowerCaseTerrain;
+    const isActive = planet === lowerCaseName;
     const strokeColor = isActive ? "#00C2FF" : "#4D4A48";
 
     return (
@@ -64,7 +64,7 @@ const StarMap = ({
           fill={"#2F2E2D"}
           stroke={strokeColor}
           onClick={() => handlePlanetClick(planetNumber)}
-          onMouseEnter={() => handleMouseEnter(lowerCaseTerrain)}
+          onMouseEnter={() => handleMouseEnter(lowerCaseName)}
           onMouseLeave={handleMouseLeave}
         />
         {isActive && <circle cx={cx} cy={cy} r={innerR} fill="#00C2FF" />}
@@ -84,24 +84,24 @@ const StarMap = ({
       {allPlanets.map(renderPlanet)}
       {lines}
       {allPlanets.map(({ name, terrain, cx, cy, r }: PlanetProps) => {
-        const lowerCaseTerrain = terrain.toLowerCase();
-        const isActive = planet === lowerCaseTerrain;
-        const isHovered = hoveredPlanet === lowerCaseTerrain;
+        const lowerCaseName = name.toLowerCase();
+        const isActive = planet === lowerCaseName;
+        const isHovered = hoveredPlanet === lowerCaseName;
         let xIndex = cx + r + 8;
         let yIndex = cy + 6;
-        if (lowerCaseTerrain === 'fire') {
+        if (lowerCaseName === 'sindari') {
           xIndex = cx + r + 4;
           yIndex = cy - 5;
-        } else if (lowerCaseTerrain === 'meadows') {
+        } else if (lowerCaseName === 'pampas') {
           xIndex = cx + r - 40;
           yIndex = cy + 35;
-        } else if (lowerCaseTerrain === 'asteroid') {
+        } else if (lowerCaseName === 'minas') {
           xIndex = cx + r - 30;
           yIndex = cy - 25;
-        } else if (lowerCaseTerrain === 'flowerbeds') {
+        } else if (lowerCaseName === 'gredica') {
           xIndex = cx - r - 100;
           yIndex = cy + 25;
-        } else if (lowerCaseTerrain === 'crystal') {
+        } else if (lowerCaseName === 'cristall') {
           xIndex = cx - r - 90;
           yIndex = cy + 20;
         }

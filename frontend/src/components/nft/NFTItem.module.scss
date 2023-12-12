@@ -15,6 +15,21 @@
       padding-top: 100%;
     }
 
+    .loading__container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--token-light-500, #F1EEE9);
+      border-radius: 6%;
+      z-index: 100;
+    }
+
     img {
       position: absolute;
       top: 0;
@@ -26,6 +41,13 @@
       object-fit: cover; // Cover the area without stretching the image
       box-shadow: 0px 2px 4px 0px rgba(23, 23, 21, 0.16);
       border-radius: 7%;
+      opacity: 0;
+
+      &.loaded {
+        opacity: 1;
+        transition: opacity 0.3s ease-in-out;
+        z-index: 101;
+      }
     }
   }
 

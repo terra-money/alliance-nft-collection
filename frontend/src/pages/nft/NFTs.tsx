@@ -1,14 +1,14 @@
 import { useState } from "react"
 import classNames from "classnames/bind"
 import NFTItem from "components/nft/NFTItem"
-import { NFT_PREVIEW_URL } from "config"
-import { ReactComponent as FilterIcon } from "assets/Filter.svg"
-import styles from "./NFTs.module.scss"
+import { NFT_PREVIEW_URL, IPFS_NFT_URL } from "config"
+// import { ReactComponent as FilterIcon } from "assets/Filter.svg"
 import {
   useAllMintedNFTsFromCollection,
   useUserNFTsFromCollection,
 } from "hooks"
 import { useAppContext } from "contexts"
+import styles from "./NFTs.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -20,9 +20,10 @@ export interface GalleryFiltersProps {
 }
 
 export const NFTsPage = () => {
-  const [showFilterRow, setShowFilterRow] = useState(false)
+  // const [showFilterRow, setShowFilterRow] = useState(false)
   // const [searchValue, setSearchValue] = useState("")
   // const [searchLoading, setSearchLoading] = useState(false)
+
   const { walletAddress } = useAppContext()
   const { data: allNfts, isLoading: areNftsLoading } =
     useAllMintedNFTsFromCollection()
@@ -78,10 +79,10 @@ export const NFTsPage = () => {
 
     if (tab === "all") {
       setActiveTab("all")
-      setShowFilterRow(false)
+      // setShowFilterRow(false)
     } else {
       setActiveTab("my")
-      setShowFilterRow(false)
+      // setShowFilterRow(false)
     }
   }
 
@@ -89,7 +90,7 @@ export const NFTsPage = () => {
     <main className={styles.main}>
       <section className={styles.main__content}>
         <div className={styles.buttons}>
-          {activeTab === "all" && (
+          {/* {activeTab === "all" && (
             <button
               className={styles.filter__toggle}
               onClick={() => setShowFilterRow(!showFilterRow)}
@@ -100,7 +101,7 @@ export const NFTsPage = () => {
                 width={16}
               />
             </button>
-          )}
+          )} */}
           <button
             className={cx(styles.button, {
               [styles.button__selected]: activeTab === "all",
@@ -142,14 +143,19 @@ export const NFTsPage = () => {
           !areNftsLoading &&
           allNfts && (
             <div className={styles.grid}>
-              {allNfts.tokens?.map((nft) => (
-                <NFTItem
-                  key={nft}
-                  id={parseInt(nft)}
-                  imageUrl={NFT_PREVIEW_URL.replace("{id}", nft)}
-                  title={nft.toString()}
-                />
-              ))}
+              {allNfts.tokens?.map((nft) => {
+                return (
+                  <NFTItem
+                    key={nft}
+                    id={parseInt(nft)}
+                    imageUrl={IPFS_NFT_URL.replace(
+                      "{id}",
+                      nft
+                    )}
+                    title={nft.toString()}
+                  />
+                )
+              })}
             </div>
           )
         ) : (

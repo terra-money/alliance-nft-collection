@@ -91,6 +91,11 @@ const DesktopNav = () => {
             />
           </a>
         </div>
+        <span
+          className={cx({ [styles.active]: pathname === "/" })}
+        >
+          <NavLink to={"/"}>Claim</NavLink>
+        </span>
         <button onClick={handleConnectClick} className={styles.nav__button}>
           {walletAddress ? (
             <>

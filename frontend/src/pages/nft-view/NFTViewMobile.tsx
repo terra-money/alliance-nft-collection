@@ -4,21 +4,20 @@ import styles from './NFTViewMobile.module.scss';
 interface NFTViewProps {
   nft: {
     id: number;
-    image: string;
-    biome: string;
+    planet: string;
     character: string;
     object: string;
-    rarityScore: number;
-    rewards: number;
-    claimed: string;
+    rarity: number;
+    mood: string;
   }
+  image: string;
 }
 
-export const NFTViewMobile = ({ nft }: NFTViewProps) => {
+export const NFTViewMobile = ({ nft, image }: NFTViewProps) => {
   return (
     <div className={styles.nft__view}>
       <div className={styles.nft__image__container}>
-        <img className={styles.image} src={nft.image} alt="NFT" />
+        <img className={styles.image} src={image} alt="NFT" />
       </div>
 
       <div className={styles.nft__details__container}>
@@ -28,43 +27,22 @@ export const NFTViewMobile = ({ nft }: NFTViewProps) => {
         </div>
         <div className={styles.nft__attributes__container}>
           <div className={styles.attributes}>
-            <div className={styles.row}>
-              <div className={styles.attribute__title}>Unique ID</div>
-              <div className={styles.attribute__value}>{nft.id}</div>
-            </div>
-            <div className={styles.row}>
-              <div className={styles.attribute__title}>Biome</div>
-              <div className={styles.attribute__value}>{nft.biome}</div>
-            </div>
-            <div className={styles.row}>
-              <div className={styles.attribute__title}>Character</div>
-              <div className={styles.attribute__value}>{nft.character}</div>
-            </div>
-            <div className={styles.row}>
-              <div className={styles.attribute__title}>Object</div>
-              <div className={styles.attribute__value}>{nft.object}</div>
-            </div>
-            <div className={styles.row}>
-              <div className={styles.attribute__title}>Rarity Score</div>
-              <div className={styles.attribute__value}>{nft.rarityScore}</div>
-            </div>
-            <div className={styles.row}>
-              <div className={styles.attribute__title}>Rewards Accrued</div>
-              <div className={styles.attribute__value}>{nft.rewards}</div>
-            </div>
-            <div className={styles.row}>
-              <div className={styles.attribute__title}>Claimed</div>
-              {/* <div className={styles.attribute__value}>{nft.claimed}</div> */}
-              <div className={styles.attribute__value}>24 Dec 2023</div>
-            </div>
+            {Object.entries(nft).map((entry, i) => {
+              return (
+                <div key={"detail_entry" + i} className={styles.row}>
+                  <div className={styles.attribute__title}>{entry[0]}</div>
+                  <div className={styles.attribute__value}>{entry[1] ? entry[1] : ""}</div>
+                </div>
+              )
+            })}
           </div>
 
           <div className={styles.star__map}>
-            <StarMap planet={nft.biome} />
+            <StarMap planet={nft.planet} />
           </div>
         </div>
 
-        <button className={styles.button}>Break NFT & Claim Rewards</button>
+        {/* <button className={styles.button}>Break NFT & Claim Rewards</button> */}
       </div>
     </div>
   )
