@@ -118,12 +118,12 @@ export const ClaimModalPage = () => {
           </div>
           <div className={styles.text}>
             <div className={styles.text}>
-              You claimed your Alliance DAO NFT!
+              Your AllianceDAO NFT has been claimed!
             </div>
           </div>
           <div className={styles.button__wrapper}>
             <Link to="/nft-gallery" style={{ width: "100%" }}>
-              <button className={styles.primary__button}>Done</button>
+              <button className={styles.primary__button}>View NFT</button>
             </Link>
           </div>
         </div>
@@ -142,7 +142,7 @@ export const ClaimModalPage = () => {
           <div>
             <div className={styles.text}>
               <div className={styles.text}>
-                Please connect to check your claimable NFT
+                Connect your wallet to see if you are eligible to claim an NFT. 
               </div>
             </div>
             <div className={styles.button__wrapper}>
@@ -162,7 +162,7 @@ export const ClaimModalPage = () => {
           <div>
             <div className={styles.text}>
               <div className={styles.text}>
-                You have a claimable Alliance DAO NFT, click below to claim!
+                Your NFT is waiting for you! 🎉
               </div>
             </div>
             <div className={styles.button__wrapper}>
@@ -171,7 +171,7 @@ export const ClaimModalPage = () => {
                   className={styles.primary__button}
                   onClick={handleClaimClick}
                 >
-                  Claim NFTs
+                  Claim NFT
                 </button>
               ) : (
                 <LoadingCircular />
@@ -185,9 +185,18 @@ export const ClaimModalPage = () => {
           <div>
             <div className={styles.text}>
               <div className={styles.text}>
-                This wallet is not eligible for the Game Of Alliance airdrop.
-                Follow @AllianceDAO for opportunities to purchase an Alliance
-                NFT.
+              <b> This wallet is not eligible to claim an NFT.</b> 
+                <br/>
+                <br/>
+                If you used multiple wallets during Game of Alliance, you may have to try each one. 
+                <br/>
+                <br/>
+                Already claimed NFTs can be viewed in your gallery. 
+                <br/>
+                <br/>
+                Follow <a href="https://twitter.com/The_AllianceDAO">@The_AllianceDAO</a> on Twitter for upcoming opportunities to own an NFT. 
+                <br/>
+                <br/>
               </div>
             </div>
             <div className={styles.button__wrapper}>

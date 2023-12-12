@@ -173,22 +173,14 @@ export const allPlanets = [
     planetNumber: 10,
     name: 'Cristall',
     terrain: 'Crystal',
-    coordinates: '12322, 23frsd, 12233r2n',
-    circumference: '40,075 km',
+    coordinates: '8750K, 304R, 9982K',
+    circumference: '40,075 AU',
     inhabitants: 'Cristallians',
     image: "/planets/Cristall.jpg",
     planetDescription: `
-      The planet has large deposits of quartz-like, clear crystals on its surface. Some crystals are the size of mountains, piercing out through the ground. Some are small and appear like patches of plants. The Crystals scatter a pinkish-purple light when light is shone through them.
-      The ground is made up of white-grey gravel rock.
-      The planet is far from a sun, and is mainly illuminated by its 2 moons, appearing in the sky as round discs of light. The moons are always full. One is about 1/2 the size as the other. There are many stars in the sky.
-      The sky is a purple-pink color, fading to black.`,
+    Crystall is the crown jewel of the 10 planets. Relatively small, this planet has large deposits of quartz and amethyst crystals on its surface. Billions of years ago, Crystall had high amounts of volcanic activity. As magma cooled, silicon, oxygen, and iron formed giant crystals of purple amethyst and clear quartz. During this period of cooling, tectonic plates buckled, causing mountainous crystals to be forced onto the surface. The planet has two moons that appear as large discs of bright white in the sky, refracting a purple glow. There is a variety of flowering bushes on the planet called Amethyst apple, which grows scattered throughout the landscape. The berries of this plant contain nearly every nutrient necessary for animals, contributing to the long lifespans of creatures on the planet.`,
     inhabitantsDescription: `
-      The inhabitants are very technologically advanced.
-      They are scientists primarily, and their culture is devoted to the exploration and classification of their planet and surrounding system. They have achieved spaceflight, but only venture as far as their planet’s twin moons.
-      They wear white, well-fitting coveralls.
-      Their hair is pink.
-      Their skin is a very light pinkish purple.
-      They wear a quartz crystal pendant around their necks.`,
+    Crystallians have the most technologically advanced civilization of the ten planets. Young children learn advanced mathematics, physics, geology, and history in preparation for their scientific careers. Crystallian culture is centered around the Amethyst Principles, a set of guidelines focused on exploration and scientific advancement. Crystall is the seat of governance of the Triad Alliance of Planets, an interplanetary treaty formed with Minas and Gredica. Crystallians often use their superior technology and influence to sway the other members of the Triad Alliance to their will, benefiting from the resources and manufacturing capabilities of Gredica and Minas. The Crystallians often travel to other planets and have developed one of the most extensive maps of the universe. Though they do not have concrete knowledge of the existence of any humanoids outside of the Triad Alliance, they have long suspected that there are other planets amenable to life. They often wear a white lab coat adorned with an amethyst necklace, the unofficial uniform of Crystall.`,
     cx: 409, cy: 14, r: 8.5, innerR: 5
   },
 ] as PlanetProps[];
