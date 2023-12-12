@@ -4,11 +4,9 @@ import { useWallet } from "@terra-money/wallet-kit"
 import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
 import { ReactComponent as ExternalLinkIcon } from "assets/ExternalLink.svg"
 import { ReactComponent as CheckIcon } from "assets/check.svg"
-import { ReactComponent as TwitterIcon } from "assets/socials/Twitter.svg"
-import { ReactComponent as MediumIcon } from "assets/socials/Medium.svg"
-import { ReactComponent as TelegramIcon } from "assets/socials/Telegram.svg"
 import { useAppContext } from "contexts"
 import { useNav } from "../../../config/routes"
+import { Socials } from '../socials'
 import styles from "./DesktopNav.module.scss"
 
 const cx = classNames.bind(styles)
@@ -16,7 +14,6 @@ const cx = classNames.bind(styles)
 const DesktopNav = () => {
   const wallet = useWallet()
   const { walletAddress } = useAppContext()
-  const socialSize = 16
   const { pathname } = useLocation()
   const { menu } = useNav()
 
@@ -55,42 +52,7 @@ const DesktopNav = () => {
           )
         })}
       </ul>
-      <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-        <div className={styles.socials}>
-          <a
-            href="https://twitter.com/The_AllianceDAO"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <TwitterIcon
-              fill="var(--token-dark-500)"
-              width={socialSize}
-              height={socialSize}
-            />
-          </a>
-          <a
-            href="https://medium.com/terra-money/introducing-alliancedao-84ab93501f3c"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <MediumIcon
-              fill="var(--token-dark-500)"
-              width={socialSize + 1}
-              height={socialSize + 1}
-            />
-          </a>
-          <a
-            href="https://t.me/The_AllianceDAO"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <TelegramIcon
-              fill="var(--token-dark-500)"
-              width={socialSize - 2}
-              height={socialSize - 2}
-            />
-          </a>
-        </div>
+      <div className={styles.button__container}>
         <span
           className={cx({ [styles.active]: pathname === "/" })}
         >
@@ -106,6 +68,7 @@ const DesktopNav = () => {
             <>Connect Wallet</>
           )}
         </button>
+        <Socials />
       </div>
     </nav>
   )

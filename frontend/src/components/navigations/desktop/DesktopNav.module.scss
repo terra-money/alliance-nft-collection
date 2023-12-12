@@ -12,16 +12,6 @@
     }
   }
 
-  .socials {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    a {
-      display: flex;
-      align-items: center;
-    }
-  }
-
   .link__container {
     display: flex;
     align-items: center;
@@ -77,15 +67,23 @@
   }
 
   @media (max-width: 1050px) {
-    gap: 48px;
+    .link__container {
+      gap: 28px;
+    }
   }
 
   @media (max-width: 1050px) {
-    li {
+    li, span {
       a {
         font-size: 14px;
       }
     }
+  }
+
+  .button__container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
   }
 
   .nav__button {
