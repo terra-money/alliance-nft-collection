@@ -53,7 +53,7 @@ export const allPlanets = [
   },
   {
     planetNumber: 3,
-    name: 'Kitas',
+    name: 'Kita',
     terrain: 'Ice',
     coordinates: '9078C, 222C, 8895V',
     circumference: '40,075 km',
