@@ -42,7 +42,7 @@ export const allPlanets = [
     coordinates: '8439, 866B, 29083F',
     circumference: '94,675 AU',
     inhabitants: 'Sindarins',
-    image: "/src/assets/planets/Krimsen.jpg",
+    image: "/src/assets/planets/Sindari.jpg",
     planetDescription: `
     Sindari is a dark planet, teeming with volcanic activity. The fumes and ash from the planet’s many volcanoes have all but blocked out the sun. Rivers of lava flow into acidic lakes on the north side of the planet, where large trees protected by thick, charred bark thrive. These leafless trees are home to several species of lizards and birds with thick reptilian skin, as well as a few small mammals. What little sunlight makes it to the planet’s surface is pale in the morning and deep red throughout most of the day. The volcanic soil is rich in nutrients, creating an environment that allows microorganisms to flourish and release breathable oxygen. `,
     inhabitantsDescription: `
