@@ -2,10 +2,11 @@ import { useState } from "react"
 import classNames from "classnames/bind"
 import NFTItem from "components/nft/NFTItem"
 import { NFT_PREVIEW_URL } from "config"
-// import { ReactComponent as FilterIcon } from "assets/Filter.svg"
+
 import {
   useAllMintedNFTsFromCollection,
   useUserNFTsFromCollection,
+  useUserNFTsFromStaking,
 } from "hooks"
 import { useAppContext } from "contexts"
 import styles from "./NFTs.module.scss"
@@ -20,55 +21,27 @@ export interface GalleryFiltersProps {
 }
 
 export const NFTsPage = () => {
-  // const [showFilterRow, setShowFilterRow] = useState(false)
-  // const [searchValue, setSearchValue] = useState("")
-  // const [searchLoading, setSearchLoading] = useState(false)
-
+  /* Get user address from app store */
   const { walletAddress } = useAppContext()
+
+  /* Query All Minted NFTs from Collection */
   const { data: allNfts, isLoading: areNftsLoading } =
     useAllMintedNFTsFromCollection()
 
-  const { data: userNfts } = useUserNFTsFromCollection(walletAddress)
+  /* Query User NFTs from Collection */
+  const { data: userNftsFromCollection } =
+    useUserNFTsFromCollection(walletAddress)
+
+  /* Query User NFTs from Staking contract */
+  const { data: userStakedNfts } = useUserNFTsFromStaking(walletAddress)
+
+  /* Merge User NFTs from Collection and Staking */
+  const userNfts: { id: string; staked?: boolean }[] = [
+    ...(userNftsFromCollection?.tokens.map((nft) => ({ id: nft })) || []),
+    ...(userStakedNfts?.tokens.map((nft) => ({ id: nft, staked: true })) || []),
+  ]
 
   const [activeTab, setActiveTab] = useState("all")
-
-  // const [galleryFilters, setGalleryFilters] = useState<GalleryFiltersProps>({
-  //   planetNumber: null,
-  //   planetNames: [],
-  //   planetInhabitants: [],
-  //   nftObjects: [],
-  // })
-
-  // useEffect(() => {
-  //   if (
-  //     !galleryFilters.planetNames.length &&
-  //     !galleryFilters.planetInhabitants.length &&
-  //     !galleryFilters.nftObjects.length
-  //   ) {
-  //     setDisplayedNFTs(mockNFTs)
-  //     return
-  //   }
-
-  //   const filtered = filterNFTs(mockNFTs, galleryFilters)
-  //   setDisplayedNFTs(filtered)
-  // }, [galleryFilters])
-
-  // useEffect(() => {
-  //   if (!searchValue) {
-  //     setSearchLoading(false)
-  //     setDisplayedNFTs(mockNFTs)
-  //     return
-  //   }
-
-  //   setSearchLoading(true)
-  //   setTimeout(() => {
-  //     const filtered = mockNFTs.filter(
-  //       (nft) => nft.id.toString() === searchValue
-  //     )
-  //     setDisplayedNFTs(filtered)
-  //     setSearchLoading(false)
-  //   }, 1000)
-  // }, [searchValue])
 
   const handleSwitch = (tab: string) => {
     if (tab === "all" && activeTab === "all") {
@@ -79,10 +52,8 @@ export const NFTsPage = () => {
 
     if (tab === "all") {
       setActiveTab("all")
-      // setShowFilterRow(false)
     } else {
       setActiveTab("my")
-      // setShowFilterRow(false)
     }
   }
 
@@ -90,18 +61,6 @@ export const NFTsPage = () => {
     <main className={styles.main}>
       <section className={styles.main__content}>
         <div className={styles.buttons}>
-          {/* {activeTab === "all" && (
-            <button
-              className={styles.filter__toggle}
-              onClick={() => setShowFilterRow(!showFilterRow)}
-            >
-              <FilterIcon
-                fill={"var(--token-dark-700)"}
-                height={16}
-                width={16}
-              />
-            </button>
-          )} */}
           <button
             className={cx(styles.button, {
               [styles.button__selected]: activeTab === "all",
@@ -118,26 +77,10 @@ export const NFTsPage = () => {
               onClick={() => handleSwitch("my")}
             >
               My NFTs
-              <span className={styles.button__count}>
-                {userNfts?.tokens.length}
-              </span>
+              <span className={styles.button__count}>{userNfts.length}</span>
             </button>
           )}
         </div>
-
-        {/* {activeTab === "all" && showFilterRow && (
-          <>
-            <SearchByID
-              setSearchValue={setSearchValue}
-              searchValue={searchValue}
-              isLoading={searchLoading}
-            />
-            <FilterDropdowns
-              galleryFilters={galleryFilters}
-              setGalleryFilters={setGalleryFilters}
-            />
-          </>
-        )} */}
 
         {activeTab === "all" ? (
           !areNftsLoading &&
@@ -157,12 +100,12 @@ export const NFTsPage = () => {
           )
         ) : (
           <div className={styles.grid}>
-            {userNfts?.tokens.map((nft) => (
+            {userNfts.map((nft) => (
               <NFTItem
-                key={nft}
-                id={parseInt(nft)}
-                imageUrl={NFT_PREVIEW_URL.replace("{id}", nft)}
-                title={nft.toString()}
+                key={nft.id}
+                id={parseInt(nft.id)}
+                imageUrl={NFT_PREVIEW_URL.replace("{id}", nft.id)}
+                title={nft.id.toString()}
               />
             ))}
           </div>
