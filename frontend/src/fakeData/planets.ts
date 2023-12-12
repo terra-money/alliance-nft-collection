@@ -22,7 +22,7 @@ export const allPlanets = [
     coordinates: '112xr3, 33r, 8439z',
     circumference: '40,075 AU',
     inhabitants: 'Ozarans',
-    image: "/src/assets/planets/Ozara.jpg",
+    image: "/planets/Ozara.jpg",
     planetDescription: `
     Ozara is a desert planet consisting mainly of sand. Life is scarce, and water is more so. The sands of Ozara shift like waves, creating massive, ever-changing dunes. Geological markers show that the planet once contained large bodies of water, but it isn’t known where this water went, or why the planet is now so dry. All that is left of these great oceans are massive salt flats and deep gorges. Canyons that were once carved by water are now eroded by powerful sandstorms. The sand on the surface is multi-colored due to the planet’s many metal and mineral deposits, creating rainbow patterns in the ever-changing landscape.
     An assortment of small insects, reptiles, and mammals scavenge the planet’s surface at night, collecting the dew that forms on the sparse grasses and cacti that grow in select valleys. Apart from a large underground network of desert mycelium, plant and animal life on Ozara is small and rare.
@@ -42,7 +42,7 @@ export const allPlanets = [
     coordinates: '8439, 866B, 29083F',
     circumference: '94,675 AU',
     inhabitants: 'Sindarins',
-    image: "/src/assets/planets/Sindari.jpg",
+    image: "/planets/Sindari.jpg",
     planetDescription: `
     Sindari is a dark planet, teeming with volcanic activity. The fumes and ash from the planet’s many volcanoes have all but blocked out the sun. Rivers of lava flow into acidic lakes on the north side of the planet, where large trees protected by thick, charred bark thrive. These leafless trees are home to several species of lizards and birds with thick reptilian skin, as well as a few small mammals. What little sunlight makes it to the planet’s surface is pale in the morning and deep red throughout most of the day. The volcanic soil is rich in nutrients, creating an environment that allows microorganisms to flourish and release breathable oxygen. `,
     inhabitantsDescription: `
@@ -58,7 +58,7 @@ export const allPlanets = [
     coordinates: '9078C, 222C, 8895V',
     circumference: '40,075 km',
     inhabitants: 'Kitans',
-    image: "/src/assets/planets/Kita.jpg",
+    image: "/planets/Kita.jpg",
     planetDescription: `
     Kita is a planet of eternal winter. Glaciers make up much of the terrain. Mountains of snow and cliffs of sheer ice cover the planet, along with vast, uninterrupted flatlands that reflect an icy blue light. Frozen lakes of ammonia and carbon dioxide can be found on the poles of the planet, which remain significantly colder than the still-icy equator. The average temperature on the planet is rarely above freezing.
     Although there is little precipitation, small streams of liquid water can be found in the glacial chasms that form near the equator, where most life is concentrated. Small trees and bushes grow in the nutrient-rich permafrost located in the equatorial ravines. Arctic foxes and small mammals make their homes in caves, shielded from the biting winds. There is virtually no distinction between seasons on Kita, leaving the cryosphere remarkably unchanged over the last seven million years.
@@ -75,7 +75,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'Lusans',
-    image: "/src/assets/planets/Lusa.jpg",
+    image: "/planets/Lusa.jpg",
     planetDescription: `
     Almost entirely covered in a seemingly bottomless ocean, Lusa is inhabited by myriad sea life. What little land is present consists of shallow swampland that never dries out for more than a day. Tall, sharp grasses grow on these marshes. Storms often cause towering waves, and major meteorological events can last for weeks without relenting. In the depths of the ocean, fish, squid, crabs, and sponges can grow hundreds of times the size of their shallow-water relatives.
     Once a year, the planet’s three moons align, reflecting silver light on the surface of the ocean, luring enormous creatures from the deep to shallow waters and onto the marshlands. Plots of seaweed and colonies of marine invertebrates are scattered across the planet’s southern hemisphere, while the Northern hemisphere is mainly open ocean, with few humanoid outposts.
@@ -93,7 +93,7 @@ export const allPlanets = [
     coordinates: '5900, 2907K, 3399G',
     circumference: '14,775 AU',
     inhabitants: 'Zandoans',
-    image: "/src/assets/planets/Zando.jpg",
+    image: "/planets/Zando.jpg",
     planetDescription: `
     Zando is a lush rainforest, overflowing with life. Tall trees intertwine to form continent-spanning canopies, with vines and large-leafed bushes growing on the forest floor. The planet has  no saltwater oceans. Instead, large rivers with fast-moving rapids and stunning waterfalls cut through the tropical forests before emptying into enormous freshwater lakes.
     There are millions of species of exotic birds, bright-colored tree frogs, insects, and other jungle-dwelling animals on Zando. The southern hemisphere is home to a species of giant sloths that are capable of living hundreds of years due to their incredibly slow metabolisms and lack of natural predators. In the northern hemisphere, there is a large crater visible from space, formed by the collision of a meteor containing large quantities of nitrogen. The dispersion of nitrogen throughout the atmosphere is believed to be what caused such an explosion of life on Zando.
@@ -111,7 +111,7 @@ export const allPlanets = [
     coordinates: '8339, 12f7d, 4093r',
     circumference: '100,075 AU',
     inhabitants: 'Cruthans',
-    image: "/src/assets/planets/Crutha.jpg",
+    image: "/planets/Crutha.jpg",
     planetDescription: `
     Crutha has one of the harshest terrains of the ten planets. Its surface is covered in rocky, uneven terrain. Large crevices crisscross the planet, punctuated by mountains and vertical cliffs. Mist and fog cover most of the ground, making it difficult for plants and humanoids to survive. The sky appears orange due to ever-present clouds in the lower atmosphere.
     Crutha has higher than average surface gravity due to its large planetary mass. Few plants grow on the surface, but many fungi grow underground and in dark caves. The largest animal on the surface is the long-haired mountain goat, which forages for fungi that grow in the crevices between rocks. The geological composition of the planet is roughly half granite, with the rest made up of granodiorite, basalt, and various other minerals.
@@ -145,7 +145,7 @@ export const allPlanets = [
     coordinates: '44434, 97A66, 1328H',
     circumference: '4,777 AU',
     inhabitants: 'Minasans',
-    image: "/src/assets/planets/Minas.jpg",
+    image: "/planets/Minas.jpg",
     planetDescription: `
     Minas, technically classified as a dwarf planet, is the smallest of the ten planets. It has a cratered surface, resembling a large asteroid. The gravity on Minas is low, and the atmosphere is very thin. There are only a few plants that grow on the planet's surface, and most of them are large, rock-like succulents. The inhabitants of Minas have filled the atmosphere with oxygen, displacing the neon gas that used to surround the planet. The surface of Minas is rich in minerals and various metallic ores. Though small, Minas has several moons which orbit the planet. Minas and its moons were once two larger planets that collided several billion years ago. There is very little water that pools on the planet’s surface, but water and ice are present in the soil of Minas.
     `,
@@ -176,7 +176,7 @@ export const allPlanets = [
     coordinates: '12322, 23frsd, 12233r2n',
     circumference: '40,075 km',
     inhabitants: 'Cristallians',
-    image: "/src/assets/planets/Cristall.jpg",
+    image: "/planets/Cristall.jpg",
     planetDescription: `
       The planet has large deposits of quartz-like, clear crystals on its surface. Some crystals are the size of mountains, piercing out through the ground. Some are small and appear like patches of plants. The Crystals scatter a pinkish-purple light when light is shone through them.
       The ground is made up of white-grey gravel rock.
