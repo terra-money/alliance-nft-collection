@@ -1,16 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
 import { TokensResponse } from "types/AllianceNftCollection"
-import { contracts } from "config"
 import { useAppContext } from "contexts"
 
 const useAllMintedNFTsFromCollection = () => {
-  const { chainId, lcd } = useAppContext()
+  const { lcd, contractAddresses, chainId } = useAppContext()
 
   return useQuery<TokensResponse, Error>({
-    queryKey: ["all_nft_ids"],
+    queryKey: ["all_nft_ids", chainId],
     queryFn: () => {
       return lcd.wasm
-        .contractQuery<TokensResponse>(contracts[chainId].collection, {
+        .contractQuery<TokensResponse>(contractAddresses.collection, {
           all_tokens: {},
         })
         .then((res) => res)

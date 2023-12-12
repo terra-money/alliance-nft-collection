@@ -1,6 +1,5 @@
 import { PostResponse, useWallet } from "@terra-money/wallet-kit"
 import { MsgExecuteContract } from "@terra-money/feather.js"
-import { contracts } from "config"
 import { useAppContext } from "contexts"
 
 /**
@@ -20,7 +19,7 @@ interface IUseContracts {
 const useAllianceContracts: (address?: string) => IUseContracts = (
   address?: string
 ) => {
-  const { chainId } = useAppContext()
+  const { chainId, contractAddresses } = useAppContext()
   const wallet = useWallet()
 
   /**
@@ -33,7 +32,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
     if (!address) return undefined
 
     try {
-      const msg = new MsgExecuteContract(address, contracts[chainId].minter, {
+      const msg = new MsgExecuteContract(address, contractAddresses.minter, {
         mint: {},
       })
 
@@ -58,7 +57,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
       return postedTx
     } catch (error) {
       console.log("Error minting NFT:")
-      return undefined
+      throw new Error(`Error sending: ${error}`)
     }
   }
 
@@ -75,7 +74,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
     try {
       const msg = new MsgExecuteContract(
         address,
-        contracts[chainId].collection,
+        contractAddresses.collection,
         {
           break_nft: token_id,
         }
@@ -91,7 +90,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
       return postedTx
     } catch (error) {
       console.log("Error breaking NFT:")
-      return undefined
+      throw new Error(`Error sending: ${error}`)
     }
   }
 
