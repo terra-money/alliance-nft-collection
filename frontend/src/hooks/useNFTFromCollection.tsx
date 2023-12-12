@@ -5,8 +5,6 @@ import { useAppContext } from "contexts"
 const useNFTFromCollection = (token_id: string | number | undefined) => {
   const { lcd, contractAddresses } = useAppContext()
 
-  const token = token_id ? token_id.toString() : ""
-
   return useQuery<AllNftInfoResponseForMetadata, Error>({
     queryKey: ["nft_info", token_id],
     queryFn: () => {
@@ -15,12 +13,13 @@ const useNFTFromCollection = (token_id: string | number | undefined) => {
           contractAddresses.collection,
           {
             all_nft_info: {
-              token_id: token,
+              token_id: token_id?.toString(),
             },
           }
         )
         .then((res) => res)
     },
+    enabled: !!token_id,
   })
 }
 

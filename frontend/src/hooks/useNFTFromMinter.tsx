@@ -3,10 +3,10 @@ import { MinterExtension } from "types/AllianceNftMinter"
 import { useAppContext } from "contexts"
 
 const useNFTInfoFromMinter = (address: string | undefined) => {
-  const { contractAddresses, lcd } = useAppContext()
+  const { contractAddresses, lcd, chainId } = useAppContext()
 
   return useQuery<MinterExtension, Error>({
-    queryKey: ["unminted_nft", address],
+    queryKey: ["unminted_nft", address, chainId],
     queryFn: () => {
       return lcd.wasm
         .contractQuery<MinterExtension>(contractAddresses.minter, {
