@@ -57,7 +57,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
       return postedTx
     } catch (error) {
       console.log("Error minting NFT:")
-      return undefined
+      throw new Error(`Error sending: ${error}`)
     }
   }
 
@@ -90,7 +90,7 @@ const useAllianceContracts: (address?: string) => IUseContracts = (
       return postedTx
     } catch (error) {
       console.log("Error breaking NFT:")
-      return undefined
+      throw new Error(`Error sending: ${error}`)
     }
   }
 

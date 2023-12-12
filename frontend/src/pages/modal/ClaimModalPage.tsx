@@ -8,7 +8,9 @@ import { ReactComponent as CheckIcon } from "assets/check.svg"
 import { AnimatedBackground } from "components/background/AnimatedBackground"
 import styles from "./ModalPage.module.scss"
 import { useAllianceContracts, useNFTFromMinter } from "hooks/"
+import { checkTxIsConfirmed } from "utils"
 import { useAppContext } from "contexts"
+import LoadingCircular from "components/loading/circular"
 
 export const ClaimModalPage = () => {
   /* State */
@@ -16,11 +18,14 @@ export const ClaimModalPage = () => {
     "notClaimed" | "claimed" | "error"
   >("notClaimed")
   const [claimAvailable, setClaimAvailable] = useState<boolean>(false)
+  const [isPending, setIsPending] = useState<boolean>(false)
+  const [, setIntervalId] = useState<number>()
 
   /* Use Hooks */
   const queryClient = useQueryClient()
-  const { walletAddress, chainId } = useAppContext()
+  const { walletAddress, chainId, lcd } = useAppContext()
   const wallet = useWallet()
+
   const { mintNFT } = useAllianceContracts(walletAddress)
   const { data: dataForUser } = useNFTFromMinter(walletAddress)
 
@@ -44,12 +49,40 @@ export const ClaimModalPage = () => {
 
   const handleClaimClick = () => {
     if (walletAddress) {
-      mintNFT().then((status) => {
-        if (status) {
-          queryClient.invalidateQueries({ queryKey: ["unminted_nft"] })
-          setClaimStatus("claimed")
-        }
-      })
+      setIsPending(true)
+      mintNFT()
+        .then((status) => {
+          if (status) {
+            const id = window.setInterval(() => {
+              checkTxIsConfirmed(lcd, chainId, status.txhash)
+                .then((success) => {
+                  // tx confirmed and successful
+                  if (success.code === 0) {
+                    setClaimStatus("claimed")
+                  }
+
+                  // tx confirmed but failed
+                  // todo: surface exact error to user feedback
+                  if (success) {
+                    setIsPending(false)
+                    window.clearInterval(id)
+                    queryClient.invalidateQueries({
+                      queryKey: ["unminted_nft"],
+                    })
+                  }
+                })
+                .catch((error) => {
+                  // todo: surface error to user feedback
+                  console.error("Transaction Error", error)
+                })
+            }, 1000)
+            setIntervalId(id)
+          }
+        })
+        .catch((error: unknown) => {
+          setIsPending(false)
+          console.error("error in promise", error)
+        })
     }
   }
 
@@ -133,13 +166,16 @@ export const ClaimModalPage = () => {
               </div>
             </div>
             <div className={styles.button__wrapper}>
-              <button
-                className={styles.primary__button}
-                onClick={handleClaimClick}
-              >
-                Claim NFTs
-              </button>
-
+              {!isPending ? (
+                <button
+                  className={styles.primary__button}
+                  onClick={handleClaimClick}
+                >
+                  Claim NFTs
+                </button>
+              ) : (
+                <LoadingCircular />
+              )}
               <Link to="/nft-gallery" style={{ width: "100%" }}>
                 <button className={styles.secondary__button}>Cancel</button>
               </Link>
