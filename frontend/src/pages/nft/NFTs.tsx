@@ -29,6 +29,7 @@ export const NFTsPage = () => {
     useAllMintedNFTsFromCollection()
 
   const { data: userNfts } = useUserNFTsFromCollection(walletAddress)
+  const { data: userStakedNfts } = useUserNFTsFromStaked(walletAddress)
 
   const [activeTab, setActiveTab] = useState("all")
 
