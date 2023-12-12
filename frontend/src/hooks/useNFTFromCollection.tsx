@@ -3,10 +3,10 @@ import { AllNftInfoResponseForMetadata } from "types/AllianceNftCollection"
 import { useAppContext } from "contexts"
 
 const useNFTFromCollection = (token_id: string | number | undefined) => {
-  const { lcd, contractAddresses } = useAppContext()
+  const { lcd, contractAddresses, chainId } = useAppContext()
 
   return useQuery<AllNftInfoResponseForMetadata, Error>({
-    queryKey: ["nft_info", token_id],
+    queryKey: ["nft_info", token_id, chainId],
     queryFn: () => {
       return lcd.wasm
         .contractQuery<AllNftInfoResponseForMetadata>(
