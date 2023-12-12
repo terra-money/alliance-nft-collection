@@ -16,13 +16,6 @@ export const useNav = () => {
   const { contractAddresses } = useAppContext()
   const menu = [
     {
-      path: "/",
-      element: <ClaimModalPage />,
-      name: "Claim",
-      isExternal: false,
-      isDynamic: false,
-    },
-    {
       path: "/nft-gallery",
       element: <NFTsPage />,
       name: "NFT Gallery",
@@ -49,6 +42,13 @@ export const useNav = () => {
 
   const routes = [
     ...menu,
+    {
+      path: "/",
+      element: <ClaimModalPage />,
+      name: "Claim",
+      isExternal: false,
+      isDynamic: false,
+    },
     {
       path: "/nft/:id",
       element: <NFTView />,

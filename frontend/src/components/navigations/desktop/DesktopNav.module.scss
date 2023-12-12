@@ -12,80 +12,78 @@
     }
   }
 
-  .socials {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    a {
-      display: flex;
-      align-items: center;
-    }
-  }
-
   .link__container {
     display: flex;
     align-items: center;
-    gap: 64px;
+    gap: 48px;
+  }
 
-    li {
-      position: relative;
-      a {
-        color: var(--token-dark-500);
-        font-size: 16px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 4px;
+  li, span {
+    position: relative;
+    a {
+      color: var(--token-dark-500);
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
 
-        svg {
-          opacity: 0;
-        }
-
-        &:hover {
-          text-decoration: none;
-          cursor: pointer;
-
-          svg {
-            opacity: 1;
-            transition: all .2s ease;
-          }
-        }
-      }
-
-      &::before {
-        position: absolute;
-        content: "";
-        width: 0;
-        height: 2px;
-        background: var(--token-primary-500, #00C2FF);
-        left: 50%;
-        bottom: -10px;
-        transform: translateX(-50%);
-        border-radius: 10px;
-        transition: all .2s ease;
+      svg {
         opacity: 0;
       }
 
-      &.active {
+      &:hover {
+        text-decoration: none;
+        cursor: pointer;
 
-        &::before {
-          width: 100%;
+        svg {
           opacity: 1;
+          transition: all .2s ease;
         }
       }
     }
 
-    @media (max-width: 1050px) {
-      gap: 48px;
+    &::before {
+      position: absolute;
+      content: "";
+      width: 0;
+      height: 2px;
+      background: var(--token-primary-500, #00C2FF);
+      left: 50%;
+      bottom: -10px;
+      transform: translateX(-50%);
+      border-radius: 10px;
+      transition: all .2s ease;
+      opacity: 0;
     }
 
-    @media (max-width: 1050px) {
-      li {
-        a {
-          font-size: 14px;
-        }
+    &.active {
+
+      &::before {
+        width: 100%;
+        opacity: 1;
       }
     }
+  }
+
+  @media (max-width: 1050px) {
+    .link__container {
+      gap: 28px;
+    }
+  }
+
+  @media (max-width: 1050px) {
+    li, span {
+      a {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .button__container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
   }
 
   .nav__button {
