@@ -15,7 +15,7 @@ getInitialConfig().then((defaultNetworks) => {
       <BrowserRouter>
         <WalletProvider defaultNetworks={defaultNetworks}>
           <QueryClientProvider client={new QueryClient()}>
-            <AppProvider defaultNetwork="pisco-1">
+            <AppProvider defaultNetwork="phoenix-1">
               <App />
             </AppProvider>
           </QueryClientProvider>
