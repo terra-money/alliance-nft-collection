@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import classNames from 'classnames/bind'
 import { useMediaQuery } from "usehooks-ts"
 import { useNFTFromCollection } from "hooks"
 import LoadingCircular from "components/loading/circular"
 import StarMap from "components/starmap"
 import { NFTViewMobile } from "./NFTViewMobile"
 import styles from "./NFTView.module.scss"
+
+const cx = classNames.bind(styles)
 
 type NFTDetail = Record<string, string>
 
@@ -23,8 +26,16 @@ export const NFTView = () => {
     if (nftInfo?.info?.extension?.attributes) {
       nftInfo?.info?.extension?.attributes.map((attr) => {
         if (attr.trait_type !== "broken" && attr.trait_type !== "rewards") {
-          if (attr.trait_type === "PLANET") {
-            holderObject[attr.trait_type.toLowerCase()] = attr.value.toLowerCase().replace(" planet", "")
+          if (attr.trait_type === "Planet") {
+            let planetNameValue = attr.value.toLowerCase().replace(" planet", "")
+            if (planetNameValue.includes("south")) {
+              planetNameValue = attr.value.toLowerCase().replace(" south", "")
+            }
+            if (planetNameValue.includes("north")) {
+              planetNameValue = attr.value.toLowerCase().replace(" north", "")
+            }
+
+            holderObject[attr.trait_type.toLowerCase()] = planetNameValue
           } else
           holderObject[attr.trait_type.toLowerCase()] = attr.value.toLowerCase()
         }
@@ -60,21 +71,22 @@ export const NFTView = () => {
 
   if (isMobile) {
     return (
-    <NFTViewMobile
-      image={nftInfo?.info.extension.image
-        ? ipfsUrl.replace(
-            "{id}",
-            nftInfo?.info.extension.image.split("ipfs://")[1]
-          )
-        : ""}
-      nft={{
-        id: parseInt(id),
-        planet: nftData.planet || "",
-        character: nftData.character || "",
-        object: nftData.object || "",
-        rarity: parseInt(nftData.rarity) || 0,
-        mood: nftData.mood || "",
-      }}
+      <NFTViewMobile
+        image={nftInfo?.info.extension.image
+          ? ipfsUrl.replace(
+              "{id}",
+              nftInfo?.info.extension.image.split("ipfs://")[1]
+            )
+          : ""}
+        nft={{
+          id: parseInt(id),
+          planet: nftData.planet || "",
+          object: nftData.object || "",
+          rarity: parseInt(nftData.rarity) || 0,
+          inhabitant: nftData.inhabitant || nftData.character || "",
+          light: nftData.light || nftData.mood || "",
+          weather: nftData.weather || "",
+        }}
       />
     )
   }
@@ -88,7 +100,7 @@ export const NFTView = () => {
           </div>
         )}
         <img
-          className={styles.image}
+          className={cx(styles.image, {[styles.image__loading]: loading})}
           src={
             nftInfo?.info.extension.image
               ? ipfsUrl.replace(

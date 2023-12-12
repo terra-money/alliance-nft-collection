@@ -7,9 +7,10 @@ export const NFT_PREVIEW_URL =
   "https://alliancedao.mypinata.cloud/ipfs/bafybeiek4cv2w6ot767nriveyzagejnvzpw3qr2b7iyc6ccddid6jj77za/{id}.png"
 
 export const IPFS_NFT_URL =
-  "https://ipfs.io/ipfs/bafybeibgkqe2bag7s2qiz5nydxdh6z2b5tkjsag7fkefckbmfrkuqkdep4/{id}.png"
+  "https://ipfs.io/ipfs/bafybeiaxgi4be5krl72hxlaqwafz4xmnint3il3sptcrehrizsiuqh6r7q/{id}.png"
 
-// https://ipfs.io/ipfs/bafybeibgkqe2bag7s2qiz5nydxdh6z2b5tkjsag7fkefckbmfrkuqkdep4/20.png
+  // "https://ipfs.io/ipfs/bafybeiaxgi4be5krl72hxlaqwafz4xmnint3il3sptcrehrizsiuqh6r7q/{id}.png"
+
 
 export type AllianceContractConfig = {
   minter: AccAddress

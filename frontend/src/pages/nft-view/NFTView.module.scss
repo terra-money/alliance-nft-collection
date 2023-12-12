@@ -38,6 +38,10 @@
       background-size: cover;
       background-repeat: no-repeat;
       background-color: transparent;
+
+      &.image__loading {
+        opacity: 0;
+      }
     }
 
     @media (max-width: 1200px) {

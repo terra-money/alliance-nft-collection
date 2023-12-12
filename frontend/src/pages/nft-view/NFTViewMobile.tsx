@@ -1,23 +1,41 @@
+import { useState } from 'react';
+import classNames from 'classnames/bind';
 import StarMap from 'components/starmap';
+import LoadingCircular from 'components/loading/circular';
 import styles from './NFTViewMobile.module.scss';
+
+const cx = classNames.bind(styles);
 
 interface NFTViewProps {
   nft: {
     id: number;
     planet: string;
-    character: string;
+    inhabitant: string;
     object: string;
     rarity: number;
-    mood: string;
+    light: string;
+    weather: string;
   }
   image: string;
 }
 
 export const NFTViewMobile = ({ nft, image }: NFTViewProps) => {
+  const [loading, setLoading] = useState(true);
+
   return (
     <div className={styles.nft__view}>
       <div className={styles.nft__image__container}>
-        <img className={styles.image} src={image} alt="NFT" />
+        {loading && (
+          <div className={styles.loading__container}>
+            <LoadingCircular size={40} />
+          </div>
+        )}
+        <img
+          className={cx(styles.image, {[styles.image__loading]: loading})}
+          src={image}
+          alt="NFT"
+          onLoad={() => setLoading(false)}
+        />
       </div>
 
       <div className={styles.nft__details__container}>
