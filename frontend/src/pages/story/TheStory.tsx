@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import { default as Content } from "content/TheStory.mdx";
 import StarMap from 'components/starmap';
 import { PlanetDetails } from 'components/planet/PlanetDetails';
-import { allPlanets } from 'fakeData/planets';
+import { PlanetProps, allPlanets } from 'fakeData/planets';
 
 import styles from "./TheStory.module.scss";
 import tabStyles from "./Tabs.module.scss";
@@ -13,15 +13,20 @@ const cx = classNames.bind(styles);
 export const TheStory = () => {
   const randomPlanet = allPlanets[Math.floor(Math.random() * allPlanets.length)];
 
-  const [planetInfoView, setPlanetInfoView] = useState(true);
+  const [planetInfoView, setPlanetInfoView] = useState(false);
   const [planet, setPlanet] = useState(randomPlanet);
+
+  const handlePlanetChange = (planet: PlanetProps) => {
+    setPlanet(planet);
+    setPlanetInfoView(true);
+  };
 
   return (
     <div className={styles.page__container}>
       <div className={styles.left__side}>
         <div className={styles.flex__wrapper}>
           <div className={styles.star__map}>
-            <StarMap planet={planet.name.toLowerCase()} setPlanet={setPlanet} />
+            <StarMap planet={planet.name.toLowerCase()} handlePlanetChange={handlePlanetChange} />
           </div>
 
           <div className={styles.planet__details__container}>

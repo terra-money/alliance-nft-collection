@@ -4,10 +4,10 @@ export const supportedNetworks = ["phoenix-1", "pisco-1"] as const
 export type SupportedNetwork = (typeof supportedNetworks)[number]
 
 export const NFT_PREVIEW_URL =
-  "https://alliancedao.mypinata.cloud/ipfs/bafybeiek4cv2w6ot767nriveyzagejnvzpw3qr2b7iyc6ccddid6jj77za/{id}.png"
+  "https://alliancedao.mypinata.cloud/ipfs/bafybeibppqlke33x6rbspireih2my23o32koyzuwo6j62mh6ce3hfgj75u/{id}.png"
 
-export const IPFS_NFT_URL =
-  "https://ipfs.io/ipfs/bafybeiaxgi4be5krl72hxlaqwafz4xmnint3il3sptcrehrizsiuqh6r7q/{id}.png"
+// export const IPFS_NFT_URL =
+//   "https://ipfs.io/ipfs/bafybeiaxgi4be5krl72hxlaqwafz4xmnint3il3sptcrehrizsiuqh6r7q/{id}.png"
 
   // "https://ipfs.io/ipfs/bafybeiaxgi4be5krl72hxlaqwafz4xmnint3il3sptcrehrizsiuqh6r7q/{id}.png"
 

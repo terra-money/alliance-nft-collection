@@ -4,16 +4,16 @@ import styles from './StarMap.module.scss';
 
 const StarMap = ({
   planet,
-  setPlanet
+  handlePlanetChange
 }: {
   planet?: string,
-  setPlanet?: (planet: PlanetProps) => void
+  handlePlanetChange?: (planet: PlanetProps) => void
 }) => {
   const [hoveredPlanet, setHoveredPlanet] = useState<string | null>(null);
 
   const handlePlanetClick = (planetNumber: number) => {
-    if (setPlanet) {
-      setPlanet(allPlanets[planetNumber - 1]);
+    if (handlePlanetChange) {
+      handlePlanetChange(allPlanets[planetNumber - 1]);
     } else {
       window.location.href = `/planet/${planetNumber}`;
     }

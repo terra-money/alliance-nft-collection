@@ -1,7 +1,7 @@
 import { useState } from "react"
 import classNames from "classnames/bind"
 import NFTItem from "components/nft/NFTItem"
-import { NFT_PREVIEW_URL, IPFS_NFT_URL } from "config"
+import { NFT_PREVIEW_URL } from "config"
 // import { ReactComponent as FilterIcon } from "assets/Filter.svg"
 import {
   useAllMintedNFTsFromCollection,
@@ -148,10 +148,7 @@ export const NFTsPage = () => {
                   <NFTItem
                     key={nft}
                     id={parseInt(nft)}
-                    imageUrl={IPFS_NFT_URL.replace(
-                      "{id}",
-                      nft
-                    )}
+                    imageUrl={NFT_PREVIEW_URL.replace("{id}", nft)}
                     title={nft.toString()}
                   />
                 )
