@@ -163,6 +163,9 @@ export const ClaimModalPage = () => {
             <div className={styles.text}>
               <div className={styles.text}>
                 Your NFT is waiting for you! 🎉
+                <br/>
+                <br/>
+                <b>Make sure you have Luna in your wallet or the claim will not work!</b>
               </div>
             </div>
             <div className={styles.button__wrapper}>
