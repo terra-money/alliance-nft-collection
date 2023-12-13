@@ -160,7 +160,6 @@ impl From<QueryCollectionMsg> for CW721QueryMsg<Empty> {
             },
             QueryCollectionMsg::AllOperators {
                 owner,
-                /// unset or false will filter out expired items, you must set to true to see them
                 include_expired,
                 start_after,
                 limit,

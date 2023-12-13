@@ -21,12 +21,36 @@ pub fn execute(
             try_append_nft_metadata(deps, info, metadata)
         }
         ExecuteMinterMsg::Mint {} => try_mint(deps, env, info),
+        ExecuteMinterMsg::RemoveToken(address) => try_remove_token(deps, info, address),
         ExecuteMinterMsg::SendToDao(batch) => try_send_to_dao_treasury(deps, env, batch),
         ExecuteMinterMsg::ChangeDaoTreasuryAddress(address) => {
             try_change_dao_treasury_address(deps, info, address)
         }
         ExecuteMinterMsg::ChangeOwner(new_owner) => try_change_owner(deps, info, new_owner),
     }
+}
+
+/// Remove an NFT from the allowed minting list
+fn try_remove_token(
+    deps: DepsMut,
+    info: MessageInfo,
+    address: String,
+) -> Result<Response, ContractError> {
+    let cfg = CONFIG.load(deps.storage)?;
+    cfg.is_authorized_execution(info.sender)?;
+
+    if NFT_METADATA.has(deps.storage, address.clone()) {
+        NFT_METADATA.remove(deps.storage, address.clone());
+        STATS.update(deps.storage, |mut stats| -> Result<_, ContractError> {
+            stats.available_nfts -= 1;
+            Ok(stats)
+        })?;
+    }
+
+    Ok(Response::new().add_attributes([
+        ("method", "try_remove_token"),
+        ("removed_token", address.as_ref()),
+    ]))
 }
 
 /// Append NFT metadata on chain.

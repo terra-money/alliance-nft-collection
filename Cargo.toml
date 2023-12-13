@@ -8,7 +8,7 @@ members = [
 [workspace.package]
 description   = "Alliance NFT Collection dropped to the Game of Alliance players"
 authors       = ["Terra Money <engineering@terra.money>"]
-version       = "1.0.0"
+version       = "1.0.1"
 edition       = "2021"
 license       = "GPL-3.0-or-later"
 repository    = "https://github.com/terra-money/alliance-nft-collection"
