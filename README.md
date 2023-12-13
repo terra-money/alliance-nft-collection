@@ -2,6 +2,12 @@
 
 Reward NFT collection to the participants from [Game Of Alliance](https://docs.alliance.terra.money/game-of-alliance/overview/) that helped to test the [Alliance module](https://github.com/terra-money/alliance). Each NFT will receive staking rewards from Terra Blockchain and will also enable voting in the Alliance DAO.
 
+|            | Network             | Code Id                                        | Contract Addr                                                    |
+|------------|---------------------|------------------------------------------------|------------------------------------------------------------------|
+| Minter     | mainnet (phoenix-1) | [2325](https://terrasco.pe/mainnet/codes/2325) | [terra1m3ye6dl6s25el4xd8adg9lnquz88az9lur2ujztj9pfmzdyfz3xsm699r3](https://terrasco.pe/mainnet/address/terra1m3ye6dl6s25el4xd8adg9lnquz88az9lur2ujztj9pfmzdyfz3xsm699r3) |
+| Collection | mainnet (phoenix-1) | [2322](https://terrasco.pe/mainnet/codes/2322) | [terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9](https://terrasco.pe/mainnet/address/terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9) |
+
+
 ## Collection Spec
 
 This NFT contract will airdrop a total of 9,538 NFTs using the [CW721 with Metadata Onchain](https://github.com/CosmWasm/cw-nfts/tree/main/contracts/cw721-metadata-onchain). 

@@ -37,7 +37,7 @@ dotenv.config();
             chainID: "pisco-1",
         });
         let result = await lcd.tx.broadcastSync(tx, "pisco-1");
-        console.log(`NFT(s) sent to DAO on batch, TXHash${result.txhash}`);
+        console.log(`NFT(s) sent to DAO on batch, TXHash ${result.txhash}`);
     }
     catch (e) {
         console.log(e)

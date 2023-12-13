@@ -11,5 +11,3 @@ node_modules
 
 .nft_collection_contract_address.log
 .nft_minter_contract_address.log
-
-metadata.json
