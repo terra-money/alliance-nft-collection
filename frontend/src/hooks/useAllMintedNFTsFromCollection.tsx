@@ -10,7 +10,9 @@ const useAllMintedNFTsFromCollection = () => {
     queryFn: () => {
       return lcd.wasm
         .contractQuery<TokensResponse>(contractAddresses.collection, {
-          all_tokens: {},
+          all_tokens: {
+            limit: 999,
+          },
         })
         .then((res) => res)
     },
