@@ -9,9 +9,9 @@ try {
     (async () => {
         // Configuration for the LCD client
         const lcdConfig = {
-            'pisco-1': {
-                lcd: 'http://192.168.2.101:1317',
-                chainID: 'pisco-1',
+            'phoenix-1': {
+                lcd: 'http://localhost:1317',
+                chainID: 'phoenix-1',
                 gasAdjustment: 1.75,
                 gasPrices: { uluna: 0.015 },
                 prefix: 'terra'
@@ -31,15 +31,15 @@ try {
             const msgChangeTreasuryAddress = new MsgExecuteContract(
                 accAddress,
                 contractAdress,
-                { change_dao_treasury_address: "terra19zwen0kp6r2a72xxsw20kz2ekyfkuv2kvsyhf3crdkq86nrrehfs8hlnh6" },
+                { change_dao_treasury_address: "terra1g0mfrpswewteaf9ky4rlj09wh5njp6u9xxk94uszplw4qz2f9mzq3k27fm" },
             );
             const tx = await wallet.createAndSignTx({
                 msgs: [
                     msgChangeTreasuryAddress,
                 ],
-                chainID: "pisco-1",
+                chainID: "phoenix-1",
             });
-            const result = await lcd.tx.broadcastSync(tx, "pisco-1");
+            const result = await lcd.tx.broadcastSync(tx, "phoenix-1");
 
             console.log(`Alliance NFT Collection change owner and treasury address:
             - Tx Hash: ${result.txhash}`);
