@@ -12,6 +12,12 @@ The claim period starts on December 12, 2023 and will last for one month. During
 
 Any user who created a wallet for the Game of Alliance and had at least one staking transaction while playing will be eligible to claim an AllianceDAO NFT. In order to be Sybil resistant and make the claim process as fair as possible, the claim is limited to 1 NFT per IP address that participated. If you participated with multiple wallets using the same IP address, only the wallet address with the highest GoA score will be eligible for the claim. Final scores for users with multiple wallets were calculated by adding all the points earned by each wallet. NFT rarity will be determined by your final score — higher scores will claim more rare NFTs.
 
+|            | Network             | Code Id                                        | Contract Addr                                                    |
+|------------|---------------------|------------------------------------------------|------------------------------------------------------------------|
+| Minter     | mainnet (phoenix-1) | [2325](https://terrasco.pe/mainnet/codes/2325) | [terra1m3ye6dl6s25el4xd8adg9lnquz88az9lur2ujztj9pfmzdyfz3xsm699r3](https://terrasco.pe/mainnet/address/terra1m3ye6dl6s25el4xd8adg9lnquz88az9lur2ujztj9pfmzdyfz3xsm699r3) |
+| Collection | mainnet (phoenix-1) | [2322](https://terrasco.pe/mainnet/codes/2322) | [terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9](https://terrasco.pe/mainnet/address/terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9) |
+
+
 ## Collection Spec
 
 This NFT contract will airdrop a total of 10,000 NFTs using the [CW721 with Metadata Onchain](https://github.com/CosmWasm/cw-nfts/tree/main/contracts/cw721-metadata-onchain). 
