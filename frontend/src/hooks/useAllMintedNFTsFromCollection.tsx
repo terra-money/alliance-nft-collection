@@ -19,7 +19,7 @@ const fetchNFTs = async (
     .then((res) => res)
     .catch((err: unknown) => {
       console.log(err)
-      return {} as TokensResponse
+      return { tokens: [] } as TokensResponse
     })
 }
 
