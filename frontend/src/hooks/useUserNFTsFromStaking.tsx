@@ -12,6 +12,7 @@ const useUserNFTsFromStaking = (userAddress: string | undefined) => {
         .contractQuery<TokensResponse>(contractAddresses.daoStaking, {
           user_stake: {
             user: userAddress,
+            limit: 100,
           },
         })
         .then((res) => res)
