@@ -86,7 +86,7 @@ export const NFTsPage = () => {
           !areNftsLoading &&
           allNfts && (
             <div className={styles.grid}>
-              {allNfts.tokens?.map((nft) => {
+              {allNfts?.map((nft) => {
                 return (
                   <NFTItem
                     key={nft}
