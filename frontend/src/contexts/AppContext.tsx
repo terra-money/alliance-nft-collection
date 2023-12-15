@@ -31,23 +31,19 @@ const AppStateProvider = ({
 
   const connectedWallet = useConnectedWallet()
 
-  const getChainIdFromNetwork = (network: "mainnet" | "testnet") =>
-    network === "mainnet" ? "phoenix-1" : "pisco-1"
+  const getChainIdFromNetwork = (network: string) =>
+    network === "testnet" ? "pisco-1" : "phoenix-1"
 
   useEffect(() => {
-    if (connectedWallet) {
-      const chainIdFromNetwork = getChainIdFromNetwork(
-        connectedWallet.network as "testnet" | "mainnet"
-      )
+    let network: "mainnet" | "testnet" = "mainnet"
+    if (connectedWallet && connectedWallet.network) {
+      network = connectedWallet.network === "mainnet" ? "mainnet" : "testnet"
+      const chainIdFromNetwork = getChainIdFromNetwork(network)
 
       setWalletAddress(connectedWallet.addresses?.[chainIdFromNetwork])
       setContractAddresses(contracts[chainIdFromNetwork])
       setChainId(chainIdFromNetwork)
-      setLCD(
-        LCDClient.fromDefaultConfig(
-          connectedWallet.network as "testnet" | "mainnet"
-        )
-      )
+      setLCD(LCDClient.fromDefaultConfig(network))
     }
   }, [connectedWallet])
 

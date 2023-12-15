@@ -12,6 +12,7 @@ const useUserNFTsFromCollection = (userAddress: string | undefined) => {
         .contractQuery<TokensResponse>(contractAddresses.collection, {
           tokens: {
             owner: userAddress,
+            limit: 100,
           },
         })
         .then((res) => res)
