@@ -7,12 +7,12 @@ import { AllianceContractConfig } from "config"
 const fetchNFTs = async (
   lcd: LCDClient,
   contractAddresses: AllianceContractConfig,
-  start_after: number
+  start_after: string
 ): Promise<TokensResponse> => {
   return lcd.wasm
     .contractQuery<TokensResponse>(contractAddresses.collection, {
       all_tokens: {
-        start_after: start_after.toString(),
+        start_after: start_after,
         limit: 100,
       },
     })
@@ -26,7 +26,7 @@ const fetchNFTs = async (
 const fetchAllNFTs = async (
   lcd: LCDClient,
   contractAddresses: AllianceContractConfig,
-  startAfter: number = 0,
+  startAfter: string = "",
   allNFTs: string[] = []
 ): Promise<string[]> => {
   const response = await fetchNFTs(lcd, contractAddresses, startAfter)
@@ -35,8 +35,10 @@ const fetchAllNFTs = async (
   allNFTs = [...allNFTs, ...tokens]
 
   if (tokens.length === 100) {
-    return fetchAllNFTs(lcd, contractAddresses, startAfter + 100, allNFTs)
+    const lastToken = tokens[tokens.length - 1]
+    return fetchAllNFTs(lcd, contractAddresses, lastToken, allNFTs)
   }
+
   return allNFTs.sort((a, b) => parseInt(a, 10) - parseInt(b, 10))
 }
 
