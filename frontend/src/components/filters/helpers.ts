@@ -1,32 +1,37 @@
-import { NFTType } from 'fakeData/mockNFTs';
-import { GalleryFiltersProps } from 'pages/nft/NFTs';
+import { GalleryFiltersProps, CSVItem } from 'pages/nft/NFTs';
 
 export const filterNFTs = (
-  nfts: NFTType[],
+  csvData: CSVItem[],
+  nfts: string[],
   filters: GalleryFiltersProps
 ) => {
-  return nfts.filter((nft) => {
+  const filteredNFTs = nfts.filter((nft) => {
     let match = true;
 
     // Filter by planetNumber, if it's set
     if (filters.planetNumber !== null) {
-      match = match && nft.id === filters.planetNumber;
+      // match = match && nft.id === filters.planetNumber;
     }
 
     if (filters.planetNames.length !== 0) {
-      match = match && filters.planetNames.includes(nft.planet);
+      const nftPlanet = csvData[parseInt(nft)].attributes['Planet'];
+      match = match && filters.planetNames.includes(nftPlanet);
     }
 
     // Filter by planetInhabitants, if it's set
     if (filters.planetInhabitants.length !== 0) {
-      match = match && filters.planetInhabitants.includes(nft.character);
+      const nftInhabitants = csvData[parseInt(nft)].attributes['Inhabitant'];
+      match = match && filters.planetInhabitants.includes(nftInhabitants);
     }
 
     // Filter by planetObjects, if it's set
     if (filters.nftObjects.length !== 0) {
-      match = match && filters.nftObjects.includes(nft.object);
+      const nftObjects = csvData[parseInt(nft)].attributes['Object'];
+      match = match && filters.nftObjects.includes(nftObjects);
     }
 
     return match;
   });
+
+  return filteredNFTs;
 }
