@@ -117,7 +117,7 @@ export const NFTView = () => {
       <div className={styles.nft__details__container}>
         <div className={styles.header}>
           <div className={styles.collection__title}>Alliance DAO NFT</div>
-          <div className={styles.nft__number}>#{id}</div>
+          <div className={styles.nft__number}>#{id.toString().padStart(5, '0')}</div>
         </div>
         <div className={styles.nft__attributes__container}>
           <div className={styles.attributes}>
