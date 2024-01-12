@@ -1,33 +1,33 @@
-import classNames from 'classnames/bind';
-import { NavLink, useLocation } from 'react-router-dom';
-import { useWallet } from "@terra-money/wallet-kit";
-import { ReactComponent as Logo } from 'assets/AllianceDAOLogo.svg';
-import { ReactComponent as HamburgerIcon } from 'assets/hamburger.svg';
-import { ReactComponent as CloseIcon } from 'assets/close.svg';
-import { ReactComponent as CheckIcon } from 'assets/check.svg';
-import { ReactComponent as ExternalLinkIcon } from 'assets/ExternalLink.svg';
+import classNames from "classnames/bind"
+import { NavLink, useLocation } from "react-router-dom"
+import { useWallet } from "@terra-money/wallet-kit"
+import { ReactComponent as Logo } from "assets/AllianceDAOLogo.svg"
+import { ReactComponent as HamburgerIcon } from "assets/hamburger.svg"
+import { ReactComponent as CloseIcon } from "assets/close.svg"
+import { ReactComponent as CheckIcon } from "assets/check.svg"
+import { ReactComponent as ExternalLinkIcon } from "assets/ExternalLink.svg"
 import { useAppContext } from "contexts"
-import { useNav } from 'config/routes';
-import styles from './MobileNav.module.scss';
-import { Socials } from '../socials';
+import { useNav } from "config/routes"
+import styles from "./MobileNav.module.scss"
+import { Socials } from "../socials"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
 const MobileNav = ({
   isMobileNavOpen,
   setMobileNavOpen,
 }: {
-  isMobileNavOpen: boolean,
+  isMobileNavOpen: boolean
   setMobileNavOpen: (isMobileNavOpen: boolean) => void
 }) => {
   const wallet = useWallet()
   const { walletAddress } = useAppContext()
-  const { pathname } = useLocation();
-  const { menu } = useNav();
+  const { pathname } = useLocation()
+  const { menu } = useNav()
 
   const toggleMobileNav = () => {
-    setMobileNavOpen(!isMobileNavOpen);
-  };
+    setMobileNavOpen(!isMobileNavOpen)
+  }
 
   const handleConnectClick = () => {
     if (walletAddress) {
@@ -40,17 +40,30 @@ const MobileNav = ({
   return (
     <>
       <nav className={styles.navigation}>
-        <a href='/nft-gallery'>
+        <a href="/nft-gallery">
           <Logo className={styles.logo} />
         </a>
 
         <div className={styles.hamburger} onClick={toggleMobileNav}>
-          <HamburgerIcon stroke="var(--token-dark-500)" height={24} width={24} />
+          <HamburgerIcon
+            stroke="var(--token-dark-500)"
+            height={24}
+            width={24}
+          />
         </div>
       </nav>
-      <div className={cx(styles.cover, { [styles.open]: isMobileNavOpen })}></div>
-      <div className={`${styles.mobile__nav} ${isMobileNavOpen ? styles.open : ''}`}>
-        <div className={styles.close__icon} onClick={() => setMobileNavOpen(false)}>
+      <div
+        className={cx(styles.cover, { [styles.open]: isMobileNavOpen })}
+      ></div>
+      <div
+        className={`${styles.mobile__nav} ${
+          isMobileNavOpen ? styles.open : ""
+        }`}
+      >
+        <div
+          className={styles.close__icon}
+          onClick={() => setMobileNavOpen(false)}
+        >
           <CloseIcon stroke="var(--token-light-500)" height={24} width={24} />
         </div>
         <ul className={styles.link__container}>
@@ -66,7 +79,10 @@ const MobileNav = ({
               )
             }
             return (
-              <li key={path} className={cx({ [styles.active]: pathname === path })}>
+              <li
+                key={path}
+                className={cx({ [styles.active]: pathname === path })}
+              >
                 <NavLink to={path} onClick={toggleMobileNav}>
                   {name}
                 </NavLink>
@@ -75,11 +91,6 @@ const MobileNav = ({
           })}
         </ul>
         <div className={styles.bottom}>
-          <span
-            className={cx({ [styles.active]: pathname === "/" })}
-          >
-            <NavLink to={"/"}>Claim</NavLink>
-          </span>
           <button onClick={handleConnectClick} className={styles.nav__button}>
             {walletAddress ? (
               <>
@@ -90,11 +101,11 @@ const MobileNav = ({
               <>Connect Wallet</>
             )}
           </button>
-          <Socials size={20} gap={24} iconColor='white' />
+          <Socials size={20} gap={24} iconColor="white" />
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MobileNav;
+export default MobileNav

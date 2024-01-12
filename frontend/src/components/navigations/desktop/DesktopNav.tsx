@@ -6,7 +6,7 @@ import { ReactComponent as ExternalLinkIcon } from "assets/ExternalLink.svg"
 import { ReactComponent as CheckIcon } from "assets/check.svg"
 import { useAppContext } from "contexts"
 import { useNav } from "../../../config/routes"
-import { Socials } from '../socials'
+import { Socials } from "../socials"
 import styles from "./DesktopNav.module.scss"
 
 const cx = classNames.bind(styles)
@@ -53,11 +53,6 @@ const DesktopNav = () => {
         })}
       </ul>
       <div className={styles.button__container}>
-        <span
-          className={cx({ [styles.active]: pathname === "/" })}
-        >
-          <NavLink to={"/"}>Claim</NavLink>
-        </span>
         <button onClick={handleConnectClick} className={styles.nav__button}>
           {walletAddress ? (
             <>

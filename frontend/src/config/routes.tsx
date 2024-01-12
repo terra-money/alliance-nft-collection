@@ -8,7 +8,6 @@ import {
   NotFound,
   PlanetView,
   ConnectModalPage,
-  ClaimModalPage,
   NotEligibleModalPage,
 } from "../pages"
 
@@ -44,8 +43,8 @@ export const useNav = () => {
     ...menu,
     {
       path: "/",
-      element: <ClaimModalPage />,
-      name: "Claim",
+      element: <NFTsPage />,
+      name: "Gallery",
       isExternal: false,
       isDynamic: false,
     },
