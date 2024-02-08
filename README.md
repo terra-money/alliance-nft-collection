@@ -17,17 +17,17 @@ Any user who created a wallet for the Game of Alliance and had at least one stak
 | Minter     | mainnet (phoenix-1) | [2325](https://terrasco.pe/mainnet/codes/2325) | [terra1m3ye6dl6s25el4xd8adg9lnquz88az9lur2ujztj9pfmzdyfz3xsm699r3](https://terrasco.pe/mainnet/address/terra1m3ye6dl6s25el4xd8adg9lnquz88az9lur2ujztj9pfmzdyfz3xsm699r3) |
 | Collection | mainnet (phoenix-1) | [2322](https://terrasco.pe/mainnet/codes/2322) | [terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9](https://terrasco.pe/mainnet/address/terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9) |
 
+On January 12th, 2024, the claim period ended, and any unclaimed NFTs were sent to the [AllianceDAO treasury](https://dao.enterprise.money/dao?address=terra1g0mfrpswewteaf9ky4rlj09wh5njp6u9xxk94uszplw4qz2f9mzq3k27fm).
 
-## Collection Spec
+## Collection spec
 
 This NFT contract will airdrop a total of 10,000 NFTs using the [CW721 with Metadata Onchain](https://github.com/CosmWasm/cw-nfts/tree/main/contracts/cw721-metadata-onchain). 
 
 > If an IP has multiple addresses associated with it, it will sum the points from actions and assign them to the wallet with highest score associated to that IP.
 
-Metadata object will have the following properties:
+The Metadata object has the following properties:
 
-- `image`: AllianceDAO NFT IPFS image url 
-- `attributes` represents the coordinates on the bigger Alliance mural image.
+- `image`: AllianceDAO NFT IPFS image url.
     - **planet**: nft background location.
     - **inhabitant**: type of character
     - **object**: object that the inhabitant is holding. There are 40 objects. 
@@ -37,49 +37,201 @@ Metadata object will have the following properties:
 
 > The following two properties will be appended to the attributes but they will be stored in a different storage.
 > 
-> - **broken**: when the nft is broken this property will be send as true,
-> - **rewards**: the amount of uluna accumulated by the NFT (e.g. 1000000uluna)
+> - **broken**: when the nft is broken this property will be set as true.
+> - **rewards**: the amount of uluna accumulated by the NFT (e.g. 1000000uluna).
+> 
 - Example of the NFT properties
     
-    ```
-    {
-      "name": "AllianceNFT # 1",
-      "token_uri": null,
-      "extension": {
-        "image": "https://ipfs.io/ipfs/....",
-        "image_data": "https://ipfs.io/ipfs/....", 
-        "external_url": null,
-        "description": "Received for participating on Game Of Alliance",
-        "name": "AllianceNFT # 1",
-        "attributes": [{
-    			"display_type" : null,
-    			"trait_type": "planet",
-    			"value": "fire"
-    		},{
-    			"display_type" : null,
-    			"trait_type": "inhabitant",
-    			"value": "water"
-    		},{
-    			"display_type" : null,
-    			"trait_type": "object",
-    			"value": "sword"
-    		},{
-    			"display_type" : null,
-    			"trait_type": "rarity",
-    			"value": 11
-    		}],
-        "background_color": null,
-        "animation_url": null,
-        "youtube_url": null
-      }
+```json
+{
+  "access": {
+    "owner": "terraQ2hlY2sgdGhlIHlvdXR1YmUgdmlkZW8uIA==",
+    "approvals": []
+  },
+  "info": {
+    "token_uri": null,
+    "extension": {
+      "image": "ipfs://bafybeibhsbbh6pklaxfwrzvtsjdt2gadnkwy2uenbqcf7kcdx3op454isu/4981.png",
+      "image_data": "",
+      "external_url": "",
+      "description": "An interplanetary odyssey of survival, mystery, and alliances.",
+      "name": "AllianceDAO NFT #4981",
+      "attributes": [
+        {
+          "display_type": "",
+          "trait_type": "Planet",
+          "value": "Pampas North"
+        },
+        {
+          "display_type": "",
+          "trait_type": "Object",
+          "value": "Ice Cleaver"
+        },
+        {
+          "display_type": "",
+          "trait_type": "Rarity",
+          "value": "8"
+        },
+        {
+          "display_type": "",
+          "trait_type": "Inhabitant",
+          "value": "Sindarin M"
+        },
+        {
+          "display_type": "",
+          "trait_type": "Light",
+          "value": "Clear"
+        },
+        {
+          "display_type": "",
+          "trait_type": "Weather",
+          "value": "Rainbow"
+        },
+        {
+          "display_type": null,
+          "trait_type": "broken",
+          "value": "true"
+        },
+        {
+          "display_type": null,
+          "trait_type": "rewards",
+          "value": "0"
+        }
+      ],
+      "background_color": "",
+      "animation_url": "",
+      "youtube_url": "https://youtu.be/SbqyRLPWM_E"
     }
-    ```
+  }
+}
+```
+
 ## NFT economics
 
-The NFT collection will have an amount of tokens staked in the Alliance module to redirect a percentage of Luna inflation to the NFT collection. Each NFT will receive rewards only if it is not broken. The only way to collect the accumulated rewards from the NFT is by “breaking” it, and it can be broken once only by the NFT owner. When an NFT is broken the rewards of the unbroken NFTS will be boosted because there will be 1 less NFT that gets rewards. When a user transfers the NFT, the accumulated rewards are tied to the NFT.
+The same smart contract that mints the AllianceDAO NFTs will also mint an asset called “Ally” (`factory/terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9/AllianceNFT`) This asset will be solely owned by the contract, and will never be transferred to anyone outside of the contract. To leverage the power of Alliance, the “Ally” token will be whitelisted as an Alliance asset on Terra via a governance proposal, enabling the token to earn a portion of LUNA staking rewards. The proposed Reward Weight for “Ally” will be .003 — or .3% of total LUNA staking rewards — and the Take Rate will be 0. Upon the proposal’s passing, the AllianceDAO contract will stake Ally to start earning LUNA rewards. The delegation of the asset will be controlled by AllianceDAO governance and can be changed at any time. Staking rewards will be collected periodically using Warp Protocol and stored in the AllianceDAO contract.
 
-Rewards redirection: 
+After the contract collects the staking rewards, each NFT will accrue rewards at an equal rate. At any point, NFT holders can connect their Station wallet to the AllianceDAO NFT website and “break” their NFT to claim their LUNA rewards. Importantly, NFT rewards can only be claimed once per NFT. Once an NFT has been broken, no more Alliance staking rewards will accrue to it. Although broken NFTs no longer accrue Alliance staking rewards, they can still be staked to the DAO on Enterprise to participate in governance.
+
+Each “unbroken” NFT will receive an equal proportion of the ever-growing Alliance reward pool. As users break their NFTs to claim rewards, the amount of outstanding, unbroken NFTs gets smaller, and their share of the reward pool gets larger.
+
+For example, if you own one of 10,000 “unbroken” NFTs, your NFT represents 1/10000 of the pool. If 6,000 people break their NFTs, the number of unbroken NFTs will shrink, and your claim on the pool becomes 1/4000 of the pool. The longer you hold your NFT without breaking it, the greater your reward will be.
+
+AllianceDAO NFTs are transferable, which means that if you send an unbroken NFT to someone, the wallet in possession of the NFT will be the only user that can claim the LUNA rewards.
+
+### Rewards redirection logic: 
 
 - each NFT can claim 1/x of the rewards in the contract account.
 - x= # of live NFTs that are staked (at genesis, x= 10,000).
 - every time an NFT is broken (and rewards are claimed) X is smaller (never smaller than 0).
+
+## Contract spec
+
+NFT contract address: `terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9`
+ALLY asset address: `factory/terra1phr9fngjv7a8an4dhmhd0u0f98wazxfnzccqtyheq4zqrrp4fpuqw3apw9/AllianceNFT`
+
+### Alliance Delegate Message
+
+This message is used for delegating ALLY to a validator. Only the DAO treasury can send this message. 
+
+```json
+{
+  "alliance_delegate": {
+    "delegations": [
+      {
+        "amount": "string",
+        "validator": "string"
+      }
+    ]
+  }
+}
+```
+
+## Alliance Undelegate Message
+
+This message is used for undelegating ALLY to a validator. Only the DAO treasury can send this message.
+
+```json
+{
+  "alliance_undelegate": {
+    "undelegations": [
+      {
+        "amount": "string",
+        "validator": "string"
+      }
+    ]
+  }
+}
+```
+
+## Alliance Redelegate Message
+
+This message is used for redelegating ALLY to another validator. Only the DAO treasury can send this message.
+
+```json
+{
+  "alliance_redelegate": {
+    "redelegations": [
+      {
+        "amount": "string",
+        "dst_validator": "string",
+        "src_validator": "string"
+      }
+    ]
+  }
+}
+```
+
+## Alliance Claim Rewards Message
+
+This message is for claiming rewards. It can be sent by any address. 
+
+```json
+{
+  "alliance_claim_rewards": {}
+}
+```
+
+## Break NFT Message
+
+This message is used to break an NFT and extract its rewards. The sender must be the owner of the NFT
+
+```json
+{
+  "break_nft": "nft-id"
+}
+```
+
+## Transfer NFT Message
+
+This message is a standard operation for transferring an NFT to another account without triggering any additional actions. It requires the recipient's identifier and the NFT's token ID.
+
+```json
+{
+  "transfer_nft": {
+    "recipient": "string",
+    "token_id": "string"
+  }
+}
+```
+
+## Send NFT Message
+
+This message is used to transfer an NFT to a contract, potentially triggering an action on the receiving contract. It includes the contract's identifier, a message (in a binary format), and the NFT's token ID.
+
+```json
+{
+  "send_nft": {
+    "contract": "string",
+    "msg": "Binary",
+    "token_id": "string"
+  }
+}
+```
+
+## Audit
+
+The contract Audit can be found [here](./Audit%20Report%20v1.0.pdf). 
+
+<!---
+There is a top-secret message hidden on this page. 
+-->
