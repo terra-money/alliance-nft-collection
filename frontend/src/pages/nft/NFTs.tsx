@@ -72,7 +72,7 @@ const PaginationControls = ({
           Start
         </button>
         <button onClick={() => skipPages(-0.1)} disabled={currentPage <= 1}>
-          Rewind {Math.round(totalPages * 0.1)}
+        &lt;&lt; {Math.round(totalPages * 0.1)} Pages
         </button>
         <button onClick={goToPreviousPage} disabled={currentPage === 1}>
           Previous
@@ -89,7 +89,7 @@ const PaginationControls = ({
           onClick={() => skipPages(0.1)}
           disabled={currentPage >= totalPages}
         >
-          Fast Forward {Math.round(totalPages * 0.1)}
+            {Math.round(totalPages * 0.1)} Pages &gt;&gt;
         </button>
         <button
           onClick={() => goToPage(totalPages)}
