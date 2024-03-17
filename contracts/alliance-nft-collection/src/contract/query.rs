@@ -1,24 +1,26 @@
 use alliance_nft_packages::errors::ContractError;
-use cosmwasm_std::{entry_point, to_binary, Uint128, Addr, QuerierWrapper};
+use cosmwasm_std::{entry_point, to_json_binary, Addr, QuerierWrapper, Uint128};
 use cosmwasm_std::{Binary, Deps, Env, StdResult};
 use cw721::{AllNftInfoResponse, Approval, NftInfoResponse, OwnerOfResponse};
 use cw721_base::state::{Approval as BaseApproval, TokenInfo};
 
-use alliance_nft_packages::state::{Trait, Config, ALLOWED_DENOM};
+use alliance_nft_packages::state::{Config, Trait, ALLOWED_DENOM};
 use alliance_nft_packages::{query::QueryCollectionMsg, AllianceNftCollection, Extension};
 
-use crate::state::{CONFIG, BROKEN_NFTS, REWARD_BALANCE, NFT_BALANCE_CLAIMED};
+use crate::state::{BROKEN_NFTS, CONFIG, NFT_BALANCE_CLAIMED, REWARD_BALANCE};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryCollectionMsg) -> StdResult<Binary> {
     let parent = AllianceNftCollection::default();
     match msg {
-        QueryCollectionMsg::Config {} => to_binary(&query_config(deps)?),
-        QueryCollectionMsg::NftInfo { token_id } => to_binary(&query_nft_info(deps, parent, token_id)?),
+        QueryCollectionMsg::Config {} => to_json_binary(&query_config(deps)?),
+        QueryCollectionMsg::NftInfo { token_id } => {
+            to_json_binary(&query_nft_info(deps, parent, token_id)?)
+        }
         QueryCollectionMsg::AllNftInfo {
             token_id,
             include_expired,
-        } => to_binary(&query_all_nft_info(
+        } => to_json_binary(&query_all_nft_info(
             deps,
             env,
             parent,
@@ -29,7 +31,7 @@ pub fn query(deps: Deps, env: Env, msg: QueryCollectionMsg) -> StdResult<Binary>
     }
 }
 
-fn query_config(deps : Deps) -> StdResult<Config>{
+fn query_config(deps: Deps) -> StdResult<Config> {
     let res = CONFIG.load(deps.storage)?;
 
     Ok(res)
@@ -119,9 +121,10 @@ fn humanize_approval(approval: &BaseApproval) -> Approval {
 
 // Given the querier and the contract address
 // return the balance of the contract
-pub fn try_query_contract_balance(querier: QuerierWrapper, contract_addr: &Addr) -> Result<Uint128, ContractError> {
-    let contract_balance = querier
-        .query_balance(contract_addr, ALLOWED_DENOM)?
-        .amount;
+pub fn try_query_contract_balance(
+    querier: QuerierWrapper,
+    contract_addr: &Addr,
+) -> Result<Uint128, ContractError> {
+    let contract_balance = querier.query_balance(contract_addr, ALLOWED_DENOM)?.amount;
     Ok(contract_balance)
 }

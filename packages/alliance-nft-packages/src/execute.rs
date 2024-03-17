@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{Binary, Empty, Uint128};
+use cosmwasm_std::{Binary, Decimal, Empty, Uint128};
 use cw721_base::ExecuteMsg as CW721ExecuteMsg;
 use cw_utils::Expiration;
 
@@ -30,8 +30,10 @@ pub enum ExecuteCollectionMsg {
     AllianceUndelegate(AllianceUndelegateMsg),
     AllianceRedelegate(AllianceRedelegateMsg),
     AllianceClaimRewards {},
-    UpdateRewardsCallback {},
+    StakeRewardsCallback {},
+    UpdateRewardsCallback(UpdateRewardsCallbackMsg),
     ChangeOwner(String),
+    UpdateConfig(UpdateConfigMsg),
 
     // Claim the accumulated rewards and send them to the owner
     // while the NFT is broken it will not accumulate rewards
@@ -116,6 +118,16 @@ impl From<ExecuteCollectionMsg> for CW721ExecuteMsg<Extension, Empty> {
             _ => panic!("cannot covert {:?} to CW721ExecuteMsg", msg),
         }
     }
+}
+
+#[cw_serde]
+pub struct UpdateRewardsCallbackMsg {
+    pub previous_lst_balance: Uint128,
+}
+
+#[cw_serde]
+pub struct UpdateConfigMsg {
+    pub dao_treasury_share: Option<Decimal>,
 }
 
 #[cw_serde]

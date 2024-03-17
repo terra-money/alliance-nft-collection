@@ -1,14 +1,15 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{Addr, Response, Timestamp};
+use cosmwasm_std::{Addr, Decimal, Response, Timestamp};
+use cw_asset::AssetInfo;
 
-use crate::{errors::ContractError, Extension};
+use crate::{eris::Hub, errors::ContractError, Extension};
 
 // The NFT collection may be able to accrual rewards
 // in different tokens if the take rate of an Alliance
 // is positive. But for now, breaking an NFT will allow
 // claiming and accounting rewards only for Luna Tokens.
 //
-// Whatsoever, the DAO will be able to use these other 
+// Whatsoever, the DAO will be able to use these other
 // rewards to do anything they want collectively
 pub const ALLOWED_DENOM: &str = "uluna";
 
@@ -36,7 +37,19 @@ pub struct Metadata {
 #[cw_serde]
 pub struct Config {
     pub owner: Addr,
+
+    /// this is the virtual staking token factory/.../ALLY
     pub asset_denom: String,
+
+    /// Treasury address of the DAO
+    pub dao_treasury_address: Addr,
+    /// Specifies how much of the rewards should be sent to the DAO treasury address
+    pub dao_treasury_share: Decimal,
+
+    /// Contract of ERIS Amplifier for uluna
+    pub lst_hub: Hub,
+    /// Contract of CW20 ampLUNA
+    pub lst_asset_info: AssetInfo,
 }
 
 #[cw_serde]
@@ -58,8 +71,8 @@ impl MinterConfig {
             owner,
             mint_start_time,
             mint_end_time,
-            dao_treasury_address : None,
-            nft_collection_address : None,
+            dao_treasury_address: None,
+            nft_collection_address: None,
         }
     }
 

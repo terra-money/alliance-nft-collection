@@ -3,9 +3,8 @@ use std::collections::HashMap;
 use alliance_nft_packages::errors::ContractError;
 use alliance_nft_packages::execute::{ExecuteCollectionMsg, ExecuteMinterMsg, MintMsg};
 use alliance_nft_packages::state::MinterExtension;
-use cosmwasm_std::{
-    entry_point, to_binary, DepsMut, Env, MessageInfo, Order::Ascending, Response, WasmMsg,
-};
+use cosmwasm_std::to_json_binary;
+use cosmwasm_std::{entry_point, DepsMut, Env, MessageInfo, Order::Ascending, Response, WasmMsg};
 
 use crate::state::{CONFIG, NFT_METADATA, STATS};
 
@@ -107,7 +106,7 @@ fn try_mint(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
 
     let mint_msg = WasmMsg::Execute {
         contract_addr: collection_addr.to_string(),
-        msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
+        msg: to_json_binary(&ExecuteCollectionMsg::Mint(MintMsg {
             token_id: nft_metadata.token_id,
             owner: info.sender.to_string(),
             extension: nft_metadata.extension,
@@ -176,7 +175,7 @@ fn try_send_to_dao_treasury(
 
                 let msg = WasmMsg::Execute {
                     contract_addr: collection_addr.to_string(),
-                    msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
+                    msg: to_json_binary(&ExecuteCollectionMsg::Mint(MintMsg {
                         token_id: nft_info.1.token_id,
                         owner: owner.to_string(),
                         extension: nft_info.1.extension,
@@ -248,7 +247,7 @@ fn try_change_owner(
 
     let msg = WasmMsg::Execute {
         contract_addr: collection_addr.to_string(),
-        msg: to_binary(&ExecuteCollectionMsg::ChangeOwner(new_owner.to_string())).unwrap(),
+        msg: to_json_binary(&ExecuteCollectionMsg::ChangeOwner(new_owner.to_string())).unwrap(),
         funds: vec![],
     };
 

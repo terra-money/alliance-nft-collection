@@ -8,7 +8,7 @@ members = [
 [workspace.package]
 description   = "Alliance NFT Collection dropped to the Game of Alliance players"
 authors       = ["Terra Money <engineering@terra.money>"]
-version       = "1.0.1"
+version       = "1.1.0"
 edition       = "2021"
 license       = "Apache-2.0"
 repository    = "https://github.com/terra-money/alliance-nft-collection"
@@ -25,6 +25,7 @@ cw721-base                  = { version = "0.18.0", features = ["library"] }
 schemars                    = "0.8.15"
 cw-storage-plus             = "1.1.0"
 cw-utils                    = "1.0.2"
+cw-asset                    = "3.1.1"
 serde                       = { version = "1.0.190", default-features = false, features = ["derive"] }
 thiserror                   = "1.0.50"
 terra-proto-rs              = { version = "4.0.2", default-features = false }
