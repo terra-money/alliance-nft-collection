@@ -9,8 +9,8 @@ use cosmwasm_std::testing::{
     mock_dependencies, mock_env, mock_info, MockApi, MockQuerier, MockStorage,
 };
 use cosmwasm_std::{
-    to_binary, Addr, Empty, Env, Event, MessageInfo, OwnedDeps, Reply, Response, SubMsg,
-    SubMsgResponse, SubMsgResult, Timestamp, WasmMsg,
+    to_json_binary, Addr, Decimal, Empty, Env, Event, MessageInfo, OwnedDeps, Reply, Response,
+    SubMsg, SubMsgResponse, SubMsgResult, Timestamp, WasmMsg,
 };
 use cw2::get_contract_version;
 
@@ -22,13 +22,15 @@ fn test_instantiate() {
 
     assert_eq!(
         res.to_string(),
-        to_binary(&MinterConfig {
+        to_json_binary(&MinterConfig {
             dao_treasury_address: Some(Addr::unchecked("dao_treasury_address")),
             nft_collection_address: Some(Addr::unchecked("nft_collection_address")),
             owner: Addr::unchecked("creator"),
             mint_start_time: Timestamp::from_seconds(1),
             mint_end_time: Timestamp::from_seconds(3),
-        }).unwrap().to_string()
+        })
+        .unwrap()
+        .to_string()
     );
 }
 
@@ -46,12 +48,16 @@ fn test_instantiate_wrong_time_range() {
         nft_collection_code_id: 1,
         mint_start_time: Timestamp::from_seconds(3),
         mint_end_time: Timestamp::from_seconds(1),
+
+        dao_treasury_share: Decimal::zero(),
+        lst_asset_info: cw_asset::AssetInfoBase::Cw20("hub_lst".to_string()),
+        lst_hub_address: "hub".to_string(),
     };
     let res = instantiate(deps.as_mut(), env.clone(), info.clone(), msg);
 
     // assert the message error
     assert_eq!(
-        res.unwrap_err().to_string(), 
+        res.unwrap_err().to_string(),
         String::from("Invalid mint time range, mint_start_time is greater than mint_end_time")
     );
 }
@@ -73,6 +79,10 @@ pub fn intantiate_with_reply() -> (
         nft_collection_code_id: 1,
         mint_start_time: Timestamp::from_seconds(1),
         mint_end_time: Timestamp::from_seconds(3),
+
+        dao_treasury_share: Decimal::zero(),
+        lst_asset_info: cw_asset::AssetInfoBase::Cw20("hub_lst".to_string()),
+        lst_hub_address: "hub".to_string(),
     };
     let res = instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
 
@@ -86,11 +96,16 @@ pub fn intantiate_with_reply() -> (
         WasmMsg::Instantiate {
             admin: Some(env.contract.address.to_string()),
             code_id: 1,
-            msg: to_binary(&InstantiateCollectionMsg {
+            msg: to_json_binary(&InstantiateCollectionMsg {
                 name: "AllianceNFT".to_string(),
                 symbol: "ALLIANCE".to_string(),
                 minter: env.contract.address.to_string(),
                 owner: Addr::unchecked("cosmos2contract"),
+
+                dao_treasury_address: "dao_treasury_address".to_string(),
+                dao_treasury_share: Decimal::zero(),
+                lst_asset_info: cw_asset::AssetInfoBase::Cw20("hub_lst".to_string()),
+                lst_hub_address: "hub".to_string(),
             })
             .unwrap(),
             funds: vec![],
