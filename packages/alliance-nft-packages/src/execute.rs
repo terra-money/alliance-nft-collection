@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{Binary, Decimal, Empty, Uint128};
 use cw721_base::ExecuteMsg as CW721ExecuteMsg;
+use cw_asset::AssetInfoUnchecked;
 use cw_utils::Expiration;
 
 use crate::state::MinterExtension;
@@ -30,8 +31,17 @@ pub enum ExecuteCollectionMsg {
     AllianceUndelegate(AllianceUndelegateMsg),
     AllianceRedelegate(AllianceRedelegateMsg),
     AllianceClaimRewards {},
+
+    /// This execute msg will call { "claim": {}} on any contract (permissionless)
+    Claim {
+        contract: String,
+    },
+
+    /// This callback will be used to check how many LUNA entered the contract to be staked in the Amplifier
     StakeRewardsCallback {},
+    /// This callback will after the staking be called to check received funds
     UpdateRewardsCallback(UpdateRewardsCallbackMsg),
+
     ChangeOwner(String),
     UpdateConfig(UpdateConfigMsg),
 
@@ -128,6 +138,8 @@ pub struct UpdateRewardsCallbackMsg {
 #[cw_serde]
 pub struct UpdateConfigMsg {
     pub dao_treasury_share: Option<Decimal>,
+    pub set_whitelisted_reward_assets: Option<Vec<AssetInfoUnchecked>>,
+    pub add_whitelisted_reward_assets: Option<Vec<AssetInfoUnchecked>>,
 }
 
 #[cw_serde]

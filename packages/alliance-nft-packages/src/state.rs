@@ -50,6 +50,9 @@ pub struct Config {
     pub lst_hub: Hub,
     /// Contract of CW20 ampLUNA
     pub lst_asset_info: AssetInfo,
+
+    /// specifies all reward assets that will be queried and returned if available.
+    pub whitelisted_reward_assets: Vec<AssetInfo>,
 }
 
 #[cw_serde]

@@ -49,6 +49,7 @@ pub fn instantiate(
             lst_hub: Hub(deps.api.addr_validate(&msg.lst_hub_address)?),
             dao_treasury_share: validate_dao_treasury_share(msg.dao_treasury_share)?,
             lst_asset_info: msg.lst_asset_info.check(deps.api, None)?,
+            whitelisted_reward_assets: vec![],
         },
     )?;
 

@@ -1,10 +1,12 @@
+use std::collections::HashSet;
+
 use crate::errors::ContractError;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    coin, to_json_binary, Addr, Coin, CosmosMsg, Decimal, QuerierWrapper, StdResult, Uint128,
-    WasmMsg,
+    coin, to_json_binary, Addr, Coin, CosmosMsg, Decimal, DepsMut, QuerierWrapper, StdResult,
+    Uint128, WasmMsg,
 };
-use cw_asset::{Asset, AssetInfo};
+use cw_asset::{Asset, AssetInfo, AssetInfoUnchecked};
 
 pub fn validate_dao_treasury_share(share: Decimal) -> Result<Decimal, ContractError> {
     if share > Decimal::from_ratio(20u128, 100u128) {
@@ -14,10 +16,35 @@ pub fn validate_dao_treasury_share(share: Decimal) -> Result<Decimal, ContractEr
     }
 }
 
+pub fn validate_whitelisted_assets(
+    deps: &DepsMut,
+    assets: Vec<AssetInfoUnchecked>,
+) -> Result<Vec<AssetInfo>, ContractError> {
+    assets
+        .iter()
+        .map(|a| {
+            a.check(deps.api, None)
+                .map_err(ContractError::FromAssetError)
+        })
+        .collect::<Result<Vec<AssetInfo>, ContractError>>()
+}
+
+/// Dedupes a Vector of strings using a hashset.
+pub fn dedupe_assetinfos(asset_infos: &mut Vec<AssetInfo>) {
+    let mut set = HashSet::new();
+
+    asset_infos.retain(|x| set.insert(x.clone()));
+}
+
 #[cw_serde]
 pub enum ExecuteMsg {
     /// Bond specified amount of Luna
     Bond { receiver: Option<String> },
+}
+
+#[cw_serde]
+pub enum ClaimExecuteMsg {
+    Claim {},
 }
 
 #[cw_serde]

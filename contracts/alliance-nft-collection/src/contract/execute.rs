@@ -1,8 +1,12 @@
-use alliance_nft_packages::eris::{validate_dao_treasury_share, AssetInfoExt};
+use alliance_nft_packages::eris::{
+    dedupe_assetinfos, validate_dao_treasury_share, validate_whitelisted_assets, AssetInfoExt,
+    ClaimExecuteMsg,
+};
 use alliance_nft_packages::execute::{UpdateConfigMsg, UpdateRewardsCallbackMsg};
 use alliance_nft_packages::state::ALLOWED_DENOM;
 use cosmwasm_std::{
-    entry_point, to_json_binary, Addr, Binary, CosmosMsg, Decimal, Order, SubMsg, Uint128, WasmMsg,
+    entry_point, to_json_binary, Addr, Binary, CosmosMsg, Decimal, Order, StdResult, SubMsg,
+    Uint128, WasmMsg,
 };
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response};
 use cw721::Cw721Query;
@@ -43,8 +47,9 @@ pub fn execute(
         ExecuteCollectionMsg::AllianceRedelegate(msg) => {
             try_alliance_redelegate(deps, env, info, msg)
         }
-
         ExecuteCollectionMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(deps, env),
+
+        ExecuteCollectionMsg::Claim { contract } => try_claim_contract(contract),
         ExecuteCollectionMsg::StakeRewardsCallback {} => try_stake_reward_callback(deps, env, info),
         ExecuteCollectionMsg::UpdateRewardsCallback(msg) => {
             try_update_reward_callback(deps, env, info, msg)
@@ -304,6 +309,18 @@ fn try_alliance_redelegate(
         .add_messages(cosmos_msg))
 }
 
+fn try_claim_contract(contract: String) -> Result<Response, ContractError> {
+    let claim_msg = CosmosMsg::Wasm(WasmMsg::Execute {
+        contract_addr: contract.to_string(),
+        msg: to_json_binary(&ClaimExecuteMsg::Claim {})?,
+        funds: vec![],
+    });
+
+    Ok(Response::new()
+        .add_attributes(vec![("action", "try_claim_contract")])
+        .add_message(claim_msg))
+}
+
 fn try_breaknft(
     deps: DepsMut,
     env: Env,
@@ -312,7 +329,7 @@ fn try_breaknft(
     token_id: String,
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
-    let owner_res = parent.owner_of(deps.as_ref(), env, token_id.clone(), false)?;
+    let owner_res = parent.owner_of(deps.as_ref(), env.clone(), token_id.clone(), false)?;
     let owner = deps.api.addr_validate(&owner_res.owner)?;
     authorize_execution(owner.clone(), info.sender)?;
 
@@ -346,20 +363,43 @@ fn try_breaknft(
             ("rewards", rewards_claimable.to_string().as_str()),
         ]))
     } else {
+        // send user share to owner.
         let send_msg = cfg
             .lst_asset_info
+            .clone()
             .with_balance(rewards_claimable)
             .transfer_msg(owner.to_string())?;
 
-        // let share = Decimal::from_ratio(rewards_claimable, average_rewards) ;
-        // foreach additional claim, query token balance of the additional claim
+        // prepare the additional whitelisted reward assets based on the user share
+        // user share = rewards_claimable / rewards_total
+        let mut transfer_reward_asset_msgs = vec![];
+        let rewards_total = cfg
+            .lst_asset_info
+            .query_balance(&deps.querier, env.contract.address.to_string())?;
+        let user_share = Decimal::from_ratio(rewards_claimable, rewards_total);
+
+        for whitelisted_reward_asset in cfg.whitelisted_reward_assets {
+            let balance = whitelisted_reward_asset
+                .query_balance(&deps.querier, env.contract.address.to_string())?;
+            // always floored
+            let user_balance = user_share * balance;
+            if !user_balance.is_zero() {
+                transfer_reward_asset_msgs.push(
+                    whitelisted_reward_asset
+                        .with_balance(user_balance)
+                        .transfer_msg(owner.to_string())?,
+                );
+            }
+        }
 
         Ok(Response::default()
             .add_message(send_msg)
+            .add_messages(transfer_reward_asset_msgs)
             .add_attributes(vec![
                 ("action", "break_nft"),
                 ("token_id", token_id.as_str()),
                 ("rewards", rewards_claimable.to_string().as_str()),
+                ("user_share", user_share.to_string().as_str()),
             ]))
     }
 }
@@ -415,6 +455,20 @@ fn try_update_config(
 
     if let Some(dao_treasury_share) = msg.dao_treasury_share {
         cfg.dao_treasury_share = validate_dao_treasury_share(dao_treasury_share)?;
+    }
+
+    if let Some(set_whitelisted_reward_assets) = msg.set_whitelisted_reward_assets {
+        let mut set_assets = validate_whitelisted_assets(&deps, set_whitelisted_reward_assets)?;
+        dedupe_assetinfos(&mut set_assets);
+        cfg.whitelisted_reward_assets = set_assets;
+    }
+
+    if let Some(add_whitelisted_reward_assets) = msg.add_whitelisted_reward_assets {
+        let mut add_assets = validate_whitelisted_assets(&deps, add_whitelisted_reward_assets)?;
+        let mut existing = cfg.whitelisted_reward_assets;
+        existing.append(&mut add_assets);
+        dedupe_assetinfos(&mut existing);
+        cfg.whitelisted_reward_assets = existing;
     }
 
     CONFIG.save(deps.storage, &cfg)?;
