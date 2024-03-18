@@ -26,7 +26,6 @@ Update 1.1.0 introduces staking of rewards in the ERIS LUNA Amplifier. This allo
 - REWARD_BALANCE holds the amount of LST per unbroken NFT instead of the amount of LUNA.
 - NFT minter contract is now forwarding migrations to the nft collection if specified.
 
-
 ### Migration
 
 The migration requires the following fields under the version110_data.
