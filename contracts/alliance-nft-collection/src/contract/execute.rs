@@ -1,12 +1,10 @@
 use alliance_nft_packages::eris::{
     dedupe_assetinfos, validate_dao_treasury_share, validate_whitelisted_assets, AssetInfoExt,
-    ClaimExecuteMsg,
 };
 use alliance_nft_packages::execute::{UpdateConfigMsg, UpdateRewardsCallbackMsg};
 use alliance_nft_packages::state::ALLOWED_DENOM;
 use cosmwasm_std::{
-    entry_point, to_json_binary, Addr, Binary, CosmosMsg, Decimal, Order, StdResult, SubMsg,
-    Uint128, WasmMsg,
+    entry_point, to_json_binary, Addr, Binary, CosmosMsg, Decimal, Order, SubMsg, Uint128, WasmMsg,
 };
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response};
 use cw721::Cw721Query;
@@ -49,7 +47,6 @@ pub fn execute(
         }
         ExecuteCollectionMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(deps, env),
 
-        ExecuteCollectionMsg::Claim { contract } => try_claim_contract(contract),
         ExecuteCollectionMsg::StakeRewardsCallback {} => try_stake_reward_callback(deps, env, info),
         ExecuteCollectionMsg::UpdateRewardsCallback(msg) => {
             try_update_reward_callback(deps, env, info, msg)
@@ -307,18 +304,6 @@ fn try_alliance_redelegate(
     Ok(Response::new()
         .add_attributes(vec![("action", "try_alliance_redelegate")])
         .add_messages(cosmos_msg))
-}
-
-fn try_claim_contract(contract: String) -> Result<Response, ContractError> {
-    let claim_msg = CosmosMsg::Wasm(WasmMsg::Execute {
-        contract_addr: contract.to_string(),
-        msg: to_json_binary(&ClaimExecuteMsg::Claim {})?,
-        funds: vec![],
-    });
-
-    Ok(Response::new()
-        .add_attributes(vec![("action", "try_claim_contract")])
-        .add_message(claim_msg))
 }
 
 fn try_breaknft(

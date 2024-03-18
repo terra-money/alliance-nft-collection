@@ -32,11 +32,6 @@ pub enum ExecuteCollectionMsg {
     AllianceRedelegate(AllianceRedelegateMsg),
     AllianceClaimRewards {},
 
-    /// This execute msg will call { "claim": {}} on any contract (permissionless)
-    Claim {
-        contract: String,
-    },
-
     /// This callback will be used to check how many LUNA entered the contract to be staked in the Amplifier
     StakeRewardsCallback {},
     /// This callback will after the staking be called to check received funds

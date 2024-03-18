@@ -12,9 +12,12 @@ New features:
 
 - UpdateRewardsCallback: Instead of storing the LUNA balance in a temporary state, the previous ampLUNA balance is being sent to the UpdateRewardsCallback. This way the contract is more gas efficient and simplified.
 
-- UpdateConfig / DAO treasury share: The owner is allowed to update the config variable "dao_treasury_share", which specifies how much of the alliance staking rewards should be distributed to the dao treasury.
+- UpdateConfig: The owner is allowed to update the config with the following properties
+  - "dao_treasury_share": Specifies how much of the alliance staking rewards should be distributed to the dao treasury.
+  - "set_whitelisted_reward_assets": Sets all whitelisted reward assets that should be checked for distribution during breaking an NFT
+  - "add_whitelisted_reward_assets": Adds whitelisted rewards assets to the cfg stored.
 
-- BreakNft: On breaking a NFT a user receives their share in ampLUNA.
+- BreakNft: On breaking a NFT a user receives their share in ampLUNA. Further he receives his share of all whitelisted reward assets too. His share is calculated by deviding his rewarded ampLUNA by the total amount of ampLUNA in the contract.
 
 Additional Changes:
 

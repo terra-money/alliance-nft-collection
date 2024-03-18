@@ -43,11 +43,6 @@ pub enum ExecuteMsg {
 }
 
 #[cw_serde]
-pub enum ClaimExecuteMsg {
-    Claim {},
-}
-
-#[cw_serde]
 pub enum QueryMsg {
     State {},
 }
