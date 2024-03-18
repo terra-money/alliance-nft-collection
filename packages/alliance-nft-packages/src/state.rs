@@ -35,6 +35,14 @@ pub struct Metadata {
 }
 
 #[cw_serde]
+pub struct ConfigV100 {
+    pub owner: Addr,
+
+    /// this is the virtual staking token factory/.../ALLY
+    pub asset_denom: String,
+}
+
+#[cw_serde]
 pub struct Config {
     pub owner: Addr,
 

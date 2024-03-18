@@ -1,12 +1,13 @@
 use alliance_nft_packages::eris::{validate_dao_treasury_share, Hub};
 use alliance_nft_packages::migrate::Version110MigrateData;
-use alliance_nft_packages::state::ALLOWED_DENOM;
+use alliance_nft_packages::state::{Config, ConfigV100, ALLOWED_DENOM};
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{DepsMut, Env, Response};
 use cw2::{get_contract_version, set_contract_version};
 
 use alliance_nft_packages::{errors::ContractError, migrate::MigrateMsg};
 use cw_asset::AssetInfo;
+use cw_storage_plus::Item;
 
 use crate::state::{CONFIG, REWARD_BALANCE};
 
@@ -42,12 +43,17 @@ fn migrate_to_1_1_0(
     data: Version110MigrateData,
     version: String,
 ) -> Result<Response, ContractError> {
-    // apply config from migration data. Only share can be changed via an updateconfig message.
-    let mut config = CONFIG.load(deps.storage)?;
-    config.dao_treasury_address = deps.api.addr_validate(&data.dao_treasury_address)?;
-    config.dao_treasury_share = validate_dao_treasury_share(data.dao_treasury_share)?;
-    config.lst_asset_info = data.lst_asset_info.check(deps.api, None)?;
-    config.lst_hub = Hub(deps.api.addr_validate(&data.lst_hub)?);
+    // apply config from migration data. Only share, whitelisted_reward_assets can be changed via an updateconfig message.
+    let config_old: ConfigV100 = Item::new("cfg").load(deps.storage)?;
+    let config = Config {
+        owner: config_old.owner,
+        asset_denom: config_old.asset_denom,
+        dao_treasury_address: deps.api.addr_validate(&data.dao_treasury_address)?,
+        dao_treasury_share: validate_dao_treasury_share(data.dao_treasury_share)?,
+        lst_hub: Hub(deps.api.addr_validate(&data.lst_hub)?),
+        lst_asset_info: data.lst_asset_info.check(deps.api, None)?,
+        whitelisted_reward_assets: vec![],
+    };
     CONFIG.save(deps.storage, &config)?;
 
     // for simplification, we just use the exchange rate to estimate the resulting received ampLUNA
