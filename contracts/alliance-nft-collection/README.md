@@ -8,16 +8,16 @@ Update 1.1.0 introduces staking of rewards in the ERIS LUNA Amplifier. This allo
 
 New features:
 
-- StakeRewardsCallback: This execution will check if LUNA are in the contract, and stake the amount that is available in the LST. It will call the UpdateRewardsCallback with the previous_lst_balance to track how many ampLUNA have been added to the rewards.
+- **StakeRewardsCallback**: This execution will check if LUNA are in the contract, and stake the amount that is available in the LST. It will call the UpdateRewardsCallback with the previous_lst_balance to track how many ampLUNA have been added to the rewards.
 
-- UpdateRewardsCallback: Instead of storing the LUNA balance in a temporary state, the previous ampLUNA balance is being sent to the UpdateRewardsCallback. This way the contract is more gas efficient and simplified.
+- **UpdateRewardsCallback**: Instead of storing the LUNA balance in a temporary state, the previous ampLUNA balance is being sent to the UpdateRewardsCallback. This way the contract is more gas efficient and simplified.
 
-- UpdateConfig: The owner is allowed to update the config with the following properties
+- **UpdateConfig**: The owner is allowed to update the config with the following properties
   - "dao_treasury_share": Specifies how much of the alliance staking rewards should be distributed to the dao treasury.
   - "set_whitelisted_reward_assets": Sets all whitelisted reward assets that should be checked for distribution during breaking an NFT
   - "add_whitelisted_reward_assets": Adds whitelisted rewards assets to the cfg stored.
 
-- BreakNft: On breaking a NFT a user receives their share in ampLUNA. Further he receives his share of all whitelisted reward assets too. His share is calculated by deviding his rewarded ampLUNA by the total amount of ampLUNA in the contract.
+- **BreakNft**: On breaking a NFT a user receives their share in ampLUNA. Further he receives his share of all whitelisted reward assets too. His share is calculated by deviding his rewarded ampLUNA by the total amount of ampLUNA in the contract.
 
 Additional Changes:
 
