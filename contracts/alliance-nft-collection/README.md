@@ -6,7 +6,7 @@ Reward NFT collection to the participants from [Game Of Alliance](https://docs.a
 
 Update 1.1.0 introduces staking of rewards in the ERIS LUNA Amplifier. This allows the DAO to participate in compounding staking rewards.
 
-New features:
+### New features
 
 - **StakeRewardsCallback**: This execution will check if LUNA are in the contract, and stake the amount that is available in the LST. It will call the UpdateRewardsCallback with the previous_lst_balance to track how many ampLUNA have been added to the rewards.
 
@@ -19,12 +19,19 @@ New features:
 
 - **BreakNft**: On breaking a NFT a user receives their share in ampLUNA. Further he receives his share of all whitelisted reward assets too. His share is calculated by deviding his rewarded ampLUNA by the total amount of ampLUNA in the contract.
 
-Additional Changes:
+### Additional Changes
 
 - Removed non-used state constants (UNBONDINGS, REDELEGATIONS)
-
 - Removed TEMP_BALANCE, as the previous balance is being sent directly in the callback message.
-
 - REWARD_BALANCE holds the amount of LST per unbroken NFT instead of the amount of LUNA.
-
 - NFT minter contract is now forwarding migrations to the nft collection if specified.
+
+
+### Migration
+
+The migration requires the following fields under the version110_data.
+
+- **dao_treasury_address**: Specifies the DAO treasury for the reward sharing
+- **dao_treasury_share**: Specifies how much of the rewards are being shared with the DAO treasury. (0-20%)
+- **lst_hub**: Specifies the ERIS liquid staking hub contract address,
+- **lst_asset_info**: Specifies the AssetInfo of ampLUNA
