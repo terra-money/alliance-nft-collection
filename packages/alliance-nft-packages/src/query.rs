@@ -1,5 +1,6 @@
+#[allow(unused_imports)]
 use super::Extension;
-use crate::state::{Config as ConfigRes, MinterConfig, MinterStats, MinterExtension};
+use crate::state::{Config as ConfigRes, MinterConfig, MinterExtension, MinterStats};
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Empty;
 use cw721::{

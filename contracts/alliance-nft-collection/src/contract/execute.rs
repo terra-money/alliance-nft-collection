@@ -192,7 +192,7 @@ fn try_update_reward_callback(
     Ok(Response::new()
         .add_attributes(vec![
             attr("action", "update_rewards_callback"),
-            attr("rewars_collected", rewards_collected),
+            attr("rewards_collected", rewards_collected),
         ])
         .add_attributes(attributes)
         .add_messages(msgs))
