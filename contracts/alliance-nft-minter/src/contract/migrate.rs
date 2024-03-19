@@ -20,7 +20,7 @@ fn try_migrate(deps: DepsMut, msg: MigrateMsg) -> Result<Response, ContractError
         .add_attribute("method", "try_migrate")
         .add_attribute("version", contract_version.version);
 
-    if let Some(nft_collection_code_id) = msg.nft_collection_code_id.clone() {
+    if let Some(nft_collection_code_id) = msg.nft_collection_code_id {
         let config = CONFIG.load(deps.storage)?;
         if let Some(nft_collection_address) = config.nft_collection_address {
             let migrate_nft_collection_msg = CosmosMsg::Wasm(WasmMsg::Migrate {

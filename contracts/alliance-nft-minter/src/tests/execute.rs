@@ -208,7 +208,7 @@ fn mint_inexistent_nft() {
     );
     assert_eq!(
         res.unwrap_err().to_string(),
-        String::from("alliance_nft_packages::state::MinterExtension not found")
+        String::from("type: alliance_nft_packages::state::MinterExtension; key: [00, 04, 6E, 66, 74, 73, 74, 65, 72, 72, 61, 31, 7A, 64, 70, 67, 6A, 38, 61, 6D, 35, 6E, 71, 71, 76, 68, 74, 39, 32, 37, 6B, 33, 65, 74, 6C, 6A, 79, 6C, 36, 61, 35, 32, 6B, 77, 71, 75, 70, 30, 6A, 65] not found")
     );
 
     // query to see if stats match

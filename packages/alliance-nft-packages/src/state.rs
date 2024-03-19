@@ -120,18 +120,10 @@ impl MinterConfig {
 }
 
 #[cw_serde]
+#[derive(Default)]
 pub struct MinterStats {
     pub available_nfts: i16,
     pub minted_nfts: i16,
-}
-
-impl MinterStats {
-    pub fn default() -> MinterStats {
-        MinterStats {
-            available_nfts: 0,
-            minted_nfts: 0,
-        }
-    }
 }
 
 // Model necessary because the nfts are sorted by the token_id

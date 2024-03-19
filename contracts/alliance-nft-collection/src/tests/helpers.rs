@@ -2,7 +2,8 @@ use super::custom_querier::CustomQuerier;
 use crate::contract::execute::execute;
 use crate::contract::instantiate::instantiate;
 use crate::contract::query::query;
-use alliance_nft_packages::eris::{AssetInfoExt, Hub};
+#[allow(unused_imports)]
+use alliance_nft_packages::eris::{AssetInfoExt, Hub, QueryMsg};
 use alliance_nft_packages::execute::{ExecuteCollectionMsg, MintMsg, UpdateRewardsCallbackMsg};
 use alliance_nft_packages::instantiate::InstantiateCollectionMsg;
 use alliance_nft_packages::query::QueryCollectionMsg;
@@ -15,6 +16,7 @@ use cosmwasm_std::{
 };
 use cw721::NftInfoResponse;
 use cw_asset::AssetInfo;
+use serde::de::DeserializeOwned;
 
 type MockContext = OwnedDeps<MockStorage, MockApi, CustomQuerier>;
 
@@ -79,12 +81,12 @@ pub fn query_nft(deps: Deps, token_id: &str) -> NftInfoResponse<Extension> {
     let msg = QueryCollectionMsg::NftInfo {
         token_id: token_id.to_string(),
     };
-    from_json(&query(deps, mock_env(), msg).unwrap()).unwrap()
+    from_json(query(deps, mock_env(), msg).unwrap()).unwrap()
 }
 
 pub fn query_config(deps: Deps) -> Config {
     let msg = QueryCollectionMsg::Config {};
-    from_json(&query(deps, mock_env(), msg).unwrap()).unwrap()
+    from_json(query(deps, mock_env(), msg).unwrap()).unwrap()
 }
 
 pub fn claim_alliance_emissions(deps: &mut MockContext, rewards: Uint128) {
@@ -146,7 +148,7 @@ pub fn claim_alliance_emissions(deps: &mut MockContext, rewards: Uint128) {
     let result = execute(deps.as_mut(), env, info, msg).unwrap();
 
     let treasury_amount = Decimal::percent(10) * added_lst_amount;
-    let rewards = added_lst_amount - treasury_amount;
+    let rewards_collected = added_lst_amount - treasury_amount;
 
     assert_eq!(result.messages.len(), 1);
     assert_eq!(
@@ -160,7 +162,7 @@ pub fn claim_alliance_emissions(deps: &mut MockContext, rewards: Uint128) {
         result.attributes,
         vec![
             attr("action", "update_rewards_callback"),
-            attr("rewars_collected", rewards),
+            attr("rewards_collected", rewards_collected),
             attr("treasury_amount", treasury_amount)
         ]
     );
@@ -170,4 +172,8 @@ pub fn claim_alliance_emissions(deps: &mut MockContext, rewards: Uint128) {
         MOCK_CONTRACT_ADDR,
         previouse_balance + added_lst_amount.u128() - treasury_amount.u128(),
     );
+}
+
+pub(super) fn query_helper<T: DeserializeOwned>(deps: Deps, msg: QueryCollectionMsg) -> T {
+    from_json(query(deps, mock_env(), msg).unwrap()).unwrap()
 }

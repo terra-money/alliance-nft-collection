@@ -95,7 +95,7 @@ pub fn reply_on_instantiate(deps: DepsMut, reply: Reply) -> Result<Response, Con
         .ok_or_else(|| StdError::generic_err("cannot find `_contract_address` attribute"))?
         .value;
 
-    let contract_addr = deps.api.addr_validate(&contract_addr)?;
+    let contract_addr = deps.api.addr_validate(contract_addr)?;
     CONFIG.update(deps.storage, |mut config| -> Result<_, ContractError> {
         config.nft_collection_address = Some(contract_addr);
         Ok(config)

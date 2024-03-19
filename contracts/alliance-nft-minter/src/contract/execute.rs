@@ -71,7 +71,7 @@ fn try_append_nft_metadata(
             return Err(ContractError::AlreadyExists(key));
         }
         NFT_METADATA.save(deps.storage, key, &value)?;
-        new_minted_nfts = new_minted_nfts + 1;
+        new_minted_nfts += 1;
     }
 
     STATS.update(deps.storage, |mut stats| -> Result<_, ContractError> {
@@ -166,28 +166,28 @@ fn try_send_to_dao_treasury(
     NFT_METADATA
         .range(deps.storage, None, None, Ascending)
         .try_for_each(|item| {
-            Some({
-                if current_batch_iteration == batch_length {
-                    return None;
-                }
-                current_batch_iteration = current_batch_iteration + 1;
-                let nft_info = item.unwrap();
+            if current_batch_iteration == batch_length {
+                return None;
+            }
+            current_batch_iteration += 1;
+            let nft_info = item.unwrap();
 
-                let msg = WasmMsg::Execute {
-                    contract_addr: collection_addr.to_string(),
-                    msg: to_json_binary(&ExecuteCollectionMsg::Mint(MintMsg {
-                        token_id: nft_info.1.token_id,
-                        owner: owner.to_string(),
-                        extension: nft_info.1.extension,
-                        token_uri: None,
-                    }))
-                    .unwrap(),
-                    funds: vec![],
-                };
+            let msg = WasmMsg::Execute {
+                contract_addr: collection_addr.to_string(),
+                msg: to_json_binary(&ExecuteCollectionMsg::Mint(MintMsg {
+                    token_id: nft_info.1.token_id,
+                    owner: owner.to_string(),
+                    extension: nft_info.1.extension,
+                    token_uri: None,
+                }))
+                .unwrap(),
+                funds: vec![],
+            };
 
-                addrs_to_remove_from_map.push(nft_info.0.clone());
-                mint_msgs.push(msg)
-            })
+            addrs_to_remove_from_map.push(nft_info.0.clone());
+            mint_msgs.push(msg);
+
+            Some(())
         });
 
     // update minter stats

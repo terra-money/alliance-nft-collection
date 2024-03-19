@@ -163,8 +163,7 @@ fn try_update_reward_callback(
     let current_balance = config
         .lst_asset_info
         .query_balance(&deps.querier, env.contract.address.clone())?;
-    let previous_balance = msg.previous_lst_balance;
-    let mut rewards_collected = current_balance - previous_balance;
+    let mut rewards_collected = current_balance - msg.previous_lst_balance;
 
     // if there is an lst_treasury_share, then the specified amount will be sent to the dao treasury.
     let mut msgs = vec![];
