@@ -46,7 +46,7 @@ pub fn instantiate(
             asset_denom: format!("factory/{}/{}", env.contract.address, SUBDENOM),
 
             dao_treasury_address: deps.api.addr_validate(&msg.dao_treasury_address)?,
-            lst_hub: Hub(deps.api.addr_validate(&msg.lst_hub_address)?),
+            lst_hub_address: Hub(deps.api.addr_validate(&msg.lst_hub_address)?),
             dao_treasury_share: validate_dao_treasury_share(msg.dao_treasury_share)?,
             lst_asset_info: msg.lst_asset_info.check(deps.api, None)?,
             whitelisted_reward_assets: vec![],

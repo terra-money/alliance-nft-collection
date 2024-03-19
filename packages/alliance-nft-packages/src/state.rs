@@ -55,7 +55,7 @@ pub struct Config {
     pub dao_treasury_share: Decimal,
 
     /// Contract of ERIS Amplifier for uluna
-    pub lst_hub: Hub,
+    pub lst_hub_address: Hub,
     /// Contract of CW20 ampLUNA
     pub lst_asset_info: AssetInfo,
 

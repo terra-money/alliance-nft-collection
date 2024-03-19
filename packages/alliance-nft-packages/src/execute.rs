@@ -132,6 +132,7 @@ pub struct UpdateRewardsCallbackMsg {
 
 #[cw_serde]
 pub struct UpdateConfigMsg {
+    pub dao_treasury_address: Option<String>,
     pub dao_treasury_share: Option<Decimal>,
     pub set_whitelisted_reward_assets: Option<Vec<AssetInfoUnchecked>>,
     pub add_whitelisted_reward_assets: Option<Vec<AssetInfoUnchecked>>,

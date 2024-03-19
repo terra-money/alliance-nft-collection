@@ -30,3 +30,6 @@ serde                   = { workspace = true }
 thiserror               = { workspace = true }
 terra-proto-rs          = { workspace = true }
 alliance-nft-packages   = { workspace = true }
+
+[dev-dependencies]
+cw20                    = { workspace = true }

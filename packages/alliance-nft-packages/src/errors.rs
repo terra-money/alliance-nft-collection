@@ -3,7 +3,7 @@ use cw721_base::ContractError as CW721BaseError;
 use cw_asset::AssetError;
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
@@ -46,6 +46,9 @@ pub enum ContractError {
 
     #[error("Invalid DAO treasury share. Must be less than or equal 20%")]
     InvalidDaoTreasuryShare {},
+
+    #[error("Cannot whitelist the main asset or LST")]
+    InvalidWhitelistedAssetInfo {},
 
     #[error("Minting period starts at {0} and ends at {1}. Current time is {2}")]
     OutOfMintingPeriod(Timestamp, Timestamp, Timestamp),

@@ -50,7 +50,7 @@ fn migrate_to_1_1_0(
         asset_denom: config_old.asset_denom,
         dao_treasury_address: deps.api.addr_validate(&data.dao_treasury_address)?,
         dao_treasury_share: validate_dao_treasury_share(data.dao_treasury_share)?,
-        lst_hub: Hub(deps.api.addr_validate(&data.lst_hub)?),
+        lst_hub_address: Hub(deps.api.addr_validate(&data.lst_hub)?),
         lst_asset_info: data.lst_asset_info.check(deps.api, None)?,
         whitelisted_reward_assets: vec![],
     };
@@ -60,7 +60,7 @@ fn migrate_to_1_1_0(
     // if there is a rounding issue, we will top up the missing ampLUNA to the contract, which is way less than 1 ampLUNA
     // this allows us to keep the contract simplified and not work with callback messages to check how much ampLUNA was really received.
     // total_ustake = 200k, total_uluna = 300k, rewards_current = 10k -> rewards_in_lst = 6.66k
-    let lst_hub_state = config.lst_hub.query_state(&deps.querier)?;
+    let lst_hub_state = config.lst_hub_address.query_state(&deps.querier)?;
     let rewards_current = REWARD_BALANCE.load(deps.storage)?;
     let rewards_in_lst =
         rewards_current.multiply_ratio(lst_hub_state.total_ustake, lst_hub_state.total_uluna);
@@ -70,7 +70,7 @@ fn migrate_to_1_1_0(
     let balance_native =
         AssetInfo::native(ALLOWED_DENOM).query_balance(&deps.querier, env.contract.address)?;
     let bond_msg = config
-        .lst_hub
+        .lst_hub_address
         .bond_msg(ALLOWED_DENOM, balance_native.u128(), None)?;
 
     // we are not updating NFT_BALANCE_CLAIMED (nb), as all NFT_BALANCE_CLAIMED are at 0, further once broken it does not matter anymore.

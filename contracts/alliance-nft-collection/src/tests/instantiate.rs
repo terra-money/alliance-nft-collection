@@ -1,12 +1,13 @@
 use crate::contract::instantiate::{instantiate, CONTRACT_NAME, CONTRACT_VERSION};
 use crate::contract::reply::reply;
+use crate::tests::helpers::{MOCK_DAO_TREASURY_ADDRESS, MOCK_LST};
 
 use alliance_nft_packages::instantiate::InstantiateCollectionMsg;
 use cosmwasm_std::testing::{
     mock_dependencies, mock_env, mock_info, MockApi, MockQuerier, MockStorage,
 };
 use cosmwasm_std::{
-    Addr, Binary, CosmosMsg, Empty, Env, MessageInfo, OwnedDeps, Reply, Response, SubMsg,
+    Addr, Binary, CosmosMsg, Decimal, Empty, Env, MessageInfo, OwnedDeps, Reply, Response, SubMsg,
     SubMsgResponse, SubMsgResult,
 };
 use cw2::get_contract_version;
@@ -39,6 +40,11 @@ pub fn intantiate_with_reply() -> (
         name: "Collection Name".to_string(),
         symbol: "CNA".to_string(),
         owner: Addr::unchecked("owner"),
+
+        dao_treasury_share: Decimal::percent(10),
+        lst_asset_info: cw_asset::AssetInfoBase::Cw20(MOCK_LST.to_string()),
+        lst_hub_address: "hub".to_string(),
+        dao_treasury_address: MOCK_DAO_TREASURY_ADDRESS.to_string(),
     };
     let res = instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
 

@@ -4,7 +4,8 @@ use alliance_nft_packages::eris::{
 use alliance_nft_packages::execute::{UpdateConfigMsg, UpdateRewardsCallbackMsg};
 use alliance_nft_packages::state::ALLOWED_DENOM;
 use cosmwasm_std::{
-    entry_point, to_json_binary, Addr, Binary, CosmosMsg, Decimal, Order, SubMsg, Uint128, WasmMsg,
+    attr, entry_point, to_json_binary, Addr, Binary, CosmosMsg, Decimal, Order, SubMsg, Uint128,
+    WasmMsg,
 };
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response};
 use cw721::Cw721Query;
@@ -126,7 +127,7 @@ fn try_stake_reward_callback(
 
     // create stake / bond message
     let stake_msg = config
-        .lst_hub
+        .lst_hub_address
         .bond_msg(ALLOWED_DENOM, tokens_to_stake.u128(), None)?;
 
     // prepare update rewards callback, by querying the current total lsts in the contract.
@@ -167,6 +168,7 @@ fn try_update_reward_callback(
 
     // if there is an lst_treasury_share, then the specified amount will be sent to the dao treasury.
     let mut msgs = vec![];
+    let mut attributes = vec![];
     if !config.dao_treasury_share.is_zero() {
         let treasury_amount = config.dao_treasury_share * rewards_collected;
         if !treasury_amount.is_zero() {
@@ -176,7 +178,8 @@ fn try_update_reward_callback(
                     .lst_asset_info
                     .with_balance(treasury_amount)
                     .transfer_msg(config.dao_treasury_address)?,
-            )
+            );
+            attributes.push(attr("treasury_amount", treasury_amount));
         }
     }
 
@@ -187,7 +190,11 @@ fn try_update_reward_callback(
     })?;
 
     Ok(Response::new()
-        .add_attributes(vec![("action", "update_rewards_callback")])
+        .add_attributes(vec![
+            attr("action", "update_rewards_callback"),
+            attr("rewars_collected", rewards_collected),
+        ])
+        .add_attributes(attributes)
         .add_messages(msgs))
 }
 
@@ -438,18 +445,24 @@ fn try_update_config(
     let mut cfg = CONFIG.load(deps.storage)?;
     authorize_execution(cfg.owner.clone(), info.sender)?;
 
+    if let Some(dao_treasury_address) = msg.dao_treasury_address {
+        cfg.dao_treasury_address = deps.api.addr_validate(&dao_treasury_address)?;
+    }
+
     if let Some(dao_treasury_share) = msg.dao_treasury_share {
         cfg.dao_treasury_share = validate_dao_treasury_share(dao_treasury_share)?;
     }
 
     if let Some(set_whitelisted_reward_assets) = msg.set_whitelisted_reward_assets {
-        let mut set_assets = validate_whitelisted_assets(&deps, set_whitelisted_reward_assets)?;
+        let mut set_assets =
+            validate_whitelisted_assets(&deps, &cfg.lst_asset_info, set_whitelisted_reward_assets)?;
         dedupe_assetinfos(&mut set_assets);
         cfg.whitelisted_reward_assets = set_assets;
     }
 
     if let Some(add_whitelisted_reward_assets) = msg.add_whitelisted_reward_assets {
-        let mut add_assets = validate_whitelisted_assets(&deps, add_whitelisted_reward_assets)?;
+        let mut add_assets =
+            validate_whitelisted_assets(&deps, &cfg.lst_asset_info, add_whitelisted_reward_assets)?;
         let mut existing = cfg.whitelisted_reward_assets;
         existing.append(&mut add_assets);
         dedupe_assetinfos(&mut existing);

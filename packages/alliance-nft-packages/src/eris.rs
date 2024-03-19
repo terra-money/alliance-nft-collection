@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::errors::ContractError;
+use crate::{errors::ContractError, state::ALLOWED_DENOM};
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
     coin, to_json_binary, Addr, Coin, CosmosMsg, Decimal, DepsMut, QuerierWrapper, StdResult,
@@ -18,13 +18,27 @@ pub fn validate_dao_treasury_share(share: Decimal) -> Result<Decimal, ContractEr
 
 pub fn validate_whitelisted_assets(
     deps: &DepsMut,
+    lst_asset_info: &AssetInfo,
     assets: Vec<AssetInfoUnchecked>,
 ) -> Result<Vec<AssetInfo>, ContractError> {
     assets
         .iter()
-        .map(|a| {
-            a.check(deps.api, None)
-                .map_err(ContractError::FromAssetError)
+        .map(|a| -> Result<AssetInfo, ContractError> {
+            if let cw_asset::AssetInfoBase::Native(native) = a {
+                if native == ALLOWED_DENOM {
+                    return Err(ContractError::InvalidWhitelistedAssetInfo {});
+                }
+            }
+
+            let checked_assetinfo = a
+                .check(deps.api, None)
+                .map_err(ContractError::FromAssetError)?;
+
+            if checked_assetinfo == *lst_asset_info {
+                return Err(ContractError::InvalidWhitelistedAssetInfo {});
+            }
+
+            Ok(checked_assetinfo)
         })
         .collect::<Result<Vec<AssetInfo>, ContractError>>()
 }
