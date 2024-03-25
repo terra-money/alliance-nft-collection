@@ -1,38 +1,74 @@
-use alliance_nft_packages::errors::ContractError;
-use cosmwasm_std::{entry_point, to_binary, Uint128, Addr, QuerierWrapper};
+use alliance_nft_packages::eris::AssetInfoExt;
+use alliance_nft_packages::query::RewardsResponse;
+use alliance_nft_packages::state::{Config, Trait};
+use alliance_nft_packages::{query::QueryCollectionMsg, AllianceNftCollection, Extension};
+use cosmwasm_std::{entry_point, to_json_binary, Decimal, StdError, Uint128};
 use cosmwasm_std::{Binary, Deps, Env, StdResult};
 use cw721::{AllNftInfoResponse, Approval, NftInfoResponse, OwnerOfResponse};
 use cw721_base::state::{Approval as BaseApproval, TokenInfo};
 
-use alliance_nft_packages::state::{Trait, Config, ALLOWED_DENOM};
-use alliance_nft_packages::{query::QueryCollectionMsg, AllianceNftCollection, Extension};
-
-use crate::state::{CONFIG, BROKEN_NFTS, REWARD_BALANCE, NFT_BALANCE_CLAIMED};
+use crate::state::{BROKEN_NFTS, CONFIG, NFT_BALANCE_CLAIMED, REWARD_BALANCE};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryCollectionMsg) -> StdResult<Binary> {
     let parent = AllianceNftCollection::default();
     match msg {
-        QueryCollectionMsg::Config {} => to_binary(&query_config(deps)?),
-        QueryCollectionMsg::NftInfo { token_id } => to_binary(&query_nft_info(deps, parent, token_id)?),
+        QueryCollectionMsg::Config {} => to_json_binary(&query_config(deps)?),
+        QueryCollectionMsg::NftInfo { token_id } => {
+            to_json_binary(&query_nft_info(deps, parent, token_id)?)
+        }
         QueryCollectionMsg::AllNftInfo {
             token_id,
             include_expired,
-        } => to_binary(&query_all_nft_info(
+        } => to_json_binary(&query_all_nft_info(
             deps,
             env,
             parent,
             token_id,
             include_expired,
         )?),
+
+        QueryCollectionMsg::Rewards { token_id } => {
+            to_json_binary(&query_rewards(deps, env, token_id)?)
+        }
+
         _ => parent.query(deps, env, msg.into()),
     }
 }
 
-fn query_config(deps : Deps) -> StdResult<Config>{
+fn query_config(deps: Deps) -> StdResult<Config> {
     let res = CONFIG.load(deps.storage)?;
 
     Ok(res)
+}
+
+fn query_rewards(deps: Deps, env: Env, token_id: String) -> StdResult<RewardsResponse> {
+    let cfg = CONFIG.load(deps.storage)?;
+
+    let rewards_claimed = NFT_BALANCE_CLAIMED.load(deps.storage, token_id.to_string())?;
+    let average_rewards = REWARD_BALANCE.load(deps.storage)?;
+    let rewards_claimable = average_rewards - rewards_claimed;
+
+    let mut rewards = vec![cfg.lst_asset_info.clone().with_balance(rewards_claimable)];
+
+    let rewards_total = cfg
+        .lst_asset_info
+        .query_balance(&deps.querier, env.contract.address.to_string())
+        .map_err(|e| StdError::generic_err(format!("failed lst query: {0}", e)))?;
+    let user_share = Decimal::from_ratio(rewards_claimable, rewards_total);
+
+    for whitelisted_reward_asset in cfg.whitelisted_reward_assets {
+        let balance = whitelisted_reward_asset
+            .query_balance(&deps.querier, env.contract.address.to_string())
+            .map_err(|e| StdError::generic_err(format!("failed balance query: {0}", e)))?;
+
+        // always floored
+        let user_balance = user_share * balance;
+        if !user_balance.is_zero() {
+            rewards.push(whitelisted_reward_asset.with_balance(user_balance));
+        }
+    }
+    Ok(RewardsResponse { rewards })
 }
 
 fn query_token_info(
@@ -115,13 +151,4 @@ fn humanize_approval(approval: &BaseApproval) -> Approval {
         spender: approval.spender.to_string(),
         expires: approval.expires,
     }
-}
-
-// Given the querier and the contract address
-// return the balance of the contract
-pub fn try_query_contract_balance(querier: QuerierWrapper, contract_addr: &Addr) -> Result<Uint128, ContractError> {
-    let contract_balance = querier
-        .query_balance(contract_addr, ALLOWED_DENOM)?
-        .amount;
-    Ok(contract_balance)
 }

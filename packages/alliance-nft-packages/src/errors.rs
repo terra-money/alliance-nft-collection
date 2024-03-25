@@ -1,8 +1,9 @@
-use cosmwasm_std::{Addr, StdError, Timestamp};
+use cosmwasm_std::{Addr, OverflowError, StdError, Timestamp};
 use cw721_base::ContractError as CW721BaseError;
+use cw_asset::AssetError;
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
@@ -12,6 +13,12 @@ pub enum ContractError {
 
     #[error("{0}")]
     FromContractError(#[from] CW721BaseError),
+
+    #[error("{0}")]
+    FromAssetError(#[from] AssetError),
+
+    #[error("{0}")]
+    FromOverflowError(#[from] OverflowError),
 
     #[error("Invalid reply id {0}")]
     InvalidReplyId(u64),
@@ -37,6 +44,12 @@ pub enum ContractError {
     #[error("Invalid DAO treasury address")]
     InvalidDaoTreasuryAddress {},
 
+    #[error("Invalid DAO treasury share. Must be less than or equal 20%")]
+    InvalidDaoTreasuryShare {},
+
+    #[error("Cannot whitelist the main asset or LST")]
+    InvalidWhitelistedAssetInfo {},
+
     #[error("Minting period starts at {0} and ends at {1}. Current time is {2}")]
     OutOfMintingPeriod(Timestamp, Timestamp, Timestamp),
 
@@ -48,14 +61,16 @@ pub enum ContractError {
 
     #[error("No available NFTs to be minted")]
     NoAvailableNfts {},
-    
+
     #[error("DAO Address must be set")]
-    DaoAddressNotSet{},
+    DaoAddressNotSet {},
 
     #[error("Dao treasury address must be set")]
-    DaoTreasuryAddressNotSet{},
-    
-    #[error("Nft collection address must be set")]
-    NftCollectionAddressNotSet{},
+    DaoTreasuryAddressNotSet {},
 
+    #[error("Nft collection address must be set")]
+    NftCollectionAddressNotSet {},
+
+    #[error("Migration data must be set: {0}")]
+    MissingMigrationData(String),
 }

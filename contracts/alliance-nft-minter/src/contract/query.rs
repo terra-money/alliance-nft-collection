@@ -1,6 +1,6 @@
 use alliance_nft_packages::query::QueryMinterMsg;
-use alliance_nft_packages::state::{MinterConfig, MinterStats, MinterExtension};
-use cosmwasm_std::{entry_point, to_binary};
+use alliance_nft_packages::state::{MinterConfig, MinterExtension, MinterStats};
+use cosmwasm_std::{entry_point, to_json_binary};
 use cosmwasm_std::{Binary, Deps, Env, StdResult};
 
 use crate::state::{CONFIG, NFT_METADATA, STATS};
@@ -8,9 +8,9 @@ use crate::state::{CONFIG, NFT_METADATA, STATS};
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMinterMsg) -> StdResult<Binary> {
     match msg {
-        QueryMinterMsg::Config {} => to_binary(&query_config(deps)?),
-        QueryMinterMsg::Stats {} => to_binary(&query_stats(deps)?),
-        QueryMinterMsg::NftData(address) => to_binary(&query_nft_data(deps, address)?),
+        QueryMinterMsg::Config {} => to_json_binary(&query_config(deps)?),
+        QueryMinterMsg::Stats {} => to_json_binary(&query_stats(deps)?),
+        QueryMinterMsg::NftData(address) => to_json_binary(&query_nft_data(deps, address)?),
     }
 }
 

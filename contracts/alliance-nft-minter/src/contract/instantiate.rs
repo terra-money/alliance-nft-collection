@@ -6,7 +6,8 @@ use alliance_nft_packages::{
     state::{MinterConfig, MinterStats},
 };
 use cosmwasm_std::{
-    entry_point, to_binary, DepsMut, Env, MessageInfo, Reply, Response, StdError, SubMsg, WasmMsg,
+    entry_point, to_json_binary, DepsMut, Env, MessageInfo, Reply, Response, StdError, SubMsg,
+    WasmMsg,
 };
 use cw2::set_contract_version;
 
@@ -24,24 +25,24 @@ pub fn instantiate(
         return Err(ContractError::InvalidMintTimeRange {});
     }
 
-    let dao_treasury_address = match msg.dao_treasury_address{
+    let dao_treasury_address = match msg.dao_treasury_address {
         Some(addr) => {
             let dao_treasury_addr = deps.api.addr_validate(&addr)?;
             Some(dao_treasury_addr)
-        },
-        None => None
+        }
+        None => None,
     };
 
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
         .map_err(ContractError::Std)?;
-    
+
     STATS.save(deps.storage, &MinterStats::default())?;
 
     CONFIG.save(
         deps.storage,
         &MinterConfig {
             owner: info.sender.clone(),
-            dao_treasury_address: dao_treasury_address,
+            dao_treasury_address: dao_treasury_address.clone(),
             nft_collection_address: None,
             mint_start_time: msg.mint_start_time,
             mint_end_time: msg.mint_end_time,
@@ -52,11 +53,18 @@ pub fn instantiate(
     let instantiate_message = WasmMsg::Instantiate {
         admin: Some(env.contract.address.to_string()),
         code_id: msg.nft_collection_code_id,
-        msg: to_binary(&InstantiateCollectionMsg {
+        msg: to_json_binary(&InstantiateCollectionMsg {
             name: "AllianceNFT".to_string(),
             symbol: "ALLIANCE".to_string(),
             minter: env.contract.address.to_string(),
             owner: env.contract.address.clone(),
+
+            dao_treasury_address: dao_treasury_address
+                .unwrap_or(env.contract.address)
+                .to_string(),
+            lst_hub_address: msg.lst_hub_address,
+            dao_treasury_share: msg.dao_treasury_share,
+            lst_asset_info: msg.lst_asset_info,
         })?,
         funds: info.funds,
         label: "Alliance NFT Collection".to_string(),
@@ -87,7 +95,7 @@ pub fn reply_on_instantiate(deps: DepsMut, reply: Reply) -> Result<Response, Con
         .ok_or_else(|| StdError::generic_err("cannot find `_contract_address` attribute"))?
         .value;
 
-    let contract_addr = deps.api.addr_validate(&contract_addr)?;
+    let contract_addr = deps.api.addr_validate(contract_addr)?;
     CONFIG.update(deps.storage, |mut config| -> Result<_, ContractError> {
         config.nft_collection_address = Some(contract_addr);
         Ok(config)

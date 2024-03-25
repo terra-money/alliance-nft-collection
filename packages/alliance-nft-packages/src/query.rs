@@ -1,5 +1,6 @@
+#[allow(unused_imports)]
 use super::Extension;
-use crate::state::{Config as ConfigRes, MinterConfig, MinterStats, MinterExtension};
+use crate::state::{Config as ConfigRes, MinterConfig, MinterExtension, MinterStats};
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Empty;
 use cw721::{
@@ -7,12 +8,16 @@ use cw721::{
     NumTokensResponse, OperatorsResponse, OwnerOfResponse, TokensResponse,
 };
 use cw721_base::QueryMsg as CW721QueryMsg;
+use cw_asset::Asset;
 
 #[cw_serde]
 #[derive(QueryResponses)]
 pub enum QueryCollectionMsg {
     #[returns(ConfigRes)]
     Config {},
+
+    #[returns(RewardsResponse)]
+    Rewards { token_id: String },
 
     /// With MetaData Extension.
     /// Returns metadata about one particular token,
@@ -125,6 +130,11 @@ pub enum QueryCollectionMsg {
     // Return the minter
     #[returns(MinterResponse)]
     Minter {},
+}
+
+#[cw_serde]
+pub struct RewardsResponse {
+    pub rewards: Vec<Asset>,
 }
 
 #[cw_serde]

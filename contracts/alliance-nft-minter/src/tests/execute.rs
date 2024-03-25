@@ -5,7 +5,7 @@ use alliance_nft_packages::query::QueryMinterMsg;
 use alliance_nft_packages::state::{MinterStats, Trait};
 use alliance_nft_packages::Extension;
 use cosmwasm_std::testing::mock_info;
-use cosmwasm_std::{to_binary, Response, WasmMsg};
+use cosmwasm_std::{to_json_binary, Response, WasmMsg};
 
 use super::instantiate::intantiate_with_reply;
 
@@ -17,7 +17,7 @@ fn append_nft_metadata() {
     // Execute the message
     let res = append_nft_metadata_execution(
         deps.as_mut(),
-        "creator", 
+        "creator",
         "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
     );
 
@@ -34,7 +34,7 @@ fn append_nft_metadata() {
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 1,
             minted_nfts: 0,
         })
@@ -66,7 +66,7 @@ fn append_nft_metadata_unauthorized() {
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 0,
             minted_nfts: 0,
         })
@@ -113,7 +113,7 @@ fn append_nft_metadata_duplicated_error() {
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 1,
             minted_nfts: 0,
         })
@@ -153,7 +153,7 @@ fn mint_nft() {
     // assert message response
     let mint_msg = WasmMsg::Execute {
         contract_addr: "nft_collection_address".to_string(),
-        msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
+        msg: to_json_binary(&ExecuteCollectionMsg::Mint(MintMsg {
             token_id: "1".to_string(),
             owner: "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
             extension: Extension {
@@ -187,7 +187,7 @@ fn mint_nft() {
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 0,
             minted_nfts: 1,
         })
@@ -208,14 +208,14 @@ fn mint_inexistent_nft() {
     );
     assert_eq!(
         res.unwrap_err().to_string(),
-        String::from("alliance_nft_packages::state::MinterExtension not found")
+        String::from("type: alliance_nft_packages::state::MinterExtension; key: [00, 04, 6E, 66, 74, 73, 74, 65, 72, 72, 61, 31, 7A, 64, 70, 67, 6A, 38, 61, 6D, 35, 6E, 71, 71, 76, 68, 74, 39, 32, 37, 6B, 33, 65, 74, 6C, 6A, 79, 6C, 36, 61, 35, 32, 6B, 77, 71, 75, 70, 30, 6A, 65] not found")
     );
 
     // query to see if stats match
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 0,
             minted_nfts: 0,
         })
@@ -258,7 +258,7 @@ fn minting_outside_allowed_period() {
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 0,
             minted_nfts: 0,
         })
@@ -300,7 +300,7 @@ fn send_to_dao_treasury() {
     // assert message response
     let mint_msg = WasmMsg::Execute {
         contract_addr: "nft_collection_address".to_string(),
-        msg: to_binary(&ExecuteCollectionMsg::Mint(MintMsg {
+        msg: to_json_binary(&ExecuteCollectionMsg::Mint(MintMsg {
             token_id: "1".to_string(),
             owner: "dao_treasury_address".to_string(),
             extension: Extension {
@@ -334,7 +334,7 @@ fn send_to_dao_treasury() {
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 0,
             minted_nfts: 1,
         })
@@ -380,7 +380,7 @@ fn send_to_dao_before_end_time() {
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 1,
             minted_nfts: 0,
         })
@@ -460,7 +460,7 @@ fn test_try_change_owener() {
             ])
             .add_message(WasmMsg::Execute {
                 contract_addr: "nft_collection_address".to_string(),
-                msg: to_binary(&ExecuteCollectionMsg::ChangeOwner(
+                msg: to_json_binary(&ExecuteCollectionMsg::ChangeOwner(
                     "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string()
                 ))
                 .unwrap(),
@@ -481,7 +481,6 @@ fn remove_nft_from_mint() {
         "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
     );
 
-
     // mint an nft
     let res = execute(
         deps.as_mut(),
@@ -494,21 +493,23 @@ fn remove_nft_from_mint() {
         res.unwrap(),
         Response::default()
             .add_attribute("method", "try_remove_token")
-            .add_attribute("removed_token", "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je")
+            .add_attribute(
+                "removed_token",
+                "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je"
+            )
     );
 
     // query to see if stats match
     let query_res = query(deps.as_ref(), env, QueryMinterMsg::Stats {}).unwrap();
     assert_eq!(
         query_res,
-        to_binary(&MinterStats {
+        to_json_binary(&MinterStats {
             available_nfts: 0,
             minted_nfts: 0,
         })
         .unwrap()
     );
 }
-
 
 #[test]
 fn remove_nft_from_mint_wrong_sender() {
@@ -522,7 +523,6 @@ fn remove_nft_from_mint_wrong_sender() {
         "terra1zdpgj8am5nqqvht927k3etljyl6a52kwqup0je".to_string(),
     );
 
-
     // mint an nft
     let res = execute(
         deps.as_mut(),
@@ -533,6 +533,8 @@ fn remove_nft_from_mint_wrong_sender() {
 
     assert_eq!(
         res.unwrap_err().to_string(),
-        String::from("Unauthorized execution, sender (creatorw) is not the expected address (creator)")
+        String::from(
+            "Unauthorized execution, sender (creatorw) is not the expected address (creator)"
+        )
     );
 }

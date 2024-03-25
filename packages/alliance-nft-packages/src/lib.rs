@@ -1,3 +1,4 @@
+pub mod eris;
 pub mod errors;
 pub mod execute;
 pub mod instantiate;

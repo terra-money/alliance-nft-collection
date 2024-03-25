@@ -38,16 +38,6 @@ pub fn reduce_val_stake(
     Ok(())
 }
 
-// Keep track of in-progress unbondings
-// - max of 7 unbondings at the same time
-pub const UNBONDINGS: Map<String, Uint128> = Map::new("unb");
-
-// Keep track of in-progress redelegations
-// - max of 7 redelegations at the same time
-pub const REDELEGATIONS: Map<String, Uint128> = Map::new("red");
-
-pub const TEMP_BALANCE: Item<Uint128> = Item::new("temp_balance");
-
 // Keep track of rewards claimed for each token_id
 pub const NFT_BALANCE_CLAIMED: Map<String, Uint128> = Map::new("nb");
 pub const REWARD_BALANCE: Item<Uint128> = Item::new("rb");

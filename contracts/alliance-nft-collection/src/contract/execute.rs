@@ -1,10 +1,15 @@
+use alliance_nft_packages::eris::{
+    dedupe_assetinfos, validate_dao_treasury_share, validate_whitelisted_assets, AssetInfoExt,
+};
+use alliance_nft_packages::execute::{UpdateConfigMsg, UpdateRewardsCallbackMsg};
 use alliance_nft_packages::state::ALLOWED_DENOM;
 use cosmwasm_std::{
-    coins, entry_point, to_binary, Addr, BankMsg, Binary, Coin as CwCoin, CosmosMsg, Order, SubMsg,
-    Uint128, WasmMsg, Storage, QuerierWrapper,
+    attr, entry_point, to_json_binary, Addr, Binary, CosmosMsg, Decimal, Order, SubMsg, Uint128,
+    WasmMsg,
 };
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Response};
 use cw721::Cw721Query;
+use cw_asset::AssetInfoBase;
 use terra_proto_rs::alliance::alliance::{MsgClaimDelegationRewards, MsgRedelegate, MsgUndelegate};
 use terra_proto_rs::{
     alliance::alliance::MsgDelegate, cosmos::base::v1beta1::Coin, traits::Message,
@@ -12,19 +17,18 @@ use terra_proto_rs::{
 
 use crate::state::{
     reduce_val_stake, upsert_val, BROKEN_NFTS, CONFIG, NFT_BALANCE_CLAIMED, NUM_ACTIVE_NFTS,
-    REWARD_BALANCE, TEMP_BALANCE, VALS,
+    REWARD_BALANCE, VALS,
 };
 use alliance_nft_packages::{
     errors::ContractError,
     execute::{
-        AllianceDelegateMsg, AllianceRedelegateMsg, AllianceUndelegateMsg, ExecuteCollectionMsg, MintMsg,
+        AllianceDelegateMsg, AllianceRedelegateMsg, AllianceUndelegateMsg, ExecuteCollectionMsg,
+        MintMsg,
     },
     AllianceNftCollection,
 };
 
-use super::query::try_query_contract_balance;
 use super::reply::CLAIM_REWARD_ERROR_REPLY_ID;
-
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
@@ -36,31 +40,34 @@ pub fn execute(
     let parent: AllianceNftCollection = AllianceNftCollection::default();
     match msg {
         ExecuteCollectionMsg::AllianceDelegate(msg) => try_alliance_delegate(deps, env, info, msg),
-        ExecuteCollectionMsg::AllianceUndelegate(msg) => try_alliance_undelegate(deps, env, info, msg),
-        ExecuteCollectionMsg::AllianceRedelegate(msg) => try_alliance_redelegate(deps, env, info, msg),
+        ExecuteCollectionMsg::AllianceUndelegate(msg) => {
+            try_alliance_undelegate(deps, env, info, msg)
+        }
+        ExecuteCollectionMsg::AllianceRedelegate(msg) => {
+            try_alliance_redelegate(deps, env, info, msg)
+        }
+        ExecuteCollectionMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(deps, env),
 
-        ExecuteCollectionMsg::AllianceClaimRewards {} => try_alliance_claim_rewards(deps, env, info),
-        ExecuteCollectionMsg::UpdateRewardsCallback {} => update_reward_callback(deps, env, info),
+        ExecuteCollectionMsg::StakeRewardsCallback {} => try_stake_reward_callback(deps, env, info),
+        ExecuteCollectionMsg::UpdateRewardsCallback(msg) => {
+            try_update_reward_callback(deps, env, info, msg)
+        }
 
         ExecuteCollectionMsg::BreakNft(token_id) => try_breaknft(deps, env, info, parent, token_id),
         ExecuteCollectionMsg::Mint(mint_msg) => try_mint(deps, info, parent, mint_msg),
         ExecuteCollectionMsg::ChangeOwner(new_owner) => try_change_owner(deps, info, new_owner),
+        ExecuteCollectionMsg::UpdateConfig(msg) => try_update_config(deps, info, msg),
 
         _ => Ok(parent.execute(deps, env, info, msg.into())?),
     }
 }
 
-fn try_alliance_claim_rewards(
-    deps: DepsMut,
-    env: Env,
-    info: MessageInfo,
-) -> Result<Response, ContractError> {
+fn try_alliance_claim_rewards(deps: DepsMut, env: Env) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
     let num_of_active = NUM_ACTIVE_NFTS.load(deps.storage)?;
     if num_of_active == 0 {
         return Err(ContractError::NoActiveNfts {});
     }
-    store_temp_contract_funds(&info.funds, deps.querier, deps.storage, &env.contract.address)?;
 
     let validators = VALS
         .range(deps.storage, None, None, Order::Ascending)
@@ -82,11 +89,8 @@ fn try_alliance_claim_rewards(
             SubMsg::reply_on_error(msg, CLAIM_REWARD_ERROR_REPLY_ID)
         })
         .collect();
-    let msg = CosmosMsg::Wasm(WasmMsg::Execute {
-        contract_addr: env.contract.address.to_string(),
-        msg: to_binary(&ExecuteCollectionMsg::UpdateRewardsCallback {}).unwrap(),
-        funds: vec![],
-    });
+
+    let msg = get_stake_reward_callback_msg(env);
 
     Ok(Response::new()
         .add_attributes(vec![("action", "update_rewards")])
@@ -94,29 +98,103 @@ fn try_alliance_claim_rewards(
         .add_message(msg))
 }
 
-fn update_reward_callback(
+fn get_stake_reward_callback_msg(env: Env) -> CosmosMsg {
+    CosmosMsg::Wasm(WasmMsg::Execute {
+        contract_addr: env.contract.address.to_string(),
+        msg: to_json_binary(&ExecuteCollectionMsg::StakeRewardsCallback {}).unwrap(),
+        funds: vec![],
+    })
+}
+
+fn try_stake_reward_callback(
     deps: DepsMut,
     env: Env,
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
     authorize_execution(env.contract.address.clone(), info.sender)?;
+    let config = CONFIG.load(deps.storage)?;
 
-    let current_balance = deps
-        .querier
-        .query_balance(env.contract.address, ALLOWED_DENOM)?
-        .amount;
-    let previous_balance = TEMP_BALANCE.load(deps.storage)?;
-    let rewards_collected = current_balance - previous_balance;
+    // check if there are tokens to stake
+    let tokens_to_stake = AssetInfoBase::native(ALLOWED_DENOM)
+        .query_balance(&deps.querier, env.contract.address.clone())?;
+
+    if tokens_to_stake.is_zero() {
+        return Ok(Response::new().add_attributes(vec![
+            ("action", "stake_reward_callback"),
+            ("result", "nothing to stake"),
+        ]));
+    }
+
+    // create stake / bond message
+    let stake_msg = config
+        .lst_hub_address
+        .bond_msg(ALLOWED_DENOM, tokens_to_stake.u128(), None)?;
+
+    // prepare update rewards callback, by querying the current total lsts in the contract.
+    let previous_lst_balance = config
+        .lst_asset_info
+        .query_balance(&deps.querier, env.contract.address.clone())?;
+
+    let update_rewards_msg = CosmosMsg::Wasm(WasmMsg::Execute {
+        contract_addr: env.contract.address.to_string(),
+        msg: to_json_binary(&ExecuteCollectionMsg::UpdateRewardsCallback(
+            UpdateRewardsCallbackMsg {
+                previous_lst_balance,
+            },
+        ))?,
+        funds: vec![],
+    });
+
+    Ok(Response::new()
+        .add_attributes(vec![("action", "stake_reward_callback")])
+        .add_message(stake_msg)
+        .add_message(update_rewards_msg))
+}
+
+fn try_update_reward_callback(
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+    msg: UpdateRewardsCallbackMsg,
+) -> Result<Response, ContractError> {
+    authorize_execution(env.contract.address.clone(), info.sender)?;
+    let config = CONFIG.load(deps.storage)?;
+
+    let current_balance = config
+        .lst_asset_info
+        .query_balance(&deps.querier, env.contract.address.clone())?;
+    let mut rewards_collected = current_balance - msg.previous_lst_balance;
+
+    // if there is an lst_treasury_share, then the specified amount will be sent to the dao treasury.
+    let mut msgs = vec![];
+    let mut attributes = vec![];
+    if !config.dao_treasury_share.is_zero() {
+        let treasury_amount = config.dao_treasury_share * rewards_collected;
+        if !treasury_amount.is_zero() {
+            rewards_collected = rewards_collected.checked_sub(treasury_amount)?;
+            msgs.push(
+                config
+                    .lst_asset_info
+                    .with_balance(treasury_amount)
+                    .transfer_msg(config.dao_treasury_address)?,
+            );
+            attributes.push(attr("treasury_amount", treasury_amount));
+        }
+    }
+
     let num_of_active_nfts = NUM_ACTIVE_NFTS.load(deps.storage)?;
     let average_reward = rewards_collected / Uint128::from(num_of_active_nfts);
     REWARD_BALANCE.update(deps.storage, |balance| -> Result<_, ContractError> {
         Ok(balance + average_reward)
     })?;
 
-    TEMP_BALANCE.remove(deps.storage);
     Ok(Response::new()
-        .add_attributes(vec![("action", "update_rewards_callback")]
-    ))
+        .add_attributes(vec![
+            attr("action", "update_rewards_callback"),
+            attr("rewards_collected", rewards_collected),
+        ])
+        .add_attributes(attributes)
+        .add_messages(msgs))
 }
 
 fn try_alliance_delegate(
@@ -127,8 +205,7 @@ fn try_alliance_delegate(
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.as_ref().storage)?;
     authorize_execution(cfg.owner.clone(), info.sender)?;
-    store_temp_contract_funds(&info.funds, deps.querier, deps.storage, &env.contract.address)?;
-    
+
     let mut cosmos_msg: Vec<CosmosMsg> = Vec::new();
 
     for del in msg.delegations.iter() {
@@ -151,13 +228,9 @@ fn try_alliance_delegate(
         cosmos_msg.push(msg);
     }
 
-    let msg = CosmosMsg::Wasm(WasmMsg::Execute {
-        contract_addr: env.contract.address.to_string(),
-        msg: to_binary(&ExecuteCollectionMsg::UpdateRewardsCallback {}).unwrap(),
-        funds: vec![],
-    });
+    let msg = get_stake_reward_callback_msg(env);
     cosmos_msg.push(msg);
-    
+
     Ok(Response::default()
         .add_attribute("method", "try_alliance_delegate")
         .add_messages(cosmos_msg))
@@ -171,7 +244,6 @@ fn try_alliance_undelegate(
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
     authorize_execution(cfg.owner.clone(), info.sender)?;
-    store_temp_contract_funds(&info.funds, deps.querier, deps.storage, &env.contract.address)?;
 
     if msg.undelegations.is_empty() {
         return Err(ContractError::EmptyDelegation {});
@@ -193,11 +265,7 @@ fn try_alliance_undelegate(
         cosmos_msg.push(msg);
         reduce_val_stake(deps.storage, delegation.validator, delegation.amount)?;
     }
-    let msg = CosmosMsg::Wasm(WasmMsg::Execute {
-        contract_addr: env.contract.address.to_string(),
-        msg: to_binary(&ExecuteCollectionMsg::UpdateRewardsCallback {}).unwrap(),
-        funds: vec![],
-    });
+    let msg = get_stake_reward_callback_msg(env);
     cosmos_msg.push(msg);
     Ok(Response::new()
         .add_attributes(vec![("action", "try_alliance_undelegate")])
@@ -212,7 +280,6 @@ fn try_alliance_redelegate(
 ) -> Result<Response, ContractError> {
     let cfg = CONFIG.load(deps.storage)?;
     authorize_execution(cfg.owner.clone(), info.sender)?;
-    store_temp_contract_funds(&info.funds, deps.querier, deps.storage, &env.contract.address)?;
 
     if msg.redelegations.is_empty() {
         return Err(ContractError::EmptyDelegation {});
@@ -238,11 +305,7 @@ fn try_alliance_redelegate(
         upsert_val(deps.storage, dst_validator, redelegation.amount)?;
         reduce_val_stake(deps.storage, src_validator, redelegation.amount)?;
     }
-    let msg = CosmosMsg::Wasm(WasmMsg::Execute {
-        contract_addr: env.contract.address.to_string(),
-        msg: to_binary(&ExecuteCollectionMsg::UpdateRewardsCallback {}).unwrap(),
-        funds: vec![],
-    });
+    let msg = get_stake_reward_callback_msg(env);
     cosmos_msg.push(msg);
     Ok(Response::new()
         .add_attributes(vec![("action", "try_alliance_redelegate")])
@@ -256,7 +319,8 @@ fn try_breaknft(
     parent: AllianceNftCollection,
     token_id: String,
 ) -> Result<Response, ContractError> {
-    let owner_res = parent.owner_of(deps.as_ref(), env, token_id.clone(), false)?;
+    let cfg = CONFIG.load(deps.storage)?;
+    let owner_res = parent.owner_of(deps.as_ref(), env.clone(), token_id.clone(), false)?;
     let owner = deps.api.addr_validate(&owner_res.owner)?;
     authorize_execution(owner.clone(), info.sender)?;
 
@@ -290,16 +354,43 @@ fn try_breaknft(
             ("rewards", rewards_claimable.to_string().as_str()),
         ]))
     } else {
-        let send_msg = CosmosMsg::Bank(BankMsg::Send {
-            amount: coins(rewards_claimable.u128(), ALLOWED_DENOM),
-            to_address: owner.to_string(),
-        });
+        // send user share to owner.
+        let send_msg = cfg
+            .lst_asset_info
+            .clone()
+            .with_balance(rewards_claimable)
+            .transfer_msg(owner.to_string())?;
+
+        // prepare the additional whitelisted reward assets based on the user share
+        // user share = rewards_claimable / rewards_total
+        let mut transfer_reward_asset_msgs = vec![];
+        let rewards_total = cfg
+            .lst_asset_info
+            .query_balance(&deps.querier, env.contract.address.to_string())?;
+        let user_share = Decimal::from_ratio(rewards_claimable, rewards_total);
+
+        for whitelisted_reward_asset in cfg.whitelisted_reward_assets {
+            let balance = whitelisted_reward_asset
+                .query_balance(&deps.querier, env.contract.address.to_string())?;
+            // always floored
+            let user_balance = user_share * balance;
+            if !user_balance.is_zero() {
+                transfer_reward_asset_msgs.push(
+                    whitelisted_reward_asset
+                        .with_balance(user_balance)
+                        .transfer_msg(owner.to_string())?,
+                );
+            }
+        }
+
         Ok(Response::default()
             .add_message(send_msg)
+            .add_messages(transfer_reward_asset_msgs)
             .add_attributes(vec![
                 ("action", "break_nft"),
                 ("token_id", token_id.as_str()),
                 ("rewards", rewards_claimable.to_string().as_str()),
+                ("user_share", user_share.to_string().as_str()),
             ]))
     }
 }
@@ -345,29 +436,46 @@ fn try_change_owner(
     ]))
 }
 
+fn try_update_config(
+    deps: DepsMut,
+    info: MessageInfo,
+    msg: UpdateConfigMsg,
+) -> Result<Response, ContractError> {
+    let mut cfg = CONFIG.load(deps.storage)?;
+    authorize_execution(cfg.owner.clone(), info.sender)?;
+
+    if let Some(dao_treasury_address) = msg.dao_treasury_address {
+        cfg.dao_treasury_address = deps.api.addr_validate(&dao_treasury_address)?;
+    }
+
+    if let Some(dao_treasury_share) = msg.dao_treasury_share {
+        cfg.dao_treasury_share = validate_dao_treasury_share(dao_treasury_share)?;
+    }
+
+    if let Some(set_whitelisted_reward_assets) = msg.set_whitelisted_reward_assets {
+        let mut set_assets =
+            validate_whitelisted_assets(&deps, &cfg.lst_asset_info, set_whitelisted_reward_assets)?;
+        dedupe_assetinfos(&mut set_assets);
+        cfg.whitelisted_reward_assets = set_assets;
+    }
+
+    if let Some(add_whitelisted_reward_assets) = msg.add_whitelisted_reward_assets {
+        let mut add_assets =
+            validate_whitelisted_assets(&deps, &cfg.lst_asset_info, add_whitelisted_reward_assets)?;
+        let mut existing = cfg.whitelisted_reward_assets;
+        existing.append(&mut add_assets);
+        dedupe_assetinfos(&mut existing);
+        cfg.whitelisted_reward_assets = existing;
+    }
+
+    CONFIG.save(deps.storage, &cfg)?;
+
+    Ok(Response::default().add_attributes(vec![("action", "try_update_config")]))
+}
+
 fn authorize_execution(owner: Addr, sender: Addr) -> Result<Response, ContractError> {
     if sender != owner {
         return Err(ContractError::Unauthorized(sender, owner));
     }
     Ok(Response::default())
-}
-
-// Given the sent fund and the current contract balance, 
-// store the difference in TEMP_BALANCE so we can keep,
-// track of the rewards collected in the current tx.
-fn store_temp_contract_funds(
-    funds: &Vec<CwCoin>, 
-    querier:QuerierWrapper, 
-    storage: &mut dyn Storage, 
-    contract_addr: &Addr
-) -> Result<(), ContractError> {
-    let reward_sent_in_tx: Option<&CwCoin> = funds.iter().find(|c| c.denom == ALLOWED_DENOM);
-    let sent_balance = if let Some(coin) = reward_sent_in_tx {
-        coin.amount
-    } else {
-        Uint128::zero()
-    };
-    let contract_balance = try_query_contract_balance(querier, contract_addr)?;
-    TEMP_BALANCE.save(storage, &(contract_balance - sent_balance))?;
-    Ok(())
 }
